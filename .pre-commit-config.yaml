@@ -1,0 +1,45 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: mixed-line-ending
+      - id: check-case-conflict
+
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.13.0
+    hooks:
+      - id: markdownlint
+        name: markdownlint
+        language: ruby
+        types: [markdown]
+        entry: mdl
+        stages: [pre-commit]
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        name: codespell
+        language: python
+        types_or: [rust, markdown]
+        args: ["-I", ".codespell.dictionary"]
+        stages: [pre-commit]
+
+  - repo: local
+    hooks:
+      - id: rustfmt
+        name: rustfmt
+        entry: rustfmt
+        language: system
+        types: [rust]
+      - id: clippy
+        name: clippy
+        entry: cargo clippy --all-targets --all-features -- -D warnings
+        language: system
+        types: [rust]
+        pass_filenames: false
+        stages: [pre-commit]

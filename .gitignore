@@ -1,0 +1,7 @@
+/target
+.vscode
+.venv
+__pycache__/
+.env
+*.log
+lmx2db.code-workspace
