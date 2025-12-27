@@ -1,5 +1,4 @@
 use crate::cmdline::CliArgs;
-use serde_json::Value;
 use sqlx::{MySql, Pool};
 use std::collections::HashMap;
 
@@ -13,11 +12,11 @@ pub async fn create_sqlkey_file(pool: Option<Pool<MySql>>, args: &CliArgs) {
         }
     };
 
-    if args.verbose {
+    if args.verbose || args.dry_run {
         println!("Creating sqlkey file: {}", args.sqlkeys_file);
     }
     // TODO: Implement sqlkey file creation logic
-    let _myhashmap: HashMap<String, HashMap<String, Value>> =
+    let _myhashmap: HashMap<String, HashMap<String, String>> =
         read_sqlkeys_from_db(pool, args).await;
     // On success:
     std::process::exit(0);
@@ -32,12 +31,12 @@ pub async fn create_sqlkey_file(pool: Option<Pool<MySql>>, args: &CliArgs) {
 pub async fn read_sqlkeys(
     pool: Option<Pool<MySql>>,
     args: &CliArgs,
-) -> HashMap<String, HashMap<String, Value>> {
+) -> HashMap<String, HashMap<String, String>> {
     let pool = match pool {
         Some(p) => p,
         None => {
             eprintln!(
-                "Error: No database connection available, reading from file: {}",
+                "No database connection available, reading from file: {}",
                 args.sqlkeys_file
             );
             return read_sqlkeys_from_file(args).await;
@@ -49,19 +48,56 @@ pub async fn read_sqlkeys(
 /// Reads sqlkeys from database and returns its contents
 /// panics on error
 pub async fn read_sqlkeys_from_db(
-    _pool: Pool<MySql>,
+    pool: Pool<MySql>,
     args: &CliArgs,
-) -> HashMap<String, HashMap<String, Value>> {
-    if args.verbose {
+) -> HashMap<String, HashMap<String, String>> {
+    if args.verbose || args.dry_run {
         println!("Reading sqlkeys from database");
     }
-    HashMap::new()
+    // Execute "SHOW TABLES" to get all table names
+    let tables: Vec<String> = sqlx::query_scalar("SHOW TABLES")
+        .fetch_all(&pool)
+        .await
+        .expect("Failed to fetch tables");
+
+    // Filter tables: start with lowercase, don't contain "view"
+    let filtered_tables: Vec<String> = tables
+        .into_iter()
+        .filter(|table| {
+            !table.contains("view") && table.chars().next().is_some_and(|c| c.is_lowercase())
+        })
+        .collect();
+
+    // Build the result HashMap
+    let mut result: HashMap<String, HashMap<String, String>> = HashMap::new();
+
+    for table_name in filtered_tables {
+        if args.verbose || args.dry_run {
+            println!("Processing table: {}", table_name);
+        }
+
+        // Get columns for this table
+        let query = format!("SHOW COLUMNS FROM `{}`", table_name);
+        let err_msg = format!("Failed to fetch columns for table {}", table_name);
+        let rows: Vec<(String, String)> = sqlx::query_as(&query)
+            .fetch_all(&pool)
+            .await
+            .expect(&err_msg);
+        let mut columns: HashMap<String, String> = HashMap::new();
+        for (field, field_type) in rows {
+            columns.insert(field, field_type);
+        }
+
+        result.insert(table_name, columns);
+    }
+
+    result
 }
 
 /// Reads sqlkeys from file and returns its contents
 /// panics on error
-pub async fn read_sqlkeys_from_file(args: &CliArgs) -> HashMap<String, HashMap<String, Value>> {
-    if args.verbose {
+pub async fn read_sqlkeys_from_file(args: &CliArgs) -> HashMap<String, HashMap<String, String>> {
+    if args.verbose || args.dry_run {
         println!("Reading sqlkeys from file: {}", args.sqlkeys_file);
     }
     HashMap::new()

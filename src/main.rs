@@ -1,5 +1,4 @@
 use connect::{connect_to_database, disconnect_from_database};
-use serde_json::Value;
 use sqlx::{MySql, Pool};
 use std::collections::HashMap;
 
@@ -20,11 +19,11 @@ async fn main() {
     // from the database and exit
     if args.create_sqlkeys {
         sqlkeys::create_sqlkey_file(pool.clone(), &args).await;
-    } else {
-        // Normal operation: read sqlkeys and proceed
-        let _sqlkeys: HashMap<String, HashMap<String, Value>> =
-            sqlkeys::read_sqlkeys(pool.clone(), &args).await;
     }
+    // Normal operation: read sqlkeys and proceed
+    let sqlkeys: HashMap<String, HashMap<String, String>> =
+        sqlkeys::read_sqlkeys(pool.clone(), &args).await;
+    println!("{:#?}", sqlkeys);
 
     // Explicit disconnect from the database
     disconnect_from_database(pool).await;
