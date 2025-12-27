@@ -1,11 +1,17 @@
-pub(crate) mod cmdline;
+use connect::connect_to_database;
 
-fn main() {
+pub(crate) mod cmdline;
+pub(crate) mod connect;
+
+#[tokio::main]
+async fn main() {
     let args = cmdline::parse_args();
-    if args.verbose {
-        println!("Verbose mode is on");
-    }
-    if args.dry_run {
-        println!("Performing a dry run");
-    }
+    cmdline::echo_args(&args);
+
+    // Connect to the database
+    let database_url: String = args.db_url;
+    let pool: sqlx::Pool<sqlx::MySql> = connect_to_database(&database_url).await;
+
+    // Explicit disconnect from the database
+    pool.close().await;
 }
