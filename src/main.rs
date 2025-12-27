@@ -1,8 +1,11 @@
 use connect::{connect_to_database, disconnect_from_database};
+use serde_json::Value;
 use sqlx::{MySql, Pool};
+use std::collections::HashMap;
 
 pub(crate) mod cmdline;
 pub(crate) mod connect;
+pub(crate) mod sqlkeys;
 
 #[tokio::main]
 async fn main() {
@@ -10,8 +13,18 @@ async fn main() {
     cmdline::echo_args(&args);
 
     // Connect to the database
-    let database_url: String = args.db_url;
+    let database_url: String = args.db_url.clone();
     let pool: Option<Pool<MySql>> = connect_to_database(&database_url).await;
+
+    // If create_sqlkeys flag is set, create the sqlkey file
+    // from the database and exit
+    if args.create_sqlkeys {
+        sqlkeys::create_sqlkey_file(pool.clone(), &args).await;
+    } else {
+        // Normal operation: read sqlkeys and proceed
+        let _sqlkeys: HashMap<String, HashMap<String, Value>> =
+            sqlkeys::read_sqlkeys(pool.clone(), &args).await;
+    }
 
     // Explicit disconnect from the database
     disconnect_from_database(pool).await;

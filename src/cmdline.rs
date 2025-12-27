@@ -18,6 +18,14 @@ pub struct CliArgs {
         default_value = "mysql://lmxtest:lmxtest@localhost/lmxtest"
     )]
     pub db_url: String,
+
+    /// name of sqlkeys file
+    #[arg(short = 'k', long, default_value = "sqlkeys.yml")]
+    pub sqlkeys_file: String,
+
+    /// create sqlkeys file from database
+    #[arg(short = 'c', long, default_value_t = false)]
+    pub create_sqlkeys: bool,
 }
 
 pub fn parse_args() -> CliArgs {
@@ -28,6 +36,8 @@ pub fn echo_args(args: &CliArgs) {
     if args.verbose {
         println!("Verbose: {}", args.verbose);
         println!("Dry run: {}", args.dry_run);
+        println!("SQLKeys file: {}", args.sqlkeys_file);
+        println!("Create SQLKeys: {}", args.create_sqlkeys);
         println!("Database URL: {}", args.db_url);
     } else if args.dry_run {
         println!("Performing a dry run");
