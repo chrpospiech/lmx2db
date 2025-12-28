@@ -18,7 +18,10 @@ async fn main() {
     // If create_sqlkeys flag is set, create the sqlkey file
     // from the database and exit
     if args.create_sqlkeys {
-        sqlkeys::create_sqlkey_file(pool.clone(), &args).await;
+        match sqlkeys::create_sqlkey_file(pool.clone(), &args).await {
+            Ok(_) => std::process::exit(0),
+            Err(_) => std::process::exit(1),
+        }
     }
     // Normal operation: read sqlkeys and proceed
     let sqlkeys: HashMap<String, HashMap<String, String>> =

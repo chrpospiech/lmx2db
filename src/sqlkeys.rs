@@ -2,15 +2,14 @@ use crate::cmdline::CliArgs;
 use sqlx::{MySql, Pool};
 use std::collections::HashMap;
 
+pub(crate) mod create_sqlkeys;
+
 /// Creates an sqlkey file from the database
-pub async fn create_sqlkey_file(pool: Option<Pool<MySql>>, args: &CliArgs) {
-    let pool = match pool {
-        Some(p) => p,
-        None => {
-            eprintln!("Error: Database pool is required");
-            std::process::exit(1);
-        }
-    };
+pub async fn create_sqlkey_file(
+    pool: Option<Pool<MySql>>,
+    args: &CliArgs,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let pool = pool.ok_or("Database pool is required")?;
 
     if args.verbose || args.dry_run {
         println!("Creating sqlkey file: {}", args.sqlkeys_file);
@@ -32,7 +31,7 @@ pub async fn create_sqlkey_file(pool: Option<Pool<MySql>>, args: &CliArgs) {
         println!("Successfully wrote sqlkeys to: {}", args.sqlkeys_file);
     }
     // On success:
-    std::process::exit(0);
+    Ok(())
 }
 
 /// Reads sqlkeys from database or file and returns its contents
