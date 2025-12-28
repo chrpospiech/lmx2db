@@ -1,0 +1,25 @@
+---
+extends: default
+locale: en_US.UTF-8
+
+rules:
+  line-length:
+    max: 120
+  comments-indentation: disable
+  document-start:
+    present: true
+  indentation:
+    indent-sequences: consistent
+  brackets:
+    max-spaces-inside: 40
+  commas:
+    max-spaces-after: 30
+    max-spaces-before: 0
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 40
+ignore: |
+  .git/
+  __pycache__
+  .cache/
+  venv/

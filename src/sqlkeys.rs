@@ -15,19 +15,27 @@ pub async fn create_sqlkey_file(pool: Option<Pool<MySql>>, args: &CliArgs) {
     if args.verbose || args.dry_run {
         println!("Creating sqlkey file: {}", args.sqlkeys_file);
     }
-    // TODO: Implement sqlkey file creation logic
-    let _myhashmap: HashMap<String, HashMap<String, String>> =
-        read_sqlkeys_from_db(pool, args).await;
+    // Get file contents from database
+    let hashmap: HashMap<String, HashMap<String, String>> = read_sqlkeys_from_db(pool, args).await;
+    if args.dry_run {
+        println!("Dry run enabled, not writing to file.");
+        println!("{:#?}", hashmap);
+        std::process::exit(0);
+    }
+    // Write hashmap to YAML file
+    let yaml_string = serde_yml::to_string(&hashmap).expect("Failed to serialize hashmap to YAML");
+
+    std::fs::write(&args.sqlkeys_file, "---\n".to_string() + &yaml_string)
+        .expect("Failed to write YAML to file");
+
+    if args.verbose {
+        println!("Successfully wrote sqlkeys to: {}", args.sqlkeys_file);
+    }
     // On success:
     std::process::exit(0);
-
-    // On error (example):
-    // eprintln!("Error: Failed to create sqlkey file");
-    // std::process::exit(1);
 }
 
 /// Reads sqlkeys from database or file and returns its contents
-/// panics on error
 pub async fn read_sqlkeys(
     pool: Option<Pool<MySql>>,
     args: &CliArgs,
@@ -93,5 +101,11 @@ pub async fn read_sqlkeys_from_file(args: &CliArgs) -> HashMap<String, HashMap<S
     if args.verbose || args.dry_run {
         println!("Reading sqlkeys from file: {}", args.sqlkeys_file);
     }
-    HashMap::new()
+    let yaml_string =
+        std::fs::read_to_string(&args.sqlkeys_file).expect("Failed to read sqlkeys file");
+
+    let hashmap: HashMap<String, HashMap<String, String>> =
+        serde_yml::from_str(&yaml_string).expect("Failed to parse YAML from sqlkeys file");
+
+    hashmap
 }
