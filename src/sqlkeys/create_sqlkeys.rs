@@ -2,12 +2,11 @@
 mod tests {
     use crate::sqlkeys::create_sqlkey_file;
     use crate::sqlkeys::CliArgs;
-    use sqlx::mysql::MySqlPool;
     use sqlx::{MySql, Pool};
     use tempfile::NamedTempFile;
 
-    #[tokio::test]
-    async fn test_create_sqlkey_file_with_pool() {
+    #[sqlx::test(fixtures(path = "tests/fixtures/lmxtest.sql"))]
+    async fn test_create_sqlkey_file_with_pool(pool: Pool<MySql>) {
         // Create temporary file for output
         let temp_file = NamedTempFile::new().unwrap();
         let temp_path = temp_file.path().to_str().unwrap().to_string();
@@ -17,21 +16,13 @@ mod tests {
             verbose: false,
             dry_run: false,
             create_sqlkeys: true,
-            db_url: "mysql://lmxtest:lmxtest@localhost/lmxtest".to_string(),
+            db_url: String::new(), // Not needed when using injected pool
         };
 
-        // Connect to the test database. Panic if it is not available.
-        let database_url: String = args.db_url.clone();
-        let pool: Pool<MySql> = MySqlPool::connect(&database_url)
-            .await
-            .expect("Failed to connect to test database");
-
-        // Test would call create_sqlkey_file
+        // Use the injected pool directly
         create_sqlkey_file(Some(pool), &args)
             .await
             .expect("Failed to create sqlkey file");
-
-        // Verify file contents after
     }
 
     #[tokio::test]
