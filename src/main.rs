@@ -23,7 +23,9 @@ async fn main() {
     // Normal operation: read sqlkeys and proceed
     let sqlkeys: HashMap<String, HashMap<String, String>> =
         sqlkeys::read_sqlkeys(pool.clone(), &args).await;
-    println!("{:#?}", sqlkeys);
+    if !args.dry_run {
+        println!("{:#?}", sqlkeys);
+    }
 
     // Explicit disconnect from the database
     disconnect_from_database(pool).await;
