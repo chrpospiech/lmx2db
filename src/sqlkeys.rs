@@ -55,23 +55,16 @@ pub async fn read_sqlkeys_from_db(
         println!("Reading sqlkeys from database");
     }
     // Execute "SHOW TABLES" to get all table names
-    let tables: Vec<String> = sqlx::query_scalar("SHOW TABLES")
-        .fetch_all(&pool)
-        .await
-        .expect("Failed to fetch tables");
-
-    // Filter tables: start with lowercase, don't contain "view"
-    let filtered_tables: Vec<String> = tables
-        .into_iter()
-        .filter(|table| {
-            !table.contains("view") && table.chars().next().is_some_and(|c| c.is_lowercase())
-        })
-        .collect();
+    let tables: Vec<String> =
+        sqlx::query_scalar("SHOW FULL TABLES WHERE `Table_type` = 'BASE TABLE'")
+            .fetch_all(&pool)
+            .await
+            .expect("Failed to fetch tables");
 
     // Build the result HashMap
     let mut result: HashMap<String, HashMap<String, String>> = HashMap::new();
 
-    for table_name in filtered_tables {
+    for table_name in tables {
         if args.verbose || args.dry_run {
             println!("Processing table: {}", table_name);
         }
