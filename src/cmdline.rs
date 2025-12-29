@@ -15,7 +15,7 @@ pub struct CliArgs {
     #[arg(
         short = 'u',
         long,
-        default_value = "mysql://lmxtest:lmxtest@localhost/lmxtest"
+        default_value = "mysql://lmxtest:lmxtest@localhost/lmxdb"
     )]
     pub db_url: String,
 
