@@ -3,6 +3,7 @@ use sqlx::{MySql, Pool};
 use std::collections::HashMap;
 
 pub(crate) mod create_sqlkeys;
+pub(crate) mod sqlkey_hashmap;
 
 /// Creates an sqlkey file from the database
 pub async fn create_sqlkey_file(

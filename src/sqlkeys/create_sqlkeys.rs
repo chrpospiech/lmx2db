@@ -1,11 +1,12 @@
 #[cfg(test)]
 mod tests {
     use crate::sqlkeys::create_sqlkey_file;
+    use crate::sqlkeys::sqlkey_hashmap::check_sqlkeys_file;
     use crate::sqlkeys::CliArgs;
     use sqlx::{MySql, Pool};
     use tempfile::NamedTempFile;
 
-    #[sqlx::test(fixtures(path = "tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures("tests/fixtures/lmxtest.sql"))]
     async fn test_create_sqlkey_file_with_pool(pool: Pool<MySql>) {
         // Create temporary file for output
         let temp_file = NamedTempFile::new().unwrap();
@@ -20,9 +21,19 @@ mod tests {
         };
 
         // Use the injected pool directly
+
         create_sqlkey_file(Some(pool), &args)
             .await
             .expect("Failed to create sqlkey file");
+
+        // Verify the contents of the created sqlkey file
+        assert!(
+            check_sqlkeys_file(args.sqlkeys_file.clone()),
+            "SQL key values do not match expected structure"
+        );
+
+        // Clean up temporary file
+        std::fs::remove_file(&args.sqlkeys_file).unwrap();
     }
 
     #[tokio::test]
