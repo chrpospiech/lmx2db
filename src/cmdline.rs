@@ -26,6 +26,29 @@ pub struct CliArgs {
     /// create sqlkeys file from database
     #[arg(short = 'c', long, default_value_t = false)]
     pub create_sqlkeys: bool,
+
+    /// SQL transaction per job
+    #[arg(short = 't', long, default_value_t = false)]
+    pub transaction_per_job: bool,
+
+    /// Name of the SQL file with import statements
+    #[arg(short = 'f', long, default_value = "import.sql")]
+    pub sql_file: String,
+
+    /// Filename of the module definition database
+    #[arg(short = 'm', long, default_value = "moduledefs.db")]
+    pub module_db_file: String,
+
+    /// Filename of YAML file with additional data for the settings table
+    #[arg(short = 's', long, default_value = "settings.yml")]
+    pub settings_file: String,
+
+    /// filename of YAML file with project and code name and version
+    #[arg(short = 'p', long, default_value = "project.yml")]
+    pub project_file: String,
+
+    /// Input files to process
+    pub files: Vec<String>,
 }
 
 pub fn parse_args() -> CliArgs {
@@ -39,6 +62,8 @@ pub fn echo_args(args: &CliArgs) {
         println!("SQLKeys file: {}", args.sqlkeys_file);
         println!("Create SQLKeys: {}", args.create_sqlkeys);
         println!("Database URL: {}", args.db_url);
+        println!("Transaction per job: {}", args.transaction_per_job);
+        println!("SQL file: {}", args.sql_file);
     } else if args.dry_run {
         println!("Performing a dry run");
     }

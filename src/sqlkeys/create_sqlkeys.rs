@@ -18,6 +18,12 @@ mod tests {
             dry_run: false,
             create_sqlkeys: true,
             db_url: String::new(), // Not needed when using injected pool
+            sql_file: "import.sql".to_string(),
+            transaction_per_job: false,
+            module_db_file: "moduledefs.db".to_string(),
+            settings_file: "settings.yml".to_string(),
+            project_file: "project.yml".to_string(),
+            files: vec![],
         };
 
         // Use the injected pool directly
@@ -48,6 +54,12 @@ mod tests {
             dry_run: false,
             create_sqlkeys: true,
             db_url: "mysql://lmxtest:lmxtest@localhost/lmxtest".to_string(),
+            sql_file: "import.sql".to_string(),
+            transaction_per_job: false,
+            module_db_file: "moduledefs.db".to_string(),
+            settings_file: "settings.yml".to_string(),
+            project_file: "project.yml".to_string(),
+            files: vec![],
         };
 
         // No database pool provided
