@@ -2,7 +2,9 @@ use crate::cmdline::CliArgs;
 use sqlx::{MySql, Pool};
 use std::collections::HashMap;
 
+#[cfg(test)]
 pub(crate) mod create_sqlkeys;
+#[cfg(test)]
 pub(crate) mod sqlkey_hashmap;
 
 /// Creates an sqlkey file from the database

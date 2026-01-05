@@ -34,7 +34,6 @@ pub fn check_sqlkey_values(sqlkey_map: &HashMap<String, HashMap<String, String>>
     })
 }
 
-#[allow(dead_code)]
 pub fn check_sqlkeys_file(sqlkeys_file: String) -> bool {
     let contents =
         std::fs::read_to_string(sqlkeys_file).expect("Failed to read sqlkey file for checking");
