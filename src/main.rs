@@ -2,8 +2,11 @@ use connect::{connect_to_database, disconnect_from_database};
 use sqlx::{MySql, Pool};
 use std::collections::HashMap;
 
+use crate::positional_args::find_lmx_summary_files;
+
 pub(crate) mod cmdline;
 pub(crate) mod connect;
+pub(crate) mod positional_args;
 pub(crate) mod sqlkeys;
 
 #[tokio::main]
@@ -26,8 +29,14 @@ async fn main() {
     // Normal operation: read sqlkeys and proceed
     let sqlkeys: HashMap<String, HashMap<String, String>> =
         sqlkeys::read_sqlkeys(pool.clone(), &args).await;
-    if !args.dry_run {
-        println!("{:#?}", sqlkeys);
+    if args.verbose {
+        println!("Read {} sqlkeys from database/file", sqlkeys.len());
+    }
+    for file_name in find_lmx_summary_files(&args.files) {
+        if args.verbose {
+            println!("Processing file: {}", file_name);
+        }
+        // Process each file (implementation not shown)
     }
 
     // Explicit disconnect from the database
