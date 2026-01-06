@@ -6,6 +6,7 @@ use crate::positional_args::find_lmx_summary_files;
 
 pub(crate) mod cmdline;
 pub(crate) mod connect;
+pub(crate) mod jobdata;
 pub(crate) mod positional_args;
 pub(crate) mod sqlkeys;
 
@@ -32,11 +33,28 @@ async fn main() {
     if args.verbose {
         println!("Read {} sqlkeys from database/file", sqlkeys.len());
     }
+    let mut transaction = if !args.transaction_per_job && !args.dry_run {
+        if let Some(p) = pool.as_ref() {
+            Some(p.begin().await.expect("Failed to begin transaction"))
+        } else {
+            None
+        }
+    } else {
+        None
+    };
     for file_name in find_lmx_summary_files(&args.files) {
         if args.verbose {
             println!("Processing file: {}", file_name);
         }
-        // Process each file (implementation not shown)
+        let return_code =
+            jobdata::process_lmx_file(&file_name, &pool, &mut transaction, &sqlkeys, &args).await;
+        match return_code {
+            Ok(_) => {}
+            Err(e) => eprintln!("Ignoring {}: Error in SQL statements: {}", file_name, e),
+        }
+    }
+    if let Some(tx) = transaction {
+        tx.commit().await.expect("Failed to commit transaction");
     }
 
     // Explicit disconnect from the database
