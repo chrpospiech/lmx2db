@@ -2,6 +2,11 @@ use crate::cmdline::CliArgs;
 use std::io;
 use std::path::{Path, PathBuf};
 
+#[cfg(test)]
+pub(crate) mod find_project_file;
+#[cfg(test)]
+pub(crate) mod project_mockup;
+
 /// Function to import foreign keys for the 'runs' table
 pub fn import_foreign_keys(file_name: &str, args: &CliArgs) -> Vec<String> {
     // Collect the SQL queries into a Vec<String> and process them later.
