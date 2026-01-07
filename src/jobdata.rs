@@ -4,6 +4,8 @@ use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::io::Write;
 
+pub(crate) mod table_runs;
+
 /// Processes a single LMX summary file by collecting SQL queries and executing them against a database.
 ///
 /// This function reads an LMX summary YAML file, generates SQL queries based on the content
@@ -13,10 +15,10 @@ use std::io::Write;
 /// # Arguments
 ///
 /// * `file_name` - Path to the LMX summary file to process
-/// * `pool` - Optional MySQL connection pool for database operations
-/// * `transaction` - Optional ongoing transaction to use for query execution
-/// * `sqlkeys` - HashMap containing SQL key mappings for query generation
-/// * `args` - Command line arguments controlling processing behavior
+/// * `pool` - Optional MySQL connection pool for database operations. If `None`, queries are written to a file
+/// * `transaction` - Optional ongoing transaction to use for query execution when `args.transaction_per_job` is false
+/// * `sqlkeys` - HashMap containing the database schema mapping for generating SQL queries
+/// * `args` - Command line arguments controlling processing behavior including verbosity, dry-run mode, and transaction settings
 ///
 /// # Returns
 ///
@@ -25,9 +27,12 @@ use std::io::Write;
 /// # Behavior
 ///
 /// - Reads and parses the LMX summary file as YAML
-/// - Generates SQL queries based on file content and sqlkeys
-/// - Delegates query execution to `process_sql_queries()`
-/// - Adds a comment marker identifying the source file
+/// - Generates SQL queries based on file content and sqlkeys schema mappings
+/// - Adds a comment marker identifying the source file being processed
+/// - Delegates query execution to `process_sql_queries()` which handles:
+///   - Database execution (if pool is provided)
+///   - File output (if pool is None)
+///   - Transaction management based on `args.transaction_per_job`
 ///
 /// # Panics
 ///
@@ -51,10 +56,13 @@ pub async fn process_lmx_file(
     let lmx_summary: HashMap<String, serde_yaml::Value> =
         serde_yaml::from_str(&file_content).expect(&yml_err_msg);
 
-    // In real implementation, parse lmx_summary and generate SQL queries
-    // using sqlkeys and push them to query_list
-    let _dummy_var1 = sqlkeys; // to avoid unused variable warning
-    let _dummy_var2 = &lmx_summary; // to avoid unused variable warning
+    // Generate SQL queries for the 'runs' table
+    query_list.extend(table_runs::import_into_runs_table(
+        file_name,
+        &lmx_summary,
+        sqlkeys,
+        args,
+    ));
 
     // Process the collected SQL queries
     process_sql_queries(query_list, pool, transaction, args).await?;
