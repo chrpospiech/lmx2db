@@ -35,9 +35,9 @@ pub struct CliArgs {
     #[arg(short = 'f', long, default_value = "import.sql")]
     pub sql_file: String,
 
-    /// Filename of the module definition database
-    #[arg(short = 'm', long, default_value = "moduledefs.db")]
-    pub module_db_file: String,
+    /// Filename of the YAML file relating modules to compiler and MPI versions
+    #[arg(short = 'm', long, default_value = "modules.yml")]
+    pub module_file: String,
 
     /// Filename of YAML file with additional data for the settings table
     #[arg(short = 's', long, default_value = "settings.yml")]
@@ -64,6 +64,10 @@ pub fn echo_args(args: &CliArgs) {
         println!("Database URL: {}", args.db_url);
         println!("Transaction per job: {}", args.transaction_per_job);
         println!("SQL file: {}", args.sql_file);
+        println!("Module file: {}", args.module_file);
+        println!("Settings file: {}", args.settings_file);
+        println!("Project file: {}", args.project_file);
+        println!("Input files: {:?}", args.files);
     } else if args.dry_run {
         println!("Performing a dry run");
     }

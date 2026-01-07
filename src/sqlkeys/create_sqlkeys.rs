@@ -20,7 +20,7 @@ mod tests {
             db_url: String::new(), // Not needed when using injected pool
             sql_file: "import.sql".to_string(),
             transaction_per_job: false,
-            module_db_file: "moduledefs.db".to_string(),
+            module_file: "modules.yml".to_string(),
             settings_file: "settings.yml".to_string(),
             project_file: "project.yml".to_string(),
             files: vec![],
@@ -56,7 +56,7 @@ mod tests {
             db_url: "mysql://lmxtest:lmxtest@localhost/lmxtest".to_string(),
             sql_file: "import.sql".to_string(),
             transaction_per_job: false,
-            module_db_file: "moduledefs.db".to_string(),
+            module_file: "modules.yml".to_string(),
             settings_file: "settings.yml".to_string(),
             project_file: "project.yml".to_string(),
             files: vec![],
