@@ -6,9 +6,11 @@ use std::path::{Path, PathBuf};
 pub(crate) mod find_project_file;
 #[cfg(test)]
 pub(crate) mod project_mockup;
+#[cfg(test)]
+pub(crate) mod read_project_file;
 
 /// Struct to hold foreign key data for the runs table
-#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq)]
 pub struct RunsForeignKeys {
     pub project: String,
     pub code: String,
@@ -23,19 +25,34 @@ pub fn import_foreign_keys(file_name: &str, args: &CliArgs) -> Vec<String> {
     // Collect the SQL queries into a Vec<String> and process them later.
     let mut query_list: Vec<String> = Vec::new();
 
+    // Find a project file and read its RunsForeignKeys
+    let foreign_keys = read_project_file(file_name, args)
+        .unwrap_or_else(|e| panic!("Failed to read compulsory project file: {}", e));
+
     // Dummy usage to avoid unused variable warnings
-    let _dummy = find_project_file(file_name, args);
-    let _dummy2 = RunsForeignKeys {
-        project: String::new(),
-        code: String::new(),
-        code_version: String::new(),
-        test_case: String::new(),
-        cluster: None,
-        person: None,
-    };
+    let _dummy: &RunsForeignKeys = &foreign_keys;
 
     query_list.push("-- Inserting foreign keys into runs table;".to_string());
     query_list
+}
+
+/// Reads and parses the project file to extract RunsForeignKeys.
+/// Returns a RunsForeignKeys struct if successful, or an io::Error if there are issues
+/// reading or parsing the file.
+pub fn read_project_file(file_name: &str, args: &CliArgs) -> Result<RunsForeignKeys, io::Error> {
+    let project_file_path = find_project_file(file_name, args)?;
+    let file_contents = std::fs::read_to_string(&project_file_path)?;
+    let runs_foreign_keys: RunsForeignKeys = serde_yaml::from_str(&file_contents).map_err(|e| {
+        io::Error::new(
+            io::ErrorKind::InvalidData,
+            format!(
+                "Failed to parse project file '{}': {}",
+                project_file_path.display(),
+                e
+            ),
+        )
+    })?;
+    Ok(runs_foreign_keys)
 }
 
 /// Finds the project file by searching up the directory tree from the given file's location.
