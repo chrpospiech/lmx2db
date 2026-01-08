@@ -1,0 +1,260 @@
+# ----------------------------------------------------------------------------
+#
+#       Lightweight MPI traces with eXtensions
+#
+#       LMX_trace interval timer output in YAML format.
+#
+#       This output is both human and machine readable.
+#
+# ----------------------------------------------------------------------------
+---
+base_data:
+    library_version:                         2.0.0.rc3
+    MPI_ranks:                                       8
+    my_MPI_rank:                                     0
+    collect_scope:            MPI_Init to MPI_Finalize
+    real_time:                                 22.2480
+    user_time:                                696.8453
+    sys_time:                                  15.2735
+    total_comm_time:                           14.6853
+    mpiio_time:                           0.000000e+00
+    itimer_ticks_total:                           1112
+# ----------------------------------------------------------------------------
+# The histogram for the libraries has are the following entries.
+#
+#       element name       | use
+#      --------------------|--------------------------------------
+#       short name         | Abreviated name of the library
+#       itimer ticks       | Number of itimer ticks in this library
+#       percent total time | Percent of the totel number of ticks
+#
+# The rows in this table are sorted by descending number of ticks.
+# The short name is made unique by preceeding it with the row number.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the short name as key, and the value being an array of
+# two numbers with indices 0,1
+#
+# ----------------------------------------------------------------------------
+#     short name                    itimer ticks         percent time
+# ----------------------------------------------------------------------------
+library_histogram:
+    000/unknown:                    [              522,      46.9424]
+    001/libc.so.6:                  [              256,      23.0216]
+    002/namd3:                      [              122,      10.9712]
+    003/libmpi.so.12.0.0:           [               84,       7.5540]
+    004/libmlx-fi.so:               [               68,       6.1151]
+    005/libuct.so.0.0.0:            [               37,       3.3273]
+    006/libucp.so.0.0.0:            [               12,       1.0791]
+    007/libuct_ib_mlx5.so.0.0.0:    [               11,       0.9892]
+# ----------------------------------------------------------------------------
+# The detailed flat profile lists the libraries as before,
+# and for each entry there is a table with the following entries.
+#
+#       element name       | use
+#      --------------------|--------------------------------------
+#       short name         | Abreviated name of the library
+#       itimer ticks       | Number of itimer ticks in this library
+#       percent total time | Percent of the totel number of ticks
+#
+# The rows in this table are sorted by descending number of ticks.
+# The short name is made unique by preceeding it with the library
+# and the row number.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the short name as key, and the value being an array of
+# two numbers with indices 0,1.
+#
+# ----------------------------------------------------------------------------
+#         short name                itimer ticks         percent time
+# ----------------------------------------------------------------------------
+flat_profile:
+    000/unknown:
+    001/libc.so.6:
+        001.000/__GI___pthread_mu:  [              141,      12.6799]
+        001.001/_int_malloc:        [               26,       2.3381]
+        001.002/__libc_calloc:      [               20,       1.7986]
+        001.003/pthread_mutex_try:  [               17,       1.5288]
+        001.004/_int_free:          [               14,       1.2590]
+        001.005/__lll_lock_wait_p:  [               10,       0.8993]
+        001.006/malloc_consolidat:  [                5,       0.4496]
+        001.007/__GI___lll_lock_w:  [                4,       0.3597]
+        001.008/__GI___lll_lock_w:  [                4,       0.3597]
+        001.009/__lll_lock_wake_p:  [                4,       0.3597]
+        001.010/__memmove_avx512_:  [                4,       0.3597]
+        001.011/malloc:             [                4,       0.3597]
+        001.012/free:               [                1,       0.0899]
+        001.013/pthread_mutex_loc:  [                1,       0.0899]
+        001.014/unlink_chunk.cons:  [                1,       0.0899]
+    002/namd3:
+        002.000/_ZN12colvarmodule:  [               73,       6.5647]
+        002.001/_ZN19rotation_der:  [               20,       1.7986]
+        002.002/_ZN6colvar15build:  [                8,       0.7194]
+        002.003/_ZNK12colvarmodul:  [                8,       0.7194]
+        002.004/_ZNSt6vectorIN12c:  [                7,       0.6295]
+        002.005/hidden:             [                4,       0.3597]
+        002.006/_ZN12colvarmodule:  [                1,       0.0899]
+        002.007/_ZN20ComputeNonbo:  [                1,       0.0899]
+    003/libmpi.so.12.0.0:
+        003.000/PMPI_Test:          [               59,       5.3058]
+        003.001/hidden:             [               17,       1.5288]
+        003.002/PMPI_Iprobe:        [                8,       0.7194]
+    004/libmlx-fi.so:
+        004.000/ofi_cq_write_erro:  [               16,       1.4388]
+        004.001/ofi_cq_readerr:     [               14,       1.2590]
+        004.002/util_cq_insert_au:  [                6,       0.5396]
+        004.003/ofi_mutex_lock_no:  [                5,       0.4496]
+        004.004/util_cq_insert_er:  [                5,       0.4496]
+        004.005/mlx_cq_progress:    [                4,       0.3597]
+        004.006/mlx_ep_progress:    [                4,       0.3597]
+        004.007/mlx_tagged_recvms:  [                4,       0.3597]
+        004.008/ofi_cq_write_erro:  [                4,       0.3597]
+        004.009/ofi_cq_readfrom:    [                3,       0.2698]
+        004.010/hidden:             [                2,       0.1799]
+        004.011/ofi_cq_read:        [                1,       0.0899]
+    005/libuct.so.0.0.0:
+        005.000/hidden:             [               37,       3.3273]
+    006/libucp.so.0.0.0:
+        006.000/ucp_worker_progre:  [               11,       0.9892]
+        006.001/ucp_tag_probe_nb:   [                1,       0.0899]
+    007/libuct_ib_mlx5.so.0.0.0:
+        007.000/hidden:             [               11,       0.9892]
+# ----------------------------------------------------------------------------
+#        Directory of Library Names
+#
+# The full path library name may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# ----------------------------------------------------------------------------
+library_names:
+    000/unknown:
+        - 'unknown'
+    001/libc.so.6:
+        - '/usr/lib64/libc.so.6'
+    002/namd3:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/namd_intel/NAMD_3.0.2_S'
+        - 'ource/Linux-AVX512-icx-ce/namd3'
+    003/libmpi.so.12.0.0:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/lib/libmpi.'
+        - 'so.12.0.0'
+    004/libmlx-fi.so:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/opt/mpi/lib'
+        - 'fabric/lib/prov/libmlx-fi.so'
+    005/libuct.so.0.0.0:
+        - '/usr/lib64/libuct.so.0.0.0'
+    006/libucp.so.0.0.0:
+        - '/usr/lib64/libucp.so.0.0.0'
+    007/libuct_ib_mlx5.so.0.0.0:
+        - '/usr/lib64/ucx/libuct_ib_mlx5.so.0.0.0'
+# ----------------------------------------------------------------------------
+#        Directory of Soubroutine Names
+#
+# The full de-mangled subroutine name may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# ----------------------------------------------------------------------------
+subroutine_names:
+    000/unknown:
+    001/libc.so.6:
+        001.000/__GI___pthread_mu:
+            - '__GI___pthread_mutex_unlock_usercnt'
+        001.001/_int_malloc:
+            - '_int_malloc'
+        001.002/__libc_calloc:
+            - '__libc_calloc'
+        001.003/pthread_mutex_try:
+            - 'pthread_mutex_trylock'
+        001.004/_int_free:
+            - '_int_free'
+        001.005/__lll_lock_wait_p:
+            - '__lll_lock_wait_private'
+        001.006/malloc_consolidat:
+            - 'malloc_consolidate'
+        001.007/__GI___lll_lock_w:
+            - '__GI___lll_lock_wait'
+        001.008/__GI___lll_lock_w:
+            - '__GI___lll_lock_wake'
+        001.009/__lll_lock_wake_p:
+            - '__lll_lock_wake_private'
+        001.010/__memmove_avx512_:
+            - '__memmove_avx512_unaligned_erms'
+        001.011/malloc:
+            - 'malloc'
+        001.012/free:
+            - 'free'
+        001.013/pthread_mutex_loc:
+            - 'pthread_mutex_lock'
+        001.014/unlink_chunk.cons:
+            - 'unlink_chunk.constprop.0'
+    002/namd3:
+        002.000/_ZN12colvarmodule:
+            - 'colvarmodule::atom_group::calc_fit_gradients'
+        002.001/_ZN19rotation_der:
+            - 'rotation_derivative<colvarmodule::atom, colvarmodule::rvector>::pr'
+            - 'epare_derivative'
+        002.002/_ZN6colvar15build:
+            - 'colvar::build_atom_list'
+        002.003/_ZNK12colvarmodul:
+            - 'colvarmodule::atom_group::positions'
+        002.004/_ZNSt6vectorIN12c:
+            - 'std::vector<colvarmodule::atom, std::allocator<colvarmodule::atom>'
+            - ' >::operator='
+        002.005/hidden:
+            - 'hidden'
+        002.006/_ZN12colvarmodule:
+            - 'colvarmodule::atom_group::calc_dipole'
+        002.007/_ZN20ComputeNonbo:
+            - 'ComputeNonbondedUtil::calc_pair_slow_fullelect_pprof'
+    003/libmpi.so.12.0.0:
+        003.000/PMPI_Test:
+            - 'PMPI_Test'
+        003.001/hidden:
+            - 'hidden'
+        003.002/PMPI_Iprobe:
+            - 'PMPI_Iprobe'
+    004/libmlx-fi.so:
+        004.000/ofi_cq_write_erro:
+            - 'ofi_cq_write_error_peek'
+        004.001/ofi_cq_readerr:
+            - 'ofi_cq_readerr'
+        004.002/util_cq_insert_au:
+            - 'util_cq_insert_aux'
+        004.003/ofi_mutex_lock_no:
+            - 'ofi_mutex_lock_noop'
+        004.004/util_cq_insert_er:
+            - 'util_cq_insert_error'
+        004.005/mlx_cq_progress:
+            - 'mlx_cq_progress'
+        004.006/mlx_ep_progress:
+            - 'mlx_ep_progress'
+        004.007/mlx_tagged_recvms:
+            - 'mlx_tagged_recvmsg'
+        004.008/ofi_cq_write_erro:
+            - 'ofi_cq_write_error'
+        004.009/ofi_cq_readfrom:
+            - 'ofi_cq_readfrom'
+        004.010/hidden:
+            - 'hidden'
+        004.011/ofi_cq_read:
+            - 'ofi_cq_read'
+    005/libuct.so.0.0.0:
+        005.000/hidden:
+            - 'hidden'
+    006/libucp.so.0.0.0:
+        006.000/ucp_worker_progre:
+            - 'ucp_worker_progress'
+        006.001/ucp_tag_probe_nb:
+            - 'ucp_tag_probe_nb'
+    007/libuct_ib_mlx5.so.0.0.0:
+        007.000/hidden:
+            - 'hidden'

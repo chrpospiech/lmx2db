@@ -1,0 +1,358 @@
+# ----------------------------------------------------------------------------
+#
+#       Lightweight MPI traces with eXtensions
+#
+#       LMX_trace interval timer output in YAML format.
+#
+#       This output is both human and machine readable.
+#
+# ----------------------------------------------------------------------------
+---
+base_data:
+    library_version:                         2.0.0.rc3
+    MPI_ranks:                                       8
+    my_MPI_rank:                                     0
+    collect_scope:            MPI_Init to MPI_Finalize
+    real_time:                                 27.1292
+    user_time:                                851.4883
+    sys_time:                                  20.1612
+    total_comm_time:                           17.5730
+    mpiio_time:                           0.000000e+00
+    itimer_ticks_total:                           1356
+# ----------------------------------------------------------------------------
+# The histogram for the libraries has are the following entries.
+#
+#       element name       | use
+#      --------------------|--------------------------------------
+#       short name         | Abreviated name of the library
+#       itimer ticks       | Number of itimer ticks in this library
+#       percent total time | Percent of the totel number of ticks
+#
+# The rows in this table are sorted by descending number of ticks.
+# The short name is made unique by preceeding it with the row number.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the short name as key, and the value being an array of
+# two numbers with indices 0,1
+#
+# ----------------------------------------------------------------------------
+#     short name                    itimer ticks         percent time
+# ----------------------------------------------------------------------------
+library_histogram:
+    000/libmpi.so.12.0.0:           [              499,      36.7994]
+    001/libc.so.6:                  [              305,      22.4926]
+    002/unknown:                    [              299,      22.0501]
+    003/namd3:                      [               74,       5.4572]
+    004/libmpitrace.so:             [               72,       5.3097]
+    005/libmlx-fi.so:               [               61,       4.4985]
+    006/libuct.so.0.0.0:            [               20,       1.4749]
+    007/libucp.so.0.0.0:            [               12,       0.8850]
+    008/libuct_ib_mlx5.so.0.0.0:    [               12,       0.8850]
+    009/ld-linux-x86-64.so.2:       [                2,       0.1475]
+# ----------------------------------------------------------------------------
+# The detailed flat profile lists the libraries as before,
+# and for each entry there is a table with the following entries.
+#
+#       element name       | use
+#      --------------------|--------------------------------------
+#       short name         | Abreviated name of the library
+#       itimer ticks       | Number of itimer ticks in this library
+#       percent total time | Percent of the totel number of ticks
+#
+# The rows in this table are sorted by descending number of ticks.
+# The short name is made unique by preceeding it with the library
+# and the row number.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the short name as key, and the value being an array of
+# two numbers with indices 0,1.
+#
+# ----------------------------------------------------------------------------
+#         short name                itimer ticks         percent time
+# ----------------------------------------------------------------------------
+flat_profile:
+    000/libmpi.so.12.0.0:
+        000.000/hidden:             [              295,      21.7552]
+        000.001/PMPI_Test:          [               65,       4.7935]
+        000.002/MPIR_Progress_hoo:  [               46,       3.3923]
+        000.003/MPIDI_Progress_te:  [               25,       1.8437]
+        000.004/PMPI_Iprobe:        [               13,       0.9587]
+        000.005/I_MPI_memcpy_mult:  [                8,       0.5900]
+        000.006/MPIDI_OFI_handle_:  [                8,       0.5900]
+        000.007/impi_free:          [                8,       0.5900]
+        000.008/MPIR_Test:          [                5,       0.3687]
+        000.009/MPID_Progress_tes:  [                4,       0.2950]
+        000.010/impi_shm_heap_pro:  [                4,       0.2950]
+        000.011/MPIDIG_find_unexp:  [                3,       0.2212]
+        000.012/MPIDIG_send_origi:  [                3,       0.2212]
+        000.013/MPIDI_OFI_progres:  [                3,       0.2212]
+        000.014/MPIDIG_send_targe:  [                2,       0.1475]
+        000.015/I_MPI_memcpy_avx2:  [                1,       0.0737]
+        000.016/MPIDIG_enqueue_un:  [                1,       0.0737]
+        000.017/MPIDI_GPU_request:  [                1,       0.0737]
+        000.018/MPIDI_SHMI_progre:  [                1,       0.0737]
+        000.019/MPID_Progress_com:  [                1,       0.0737]
+        000.020/impi_malloc:        [                1,       0.0737]
+        000.021/impi_shm_cma_read:  [                1,       0.0737]
+    001/libc.so.6:
+        001.000/__GI___pthread_mu:  [              149,      10.9882]
+        001.001/pthread_mutex_loc:  [               31,       2.2861]
+        001.002/_int_malloc:        [               26,       1.9174]
+        001.003/__libc_calloc:      [               24,       1.7699]
+        001.004/_int_free:          [               20,       1.4749]
+        001.005/pthread_mutex_try:  [               20,       1.4749]
+        001.006/__lll_lock_wait_p:  [                9,       0.6637]
+        001.007/__memmove_avx512_:  [                8,       0.5900]
+        001.008/malloc_consolidat:  [                5,       0.3687]
+        001.009/__GI___lll_lock_w:  [                3,       0.2212]
+        001.010/__clock_gettime:    [                2,       0.1475]
+        001.011/free:               [                2,       0.1475]
+        001.012/__GI___lll_lock_w:  [                1,       0.0737]
+        001.013/__lll_lock_wake_p:  [                1,       0.0737]
+        001.014/hidden:             [                1,       0.0737]
+        001.015/malloc:             [                1,       0.0737]
+        001.016/pthread_getspecif:  [                1,       0.0737]
+        001.017/pthread_mutex_unl:  [                1,       0.0737]
+    002/unknown:
+    003/namd3:
+        003.000/_ZN12colvarmodule:  [               35,       2.5811]
+        003.001/_ZNSt6vectorIN12c:  [               12,       0.8850]
+        003.002/_ZN19rotation_der:  [               10,       0.7375]
+        003.003/_ZNK12colvarmodul:  [                7,       0.5162]
+        003.004/_ZN6colvar15build:  [                5,       0.3687]
+        003.005/hidden:             [                4,       0.2950]
+        003.006/_ZN12colvarmodule:  [                1,       0.0737]
+    004/libmpitrace.so:
+        004.000/MPI_Test:           [               24,       1.7699]
+        004.001/LMX_log_mpi_profi:  [               19,       1.4012]
+        004.002/MPI_Iprobe:         [               14,       1.0324]
+        004.003/hidden:             [               14,       1.0324]
+        004.004/MPI_Get_count:      [                1,       0.0737]
+    005/libmlx-fi.so:
+        005.000/ofi_cq_write_erro:  [               12,       0.8850]
+        005.001/ofi_cq_readerr:     [               10,       0.7375]
+        005.002/util_cq_insert_au:  [                7,       0.5162]
+        005.003/ofi_cq_readfrom:    [                6,       0.4425]
+        005.004/util_cq_insert_er:  [                6,       0.4425]
+        005.005/ofi_mutex_lock_no:  [                5,       0.3687]
+        005.006/ofi_cq_write_erro:  [                4,       0.2950]
+        005.007/hidden:             [                3,       0.2212]
+        005.008/mlx_ep_progress:    [                2,       0.1475]
+        005.009/mlx_tagged_recvms:  [                2,       0.1475]
+        005.010/mlx_cq_progress:    [                1,       0.0737]
+        005.011/ofi_cq_read:        [                1,       0.0737]
+        005.012/ofi_mutex_unlock_:  [                1,       0.0737]
+        005.013/util_peer_cq_clos:  [                1,       0.0737]
+    006/libuct.so.0.0.0:
+        006.000/hidden:             [               20,       1.4749]
+    007/libucp.so.0.0.0:
+        007.000/ucp_worker_progre:  [               10,       0.7375]
+        007.001/ucp_tag_probe_nb:   [                2,       0.1475]
+    008/libuct_ib_mlx5.so.0.0.0:
+        008.000/hidden:             [               12,       0.8850]
+    009/ld-linux-x86-64.so.2:
+        009.000/__tls_get_addr:     [                2,       0.1475]
+# ----------------------------------------------------------------------------
+#        Directory of Library Names
+#
+# The full path library name may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# ----------------------------------------------------------------------------
+library_names:
+    000/libmpi.so.12.0.0:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/lib/libmpi.'
+        - 'so.12.0.0'
+    001/libc.so.6:
+        - '/usr/lib64/libc.so.6'
+    002/unknown:
+        - 'unknown'
+    003/namd3:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/namd_intel/NAMD_3.0.2_S'
+        - 'ource/Linux-AVX512-icx-ce/namd3'
+    004/libmpitrace.so:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/lmxtrace_build_intel/lm'
+        - 'x_trace-2.0.0.rc3/install_intel/lib/libmpitrace.so'
+    005/libmlx-fi.so:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/opt/mpi/lib'
+        - 'fabric/lib/prov/libmlx-fi.so'
+    006/libuct.so.0.0.0:
+        - '/usr/lib64/libuct.so.0.0.0'
+    007/libucp.so.0.0.0:
+        - '/usr/lib64/libucp.so.0.0.0'
+    008/libuct_ib_mlx5.so.0.0.0:
+        - '/usr/lib64/ucx/libuct_ib_mlx5.so.0.0.0'
+    009/ld-linux-x86-64.so.2:
+        - '/usr/lib64/ld-linux-x86-64.so.2'
+# ----------------------------------------------------------------------------
+#        Directory of Soubroutine Names
+#
+# The full de-mangled subroutine name may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# ----------------------------------------------------------------------------
+subroutine_names:
+    000/libmpi.so.12.0.0:
+        000.000/hidden:
+            - 'hidden'
+        000.001/PMPI_Test:
+            - 'PMPI_Test'
+        000.002/MPIR_Progress_hoo:
+            - 'MPIR_Progress_hook_exec_on_vci'
+        000.003/MPIDI_Progress_te:
+            - 'MPIDI_Progress_test'
+        000.004/PMPI_Iprobe:
+            - 'PMPI_Iprobe'
+        000.005/I_MPI_memcpy_mult:
+            - 'I_MPI_memcpy_multipage_avx2'
+        000.006/MPIDI_OFI_handle_:
+            - 'MPIDI_OFI_handle_cq_error'
+        000.007/impi_free:
+            - 'impi_free'
+        000.008/MPIR_Test:
+            - 'MPIR_Test'
+        000.009/MPID_Progress_tes:
+            - 'MPID_Progress_test_impl'
+        000.010/impi_shm_heap_pro:
+            - 'impi_shm_heap_progress'
+        000.011/MPIDIG_find_unexp:
+            - 'MPIDIG_find_unexp'
+        000.012/MPIDIG_send_origi:
+            - 'MPIDIG_send_origin_cb'
+        000.013/MPIDI_OFI_progres:
+            - 'MPIDI_OFI_progress'
+        000.014/MPIDIG_send_targe:
+            - 'MPIDIG_send_target_msg_cb'
+        000.015/I_MPI_memcpy_avx2:
+            - 'I_MPI_memcpy_avx2'
+        000.016/MPIDIG_enqueue_un:
+            - 'MPIDIG_enqueue_unexp'
+        000.017/MPIDI_GPU_request:
+            - 'MPIDI_GPU_request_free'
+        000.018/MPIDI_SHMI_progre:
+            - 'MPIDI_SHMI_progress'
+        000.019/MPID_Progress_com:
+            - 'MPID_Progress_completion_count_incr'
+        000.020/impi_malloc:
+            - 'impi_malloc'
+        000.021/impi_shm_cma_read:
+            - 'impi_shm_cma_read'
+    001/libc.so.6:
+        001.000/__GI___pthread_mu:
+            - '__GI___pthread_mutex_unlock_usercnt'
+        001.001/pthread_mutex_loc:
+            - 'pthread_mutex_lock'
+        001.002/_int_malloc:
+            - '_int_malloc'
+        001.003/__libc_calloc:
+            - '__libc_calloc'
+        001.004/_int_free:
+            - '_int_free'
+        001.005/pthread_mutex_try:
+            - 'pthread_mutex_trylock'
+        001.006/__lll_lock_wait_p:
+            - '__lll_lock_wait_private'
+        001.007/__memmove_avx512_:
+            - '__memmove_avx512_unaligned_erms'
+        001.008/malloc_consolidat:
+            - 'malloc_consolidate'
+        001.009/__GI___lll_lock_w:
+            - '__GI___lll_lock_wake'
+        001.010/__clock_gettime:
+            - '__clock_gettime'
+        001.011/free:
+            - 'free'
+        001.012/__GI___lll_lock_w:
+            - '__GI___lll_lock_wait'
+        001.013/__lll_lock_wake_p:
+            - '__lll_lock_wake_private'
+        001.014/hidden:
+            - 'hidden'
+        001.015/malloc:
+            - 'malloc'
+        001.016/pthread_getspecif:
+            - 'pthread_getspecific'
+        001.017/pthread_mutex_unl:
+            - 'pthread_mutex_unlock'
+    002/unknown:
+    003/namd3:
+        003.000/_ZN12colvarmodule:
+            - 'colvarmodule::atom_group::calc_fit_gradients'
+        003.001/_ZNSt6vectorIN12c:
+            - 'std::vector<colvarmodule::atom, std::allocator<colvarmodule::atom>'
+            - ' >::operator='
+        003.002/_ZN19rotation_der:
+            - 'rotation_derivative<colvarmodule::atom, colvarmodule::rvector>::pr'
+            - 'epare_derivative'
+        003.003/_ZNK12colvarmodul:
+            - 'colvarmodule::atom_group::positions'
+        003.004/_ZN6colvar15build:
+            - 'colvar::build_atom_list'
+        003.005/hidden:
+            - 'hidden'
+        003.006/_ZN12colvarmodule:
+            - 'colvarmodule::atom_group::calc_dipole'
+    004/libmpitrace.so:
+        004.000/MPI_Test:
+            - 'MPI_Test'
+        004.001/LMX_log_mpi_profi:
+            - 'LMX_log_mpi_profile'
+        004.002/MPI_Iprobe:
+            - 'MPI_Iprobe'
+        004.003/hidden:
+            - 'hidden'
+        004.004/MPI_Get_count:
+            - 'MPI_Get_count'
+    005/libmlx-fi.so:
+        005.000/ofi_cq_write_erro:
+            - 'ofi_cq_write_error_peek'
+        005.001/ofi_cq_readerr:
+            - 'ofi_cq_readerr'
+        005.002/util_cq_insert_au:
+            - 'util_cq_insert_aux'
+        005.003/ofi_cq_readfrom:
+            - 'ofi_cq_readfrom'
+        005.004/util_cq_insert_er:
+            - 'util_cq_insert_error'
+        005.005/ofi_mutex_lock_no:
+            - 'ofi_mutex_lock_noop'
+        005.006/ofi_cq_write_erro:
+            - 'ofi_cq_write_error'
+        005.007/hidden:
+            - 'hidden'
+        005.008/mlx_ep_progress:
+            - 'mlx_ep_progress'
+        005.009/mlx_tagged_recvms:
+            - 'mlx_tagged_recvmsg'
+        005.010/mlx_cq_progress:
+            - 'mlx_cq_progress'
+        005.011/ofi_cq_read:
+            - 'ofi_cq_read'
+        005.012/ofi_mutex_unlock_:
+            - 'ofi_mutex_unlock_noop'
+        005.013/util_peer_cq_clos:
+            - 'util_peer_cq_close'
+    006/libuct.so.0.0.0:
+        006.000/hidden:
+            - 'hidden'
+    007/libucp.so.0.0.0:
+        007.000/ucp_worker_progre:
+            - 'ucp_worker_progress'
+        007.001/ucp_tag_probe_nb:
+            - 'ucp_tag_probe_nb'
+    008/libuct_ib_mlx5.so.0.0.0:
+        008.000/hidden:
+            - 'hidden'
+    009/ld-linux-x86-64.so.2:
+        009.000/__tls_get_addr:
+            - '__tls_get_addr'

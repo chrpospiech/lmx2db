@@ -1,0 +1,1171 @@
+# ----------------------------------------------------------------------------
+#
+#       Lightweight MPI traces with eXtensions
+#
+#       LMX_trace summary output in YAML format.
+#
+#       This output is both human and machine readable.
+#
+# ----------------------------------------------------------------------------
+---
+base_data:
+    library_version:                         2.0.0.rc3
+    MPI_ranks:                                       8
+    collect_scope:            MPI_Init to MPI_Finalize
+# ----------------------------------------------------------------------------
+# The following is the file system type, the block size in KB
+# and the mount point of the execution directory.
+# ----------------------------------------------------------------------------
+    fstype:                                       GPFS
+    blocksize:                                    8192
+    mount_point:                     /gpfs/gpfs_de6000
+# ----------------------------------------------------------------------------
+# YAML tag      | Meaning
+# --------------|-------------------------------------------------------------
+# start_date    | UNIX time stamp in seconds at MPI_Init()
+# start_date_n  | UNIX time stamp in nanoseconds at MPI_Init()
+# stop_date     | UNIX time stamp in seconds at MPI_Finalize()
+# stop_date_n   | UNIX time stamp in nanoseconds at MPI_Finalize()
+# ----------------------------------------------------------------------------
+    start_date:                             1764250902
+    start_date_n:                            199871237
+    stop_date:                              1764250924
+    stop_date_n:                             701054844
+# ----------------------------------------------------------------------------
+#        Memory Usage and Times for each MPI Rank
+#
+# The following table lists the real, user and system time
+# and the memory high water marks for each MPI rank.
+# The times are given for the collect scope as specified
+# earlier in this file. Each time value is formatted with
+# four digits after the decimal point if the value is above
+# 0.001 and in scientific format otherwise.
+#
+# The rows of the table are sorted with respect to the elapsed
+# (or wall clock) time in ascending order.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the MPI rank as key, and the value being an array of
+# five numbers with indices 0,1,2,3,4
+# ----------------------------------------------------------------------------
+rank_summary:
+# ----------------------------------------------------------------------------
+#   MPI          elapsed          user        system     max_rss      peakVM
+#   rank        time [s]      time [s]      time [s]       [MiB]       [MiB]
+# ----------------------------------------------------------------------------
+    1:     [      22.5013,     702.9311,      16.9438,   1377.719,  20719.098 ]
+    2:     [      22.5013,     702.8628,      17.7361,   1444.668,  14977.434 ]
+    3:     [      22.5013,     702.5960,      19.4209,   1450.012,  26151.105 ]
+    4:     [      22.5013,     702.3734,      12.8040,   1388.520,  25635.656 ]
+    5:     [      22.5013,     701.5137,      13.0060,   1412.996,  23976.543 ]
+    7:     [      22.5013,     701.0590,      16.5932,   1438.969,  24695.738 ]
+    0:     [      22.5012,     704.0422,      13.7897,   1771.738,  22133.012 ]
+    6:     [      22.5012,     701.4739,      14.5690,   1439.453,  10304.848 ]
+# ----------------------------------------------------------------------------
+#        CPU Affinity Information across all MPI Ranks
+#
+# The system function sched_getaffinity() is used to query the CPU
+# affinity prior to MPI_Finalize(). The result is a bit mask with as
+# many bits as there are logical cores. The bits are set for those cores
+# where the MPI rank and all threads started from it are allowed to run.
+# To save space, the following output groups four adjacent bits into a
+# hexadecimal digit resulting in a string of HEX codes. This string may
+# be longer than the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+#
+# Each entry below is a keyword value pair with the MPI rank as key and
+# and array as value. The first array element with index 0 is the hostname,
+# the remaining array elements are created by chopping the string of HEX codes
+# into pieces of at most 80 charactes.
+#
+# The rows of the table are sorted with respect to the MPI rank
+# in ascending order.
+#
+# This array is printed in compact form, if it fits onto a sigle line. It is
+# printed with one array element per row with a preceeding hyphen otherwise.
+#
+# When reading from Python, use ''.join(<array>) to piece the HEX string together.
+# ----------------------------------------------------------------------------
+CPU_affinity:
+# ----------------------------------------------------------------------------
+# MPI rank    hostname    CPU affinity
+# ----------------------------------------------------------------------------
+    0:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - '00000000000000000000000000000000000000000000000000000000ffffffff000000'
+        - '00000000000000000000000000000000000000000000000007ffffffff'
+    1:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - '000000000000000000000000000000000000000000000000ffffffff00000000000000'
+        - '000000000000000000000000000000000000000003ffffffff00000002'
+    2:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - '0000000000000000000000000000000000000000ffffffff0000000000000000000000'
+        - '0000000000000000000000000000000001ffffffff0000000000000004'
+    3:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - '00000000000000000000000000000000ffffffff000000000000000000000000000000'
+        - '00000000000000000000000000ffffffff000000000000000000000008'
+    4:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - '000000000000000000000000ffffffff00000000000000000000000000000000000000'
+        - '000000000000000007ffffffff00000000000000000000000000000000'
+    5:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - '0000000000000000ffffffff0000000000000000000000000000000000000000000000'
+        - '0000000003ffffffff0000000200000000000000000000000000000000'
+    6:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - '00000000ffffffff000000000000000000000000000000000000000000000000000000'
+        - '01ffffffff000000000000000400000000000000000000000000000000'
+    7:
+        - 'gnr4343.hpc.eu.lenovo.com'
+        - 'ffffffff00000000000000000000000000000000000000000000000000000000ffffff'
+        - 'ff00000000000000000000000800000000000000000000000000000000'
+# ----------------------------------------------------------------------------
+#        Environment Variables on MPI Rank 0
+#
+# The value of an environment variable may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# Bash functions are excluded from this list of
+# environment variables.
+#
+# ----------------------------------------------------------------------------
+environ:
+    ADVISOR_2025_DIR:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/advisor/2025.2'
+    APM:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/advisor/2025.2/perfmode'
+        - 'ls'
+    BASH_ENV:
+        - '/usr/share/lmod/lmod/init/bash'
+    CCL_CONFIGURATION:
+        - 'cpu_gpu_dpcpp'
+    CCL_ROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ccl/2021.16'
+    CLASSPATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/share/java/'
+        - 'mpi.jar'
+    CMAKE_LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/lib:'
+        - '/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/lib:/hp'
+        - 'c/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/lib64'
+    CMAKE_PREFIX_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0:/hpc'
+        - '/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0:/hpc/base/E'
+        - 'asyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0:/hpc/base/EasyBuil'
+        - 'd/EL9-GNR/software/GCCcore/14.2.0:/hpc/base/EasyBuild/EL9-GNR/software'
+        - '/EasyBuild/5.1.1:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/20'
+        - '25.2/lib/cmake:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ippcp/20'
+        - '25.2:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ipp/2022.2:/gpfs/g'
+        - 'pfs_de6000/hpc/base/intel/intel2025.2.1/ishmem/1.4/lib/cmake/ishmem:/g'
+        - 'pfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dpl/2022.9/lib/cmake/oneD'
+        - 'PL:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dnnl/2025.2:/gpfs/gp'
+        - 'fs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2:/gpfs/gpfs_de60'
+        - '00/hpc/base/intel/intel2025.2.1/ccl/2021.16:/gpfs/gpfs_de6000/hpc/base'
+        - '/intel/intel2025.2.1/umf/0.11:/gpfs/gpfs_de6000/hpc/base/intel/intel20'
+        - '25.2.1/tbb/2022.2'
+    CMPLR_ROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2'
+    CPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/incl'
+        - 'ude:/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/inc'
+        - 'lude:/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/in'
+        - 'clude:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/inclu'
+        - 'de:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2/include:/'
+        - 'gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dnnl/2025.2/include:/gpf'
+        - 's/gpfs_de6000/hpc/base/intel/intel2025.2.1/dev-utilities/2025.2/includ'
+        - 'e:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ccl/2021.16/include:/'
+        - 'gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/umf/0.11/include'
+    CPLUS_INCLUDE_PATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2/include:/gpf'
+        - 's/gpfs_de6000/hpc/base/intel/intel2025.2.1/ippcp/2025.2/include:/gpfs/'
+        - 'gpfs_de6000/hpc/base/intel/intel2025.2.1/ipp/2022.2/include:/gpfs/gpfs'
+        - '_de6000/hpc/base/intel/intel2025.2.1/ishmem/1.4/include:/gpfs/gpfs_de6'
+        - '000/hpc/base/intel/intel2025.2.1/dpl/2022.9/include:/gpfs/gpfs_de6000/'
+        - 'hpc/base/intel/intel2025.2.1/dpcpp-ct/2025.2/include:/gpfs/gpfs_de6000'
+        - '/hpc/base/intel/intel2025.2.1/umf/0.11/include:/gpfs/gpfs_de6000/hpc/b'
+        - 'ase/intel/intel2025.2.1/tbb/2022.2/include'
+    CTT:
+        - '/hpc/base/ctt'
+    CTT_BASE:
+        - '/hpc/base'
+    C_INCLUDE_PATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2/include:/gpf'
+        - 's/gpfs_de6000/hpc/base/intel/intel2025.2.1/ippcp/2025.2/include:/gpfs/'
+        - 'gpfs_de6000/hpc/base/intel/intel2025.2.1/ipp/2022.2/include:/gpfs/gpfs'
+        - '_de6000/hpc/base/intel/intel2025.2.1/ishmem/1.4/include:/gpfs/gpfs_de6'
+        - '000/hpc/base/intel/intel2025.2.1/umf/0.11/include:/gpfs/gpfs_de6000/hp'
+        - 'c/base/intel/intel2025.2.1/tbb/2022.2/include'
+    DBUS_SESSION_BUS_ADDRESS:
+        - 'unix:path=/run/user/1234510321/bus'
+    DIAGUTIL_PATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/etc/com'
+        - 'piler/sys_check/sys_check.sh'
+    DNNLROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dnnl/2025.2'
+    DPCT_BUNDLE_ROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dpcpp-ct/2025.2'
+    DPL_ROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dpl/2022.9'
+    EASYBUILD_BUILDPATH:
+        - '/tmp/xcpospiech'
+    EASYBUILD_MODULE_NAMING_SCHEME:
+        - 'HierarchicalMNS'
+    EASYBUILD_PREFIX:
+        - '/hpc/base/EasyBuild/EL9-GNR'
+    EASYBUILD_SOURCEPATH:
+        - '/hpc/base/EasyBuild/sources'
+    EBDEVELBINUTILS:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/easy'
+        - 'build/Compiler-GCCcore-14.2.0-binutils-2.42-easybuild-devel'
+    EBDEVELEASYBUILD:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/EasyBuild/5.1.1/easybuild/Core-Ea'
+        - 'syBuild-5.1.1-easybuild-devel'
+    EBDEVELGCCCORE:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/easybuild/Core-GCC'
+        - 'core-14.2.0-easybuild-devel'
+    EBDEVELTCL:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/easybui'
+        - 'ld/Compiler-GCCcore-14.2.0-Tcl-8.6.16-easybuild-devel'
+    EBDEVELZLIB:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/easybui'
+        - 'ld/Compiler-GCCcore-14.2.0-zlib-1.3.1-easybuild-devel'
+    EBROOTBINUTILS:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0'
+    EBROOTEASYBUILD:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/EasyBuild/5.1.1'
+    EBROOTGCCCORE:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0'
+    EBROOTTCL:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0'
+    EBROOTZLIB:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0'
+    EBVERSIONBINUTILS:
+        - '2.42'
+    EBVERSIONEASYBUILD:
+        - '5.1.1'
+    EBVERSIONGCCCORE:
+        - '14.2.0'
+    EBVERSIONTCL:
+        - '8.6.16'
+    EBVERSIONZLIB:
+        - '1.3.1'
+    EB_INSTALLPYTHON:
+        - '/usr/bin/python3'
+    FI_HMEM:
+        - 'system'
+    FI_MLX_TLS:
+        - 'rc,sm,self'
+    FI_OFI_RXM_TAG_LAYOUT:
+        - 'regular'
+    FI_OFI_RXM_USE_HASH:
+        - '1'
+    FI_PROVIDER_PATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/opt/mpi/lib'
+        - 'fabric/lib/prov:/usr/lib64/libfabric'
+    FI_PSM2_DELAY:
+        - '0'
+    FI_PSM2_INJECT_SIZE:
+        - '32768'
+    FI_PSM2_LOCK_LEVEL:
+        - '0'
+    FI_PSM3_DELAY:
+        - '0'
+    FI_PSM3_INJECT_SIZE:
+        - '32768'
+    FI_PSM3_LOCK_LEVEL:
+        - '0'
+    FI_PSM3_UUID:
+        - 'de6f0300-8820-35ac-9344-06009027f35c'
+    FI_PSM_TAGGED_RMA:
+        - '0'
+    FI_UNIVERSE_SIZE:
+        - '8'
+    FPATH:
+        - '/usr/share/lmod/lmod/init/ksh_funcs'
+    GDB_INFO:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/2025.2/share/i'
+        - 'nfo'
+    GFORTRAN_UNBUFFERED_PRECONNECTED:
+        - 'y'
+    HFI_NO_CPUAFFINITY:
+        - '1'
+    HISTCONTROL:
+        - 'ignoredups'
+    HISTSIZE:
+        - '1000'
+    HOME:
+        - '/home/xcpospiech'
+    HOSTNAME:
+        - 'gnr4343.hpc.eu.lenovo.com'
+    HYDRA_BSTRAP_DEBUG:
+        - '0'
+    HYDRA_BSTRAP_DOWNSTREAM_CONTROL:
+        - ''
+    HYDRA_BSTRAP_DOWNSTREAM_HOSTS:
+        - ''
+    HYDRA_BSTRAP_DOWNSTREAM_PID:
+        - ''
+    HYDRA_BSTRAP_DOWNSTREAM_STDERR:
+        - ''
+    HYDRA_BSTRAP_DOWNSTREAM_STDOUT:
+        - ''
+    HYDRA_BSTRAP_LAUNCHER:
+        - 'ssh'
+    HYDRA_BSTRAP_LOCALHOST:
+        - 'gnr4343.hpc.eu.lenovo.com'
+    HYDRA_BSTRAP_NODE_ID:
+        - '0'
+    HYDRA_BSTRAP_NUM_DOWNSTREAM_PROXIES:
+        - '0'
+    HYDRA_BSTRAP_NUM_LAUNCHES:
+        - '-1'
+    HYDRA_BSTRAP_PGID:
+        - '0'
+    HYDRA_BSTRAP_PROXY_ID:
+        - '0'
+    HYDRA_BSTRAP_SUBTREE_SIZE:
+        - '1'
+    HYDRA_BSTRAP_TREE_WIDTH:
+        - '16'
+    HYDRA_BSTRAP_UPSTREAM_FD:
+        - '7'
+    HYDRA_IP_VERSION:
+        - '2'
+    HYDRA_LAUNCH_TYPE:
+        - '2'
+    INFOPATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/2025.2/share/i'
+        - 'nfo'
+    INTEL_PYTHONHOME:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/2025.2/opt/deb'
+        - 'ugger'
+    IPPCP_TARGET_ARCH:
+        - 'intel64'
+    IPPCRYPTOROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ippcp/2025.2'
+    IPPROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ipp/2022.2'
+    IPP_TARGET_ARCH:
+        - 'intel64'
+    ISHMEM_ROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ishmem/1.4'
+    I_MPI_BIND_WIN_ALLOCATE:
+        - 'localalloc'
+    I_MPI_HYDRA_TOPOLIB:
+        - 'ipl2'
+    I_MPI_HYDRA_UUID:
+        - 'de6f0300-8820-35ac-9344-06009027f35c'
+    I_MPI_INFO_BRAND:
+        - 'Intel(R) Xeon(R) 6980P'
+    I_MPI_INFO_CACHE1:
+        - '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26'
+        - ',27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,'
+        - '50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,7'
+        - '3,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96'
+        - ',97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,'
+        - '115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,13'
+        - '2,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,'
+        - '150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,16'
+        - '7,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,'
+        - '185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,20'
+        - '2,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,'
+        - '220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,23'
+        - '7,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,'
+        - '255,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,2'
+        - '5,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48'
+        - ',49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,'
+        - '72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,9'
+        - '5,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,'
+        - '114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,13'
+        - '1,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,'
+        - '149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,16'
+        - '6,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,'
+        - '184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,20'
+        - '1,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,'
+        - '219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,23'
+        - '6,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,'
+        - '254,255'
+    I_MPI_INFO_CACHE2:
+        - '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26'
+        - ',27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,'
+        - '50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,7'
+        - '3,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96'
+        - ',97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,'
+        - '115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,13'
+        - '2,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,'
+        - '150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,16'
+        - '7,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,'
+        - '185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,20'
+        - '2,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,'
+        - '220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,23'
+        - '7,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,'
+        - '255,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,2'
+        - '5,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48'
+        - ',49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,'
+        - '72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,9'
+        - '5,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,'
+        - '114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,13'
+        - '1,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,'
+        - '149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,16'
+        - '6,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,'
+        - '184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,20'
+        - '1,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,'
+        - '219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,23'
+        - '6,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,'
+        - '254,255'
+    I_MPI_INFO_CACHE3:
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,'
+        - '2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,'
+        - '3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,'
+        - '4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,'
+        - '4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,'
+        - '5,5,5,5,5,5,5,5,5,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,'
+        - '2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,'
+        - '3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,'
+        - '3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,'
+        - '4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,'
+        - '5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5'
+    I_MPI_INFO_CACHES:
+        - '3'
+    I_MPI_INFO_CACHE_SHARE:
+        - '2,2,512'
+    I_MPI_INFO_CACHE_SIZE:
+        - '49152,2097152,528482304'
+    I_MPI_INFO_CORE:
+        - '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26'
+        - ',27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,64,65,66,67,68,69,70,'
+        - '71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,9'
+        - '4,95,96,97,98,99,100,101,102,103,104,105,106,128,129,130,131,132,133,1'
+        - '34,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151'
+        - ',152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,1'
+        - '69,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25'
+        - ',26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,64,65,66,67,68,69,'
+        - '70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,9'
+        - '3,94,95,96,97,98,99,100,101,102,103,104,105,106,128,129,130,131,132,13'
+        - '3,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,'
+        - '151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,16'
+        - '8,169,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24'
+        - ',25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,64,65,66,67,68,'
+        - '69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,9'
+        - '2,93,94,95,96,97,98,99,100,101,102,103,104,105,106,128,129,130,131,132'
+        - ',133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,1'
+        - '50,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167'
+        - ',168,169,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23'
+        - ',24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,64,65,66,67,'
+        - '68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,9'
+        - '1,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,128,129,130,131,'
+        - '132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,14'
+        - '9,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,'
+        - '167,168,169'
+    I_MPI_INFO_C_NAME:
+        - 'Unknown'
+    I_MPI_INFO_DESC:
+        - '1342177280'
+    I_MPI_INFO_FLGB:
+        - '-205539345'
+    I_MPI_INFO_FLGC:
+        - '2147417087'
+    I_MPI_INFO_FLGCEXT:
+        - '-79593474'
+    I_MPI_INFO_FLGD:
+        - '-1075053569'
+    I_MPI_INFO_FLGDEXT:
+        - '-2276302'
+    I_MPI_INFO_LCPU:
+        - '512'
+    I_MPI_INFO_MODE:
+        - '775'
+    I_MPI_INFO_NC:
+        - '256'
+    I_MPI_INFO_NP:
+        - '2'
+    I_MPI_INFO_NUMA_NODE_MAP:
+        - ',mlx5_0:0'
+    I_MPI_INFO_NUMA_NODE_NUM:
+        - '6'
+    I_MPI_INFO_PACK:
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1'
+    I_MPI_INFO_SERIAL:
+        - '0000'
+    I_MPI_INFO_SIGN:
+        - '657105'
+    I_MPI_INFO_STATE:
+        - '0'
+    I_MPI_INFO_THREAD:
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'
+        - '0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'
+        - '1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1'
+    I_MPI_INFO_VEND:
+        - '1'
+    I_MPI_INTERNAL_MEM_POLICY:
+        - 'default'
+    I_MPI_MPIRUN:
+        - 'mpirun'
+    I_MPI_PIN_INFO:
+        - '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26'
+        - ',27,28,29,30,31,256,257,258,259,260,261,262,263,264,265,266,267,268,26'
+        - '9,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,'
+        - '287'
+    I_MPI_PIN_MAPPING:
+        - '8:0 0,1 32,2 64,3 96,4 128,5 160,6 192,7 224'
+    I_MPI_RETURN_WIN_MEM_NUMA:
+        - '0'
+    I_MPI_ROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16'
+    LANG:
+        - 'C.UTF-8'
+    LD_LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/lib:'
+        - '/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/lib:/hp'
+        - 'c/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/lib:/hpc/b'
+        - 'ase/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/lib64:/gpfs/gpfs_de6000/'
+        - 'hpc/base/intel/intel2025.2.1/mpi/2021.16/opt/mpi/libfabric/lib:/gpfs/g'
+        - 'pfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/lib:/gpfs/gpfs_de6'
+        - '000/hpc/base/intel/intel2025.2.1/mkl/2025.2/lib:/gpfs/gpfs_de6000/hpc/'
+        - 'base/intel/intel2025.2.1/ippcp/2025.2/lib:/gpfs/gpfs_de6000/hpc/base/i'
+        - 'ntel/intel2025.2.1/ipp/2022.2/lib:/gpfs/gpfs_de6000/hpc/base/intel/int'
+        - 'el2025.2.1/ishmem/1.4/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2'
+        - '.1/dnnl/2025.2/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debu'
+        - 'gger/2025.2/opt/debugger/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel202'
+        - '5.2.1/ccl/2021.16/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/u'
+        - 'mf/0.11/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/20'
+        - '25.2/opt/compiler/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/c'
+        - 'ompiler/2025.2/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/tbb/'
+        - '2022.2/lib'
+    LD_PRELOAD:
+        - '/home/xcpospiech/bench/4paper/lmxtrace_build_intel/lmx_trace-2.0.0.rc3'
+        - '/install_intel/lib/libmpitrace_lite.so'
+    LESSOPEN:
+        - '||/usr/bin/lesspipe.sh %s'
+    LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/lib:'
+        - '/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/lib:/hp'
+        - 'c/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/lib:/hpc/b'
+        - 'ase/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/lib64:/hpc/base/EasyBuil'
+        - 'd/EL9-GNR/software/GCCcore/14.2.0/lib:/gpfs/gpfs_de6000/hpc/base/intel'
+        - '/intel2025.2.1/mpi/2021.16/opt/mpi/libfabric/lib:/gpfs/gpfs_de6000/hpc'
+        - '/base/intel/intel2025.2.1/mpi/2021.16/lib:/gpfs/gpfs_de6000/hpc/base/i'
+        - 'ntel/intel2025.2.1/mkl/2025.2/lib:/gpfs/gpfs_de6000/hpc/base/intel/int'
+        - 'el2025.2.1/ippcp/2025.2/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025'
+        - '.2.1/ipp/2022.2/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ish'
+        - 'mem/1.4/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dnnl/2025.2'
+        - '/lib:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/li'
+        - 'b:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ccl/2021.16/lib:/gpfs'
+        - '/gpfs_de6000/hpc/base/intel/intel2025.2.1/umf/0.11/lib:/gpfs/gpfs_de60'
+        - '00/hpc/base/intel/intel2025.2.1/tbb/2022.2/lib'
+    LMOD_CMD:
+        - '/usr/share/lmod/lmod/libexec/lmod'
+    LMOD_DIR:
+        - '/usr/share/lmod/lmod/libexec'
+    LMOD_PACKAGE_PATH:
+        - '/hpc/base/ctt/bin/setup_modules.d'
+    LMOD_PKG:
+        - '/usr/share/lmod/lmod'
+    LMOD_ROOT:
+        - '/usr/share/lmod'
+    LMOD_SETTARG_FULL_SUPPORT:
+        - 'no'
+    LMOD_SHORT_TIME:
+        - '86400'
+    LMOD_VERSION:
+        - '8.7.65'
+    LMOD_sys:
+        - 'Linux'
+    LMX_EVENTLIST:
+        - 'PAPI_TOT_INS,PAPI_TOT_CYC'
+    LMX_IMBALANCE:
+        - '1'
+    LMX_INTERVAL:
+        - '20'
+    LMX_ITIMERPROF:
+        - '1'
+    LOADEDMODULES:
+        - 'intel-compilers:tbb/2022.2:compiler-rt/2025.2.1:umf/0.11.0:advisor/202'
+        - '5.2:ccl/2021.16.1:compiler-intel-llvm/2025.2.1:compiler/2025.2.1:debug'
+        - 'ger/2025.2.0:dev-utilities/2025.2.0:dnnl/3.8.1:dpct/2025.2.0:dpl/2022.'
+        - '9:ishmem/1.3.0:intel_ipp_intel64/2022.2:intel_ippcp_intel64/2025.2:mkl'
+        - '/2025.2:mpi/2021.16:vtune/2025.4:intel2025.2.1:Prefix/Production:eb-en'
+        - 'v:EasyBuild/5.1.1:GCCcore/14.2.0:zlib/1.3.1:Tcl/8.6.16:binutils/2.42'
+    LOGNAME:
+        - 'xcpospiech'
+    LS_COLORS:
+        - 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd'
+        - '=40;33;01:or=40;31;01:mi=01;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:'
+        - 'ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=0'
+        - '1;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tl'
+        - 'z=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz'
+        - '=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst='
+        - '01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.t'
+        - 'z=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.'
+        - 'sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31'
+        - ':*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31'
+        - ':*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif'
+        - '=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.x'
+        - 'bm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:'
+        - '*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01'
+        - ';35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp'
+        - '4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.'
+        - 'wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:'
+        - '*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:'
+        - '*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;3'
+        - '6:*.au=01;36:*.flac=01;36:*.m4a=01;36:*.mid=01;36:*.midi=01;36:*.mka=0'
+        - '1;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.oga='
+        - '01;36:*.opus=01;36:*.spx=01;36:*.xspf=01;36:'
+    MAIL:
+        - '/var/spool/mail/xcpospiech'
+    MANPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/shar'
+        - 'e/man:/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/s'
+        - 'hare/man:/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.'
+        - '0/man:/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/s'
+        - 'hare/man:/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/share/man'
+        - ':/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/share/man:'
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/2025.2/share/m'
+        - 'an:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/shar'
+        - 'e/man:/usr/share/lmod/lmod/share/man::'
+    MKLROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2'
+    MODULEPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/modules/all/Compiler/GCCcore/14.2.0:/hpc/b'
+        - 'ase/EasyBuild/EL9-GNR/modules/all/Core:/hpc/base/EasyBuild/easybuild/m'
+        - 'odules/all/Core:/hpc/base/intel/modules/intel2025.2.1:/hpc/base/intel/'
+        - 'modules/mpi:/hpc/base/intel/modules/meta:/etc/modulefiles:/usr/share/m'
+        - 'odulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/u'
+        - 'sr/share/lmod/lmod/modulefiles/Core:/hpc/base/ctt/modulefiles/ctt'
+    MODULEPATH_ROOT:
+        - '/usr/share/modulefiles'
+    MODULESHOME:
+        - '/usr/share/lmod/lmod'
+    MOTD_SHOWN:
+        - 'pam'
+    MPI_LOCALNRANKS:
+        - '8'
+    MPI_LOCALRANKID:
+        - '0'
+    NAMD:
+        - '/home/xcpospiech/bench/4paper/namd_intel/NAMD_3.0.2_Source/Linux-AVX51'
+        - '2-icx-ce/'
+    NLSPATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/lib/com'
+        - 'piler/locale/%l_%t/%N'
+    OCL_ICD_FILENAMES:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/lib/lib'
+        - 'intelocl.so'
+    OLDPWD:
+        - '/home/xcpospiech/bench/4paper/namd_intel/run_0002'
+    PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/bin:'
+        - '/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/bin:/hp'
+        - 'c/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/bin:/hpc/base/EasyBui'
+        - 'ld/EL9-GNR/software/EasyBuild/5.1.1/bin:/hpc/base/ctt/tools/python_too'
+        - 'ls/tool2ods:/hpc/base/ctt/tools/python_tools/postp2sql:/hpc/base/ctt/b'
+        - 'in:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/vtune/2025.4/bin64:/'
+        - 'gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/opt/mpi/libf'
+        - 'abric/bin:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/b'
+        - 'in:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dpcpp-ct/2025.2/bin:'
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dev-utilities/2025.2/bi'
+        - 'n:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/2025.2/bin:/'
+        - 'gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/bin:/gpf'
+        - 's/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/bin/compile'
+        - 'r:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/advisor/2025.2/bin64:'
+        - '/home/xcpospiech/.julia/bin:/home/xcpospiech/.local/bin:/home/xcpospie'
+        - 'ch/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin'
+    PKG_CONFIG_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/lib/pkg'
+        - 'config:/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/'
+        - 'lib/pkgconfig:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.'
+        - '2/lib/pkgconfig:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ippcp/2'
+        - '025.2/lib/pkgconfig:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ish'
+        - 'mem/1.4/lib/pkgconfig:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/d'
+        - 'pl/2022.9/lib/pkgconfig:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1'
+        - '/dnnl/2025.2/lib/pkgconfig:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.'
+        - '2.1/compiler/2025.2/lib/pkgconfig:/gpfs/gpfs_de6000/hpc/base/intel/int'
+        - 'el2025.2.1/tbb/2022.2/lib/pkgconfig'
+    PMI_FD:
+        - '9'
+    PMI_RANK:
+        - '0'
+    PMI_SIZE:
+        - '8'
+    PREFIX_BUILDER:
+        - 'EasyBuild'
+    PREFIX_OLD_FULL_PREFIX:
+        - '/hpc/base/EasyBuild/EL9-GNR'
+    PSM2_BOUNCE_SZ:
+        - '8192'
+    PSM2_MULTI_EP:
+        - '0'
+    PSM3_BOUNCE_SZ:
+        - '8192'
+    PSM3_HAL:
+        - 'verbs'
+    PSM3_MULTI_EP:
+        - '0'
+    PSM3_NO_CPUAFFINITY:
+        - '1'
+    PWD:
+        - '/home/xcpospiech/bench/4paper/namd_intel/run_0001'
+    PYTHONPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/EasyBuild/5.1.1/lib/python3.9/sit'
+        - 'e-packages:/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/advisor/2025'
+        - '.2/pythonapi'
+    SHELL:
+        - '/bin/bash'
+    SHLVL:
+        - '2'
+    SSH_CLIENT:
+        - '172.30.83.43 37896 22'
+    SSH_CONNECTION:
+        - '172.30.83.43 37896 172.30.83.43 22'
+    SSH_TTY:
+        - '/dev/pts/1'
+    TBBROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/tbb/2022.2'
+    TERM:
+        - 'xterm-256color'
+    UCX_HANDLE_ERRORS:
+        - 'none'
+    UCX_LOG_LEVEL:
+        - 'ERROR'
+    UCX_NET_DEVICES:
+        - 'mlx5_0:1'
+    UCX_NUM_EPS:
+        - '8'
+    UCX_NUM_PPN:
+        - '8'
+    UCX_TLS:
+        - 'rc,sm,self'
+    UCX_WARN_UNUSED_ENV_VARS:
+        - 'n'
+    UMF_ROOT:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/umf/0.11'
+    USER:
+        - 'xcpospiech'
+    VTUNE_PROFILER_2025_DIR:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/vtune/2025.4'
+    VTUNE_PROFILER_DIR:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/vtune/2025.4'
+    XDG_DATA_DIRS:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/shar'
+        - 'e:/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/share'
+        - ':/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/share:'
+        - '/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/share:/home/xcposp'
+        - 'iech/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share'
+        - ':/usr/local/share:/usr/share'
+    XDG_RUNTIME_DIR:
+        - '/run/user/1234510321'
+    XDG_SESSION_CLASS:
+        - 'user'
+    XDG_SESSION_ID:
+        - '6'
+    XDG_SESSION_TYPE:
+        - 'tty'
+    _:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/bin/mpiexec'
+        - '.hydra'
+    _LMFILES_:
+        - '/hpc/base/ctt/modulefiles/ctt/intel-compilers.lua:/hpc/base/intel/modu'
+        - 'les/intel2025.2.1/tbb/2022.2:/hpc/base/intel/modules/intel2025.2.1/com'
+        - 'piler-rt/2025.2.1:/hpc/base/intel/modules/intel2025.2.1/umf/0.11.0:/hp'
+        - 'c/base/intel/modules/intel2025.2.1/advisor/2025.2:/hpc/base/intel/modu'
+        - 'les/intel2025.2.1/ccl/2021.16.1:/hpc/base/intel/modules/intel2025.2.1/'
+        - 'compiler-intel-llvm/2025.2.1:/hpc/base/intel/modules/intel2025.2.1/com'
+        - 'piler/2025.2.1:/hpc/base/intel/modules/intel2025.2.1/debugger/2025.2.0'
+        - ':/hpc/base/intel/modules/intel2025.2.1/dev-utilities/2025.2.0:/hpc/bas'
+        - 'e/intel/modules/intel2025.2.1/dnnl/3.8.1:/hpc/base/intel/modules/intel'
+        - '2025.2.1/dpct/2025.2.0:/hpc/base/intel/modules/intel2025.2.1/dpl/2022.'
+        - '9:/hpc/base/intel/modules/intel2025.2.1/ishmem/1.3.0:/hpc/base/intel/m'
+        - 'odules/intel2025.2.1/intel_ipp_intel64/2022.2:/hpc/base/intel/modules/'
+        - 'intel2025.2.1/intel_ippcp_intel64/2025.2:/hpc/base/intel/modules/intel'
+        - '2025.2.1/mkl/2025.2:/hpc/base/intel/modules/intel2025.2.1/mpi/2021.16:'
+        - '/hpc/base/intel/modules/intel2025.2.1/vtune/2025.4:/hpc/base/intel/mod'
+        - 'ules/meta/intel2025.2.1.lua:/hpc/base/ctt/modulefiles/ctt/Prefix/Produ'
+        - 'ction.lua:/hpc/base/ctt/modulefiles/ctt/eb-env.lua:/hpc/base/EasyBuild'
+        - '/EL9-GNR/modules/all/Core/EasyBuild/5.1.1.lua:/hpc/base/EasyBuild/EL9-'
+        - 'GNR/modules/all/Core/GCCcore/14.2.0.lua:/hpc/base/EasyBuild/EL9-GNR/mo'
+        - 'dules/all/Compiler/GCCcore/14.2.0/zlib/1.3.1.lua:/hpc/base/EasyBuild/E'
+        - 'L9-GNR/modules/all/Compiler/GCCcore/14.2.0/Tcl/8.6.16.lua:/hpc/base/Ea'
+        - 'syBuild/EL9-GNR/modules/all/Compiler/GCCcore/14.2.0/binutils/2.42.lua'
+    _ModuleTable001_:
+        - 'X01vZHVsZVRhYmxlXyA9IHsKTVR2ZXJzaW9uID0gMywKY19yZWJ1aWxkVGltZSA9IGZhbH'
+        - 'NlLApjX3Nob3J0VGltZSA9IGZhbHNlLApkZXB0aFQgPSB7fSwKZmFtaWx5ID0ge30sCm1U'
+        - 'ID0gewpFYXN5QnVpbGQgPSB7CmZuID0gIi9ocGMvYmFzZS9FYXN5QnVpbGQvRUw5LUdOUi'
+        - '9tb2R1bGVzL2FsbC9Db3JlL0Vhc3lCdWlsZC81LjEuMS5sdWEiLApmdWxsTmFtZSA9ICJF'
+        - 'YXN5QnVpbGQvNS4xLjEiLApsb2FkT3JkZXIgPSAyMywKcHJvcFQgPSB7fSwKc3RhY2tEZX'
+        - 'B0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJFYXN5QnVpbGQiLAp3'
+        - 'ViA9ICIwMDAwMDAwMDUuMDAwMDAwMDAxLjAwMDAwMDAwMS4qemZpbmFsIiwKfSwKR0NDY2'
+        - '9yZSA9IHsKYWN0aW9uQSA9'
+    _ModuleTable002_:
+        - 'IHsKW1twcmVwZW5kX3BhdGgoIk1PRFVMRVBBVEgiLCIvaHBjL2Jhc2UvRWFzeUJ1aWxkL0'
+        - 'VMOS1HTlIvbW9kdWxlcy9hbGwvQ29tcGlsZXIvR0NDY29yZS8xNC4yLjAiKV1dLAp9LApm'
+        - 'biA9ICIvaHBjL2Jhc2UvRWFzeUJ1aWxkL0VMOS1HTlIvbW9kdWxlcy9hbGwvQ29yZS9HQ0'
+        - 'Njb3JlLzE0LjIuMC5sdWEiLApmdWxsTmFtZSA9ICJHQ0Njb3JlLzE0LjIuMCIsCmxvYWRP'
+        - 'cmRlciA9IDI0LApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMCwKc3RhdHVzID0gImFjdG'
+        - 'l2ZSIsCnVzZXJOYW1lID0gIkdDQ2NvcmUvMTQuMi4wIiwKd1YgPSAiMDAwMDAwMDE0LjAw'
+        - 'MDAwMDAwMi4qemZpbmFsIiwKfSwKUHJlZml4ID0gewphY3Rpb25BID0gewpbW3ByZXBlbm'
+        - 'RfcGF0aCgiTU9EVUxFUEFU'
+    _ModuleTable003_:
+        - 'SCIsIi9ocGMvYmFzZS9FYXN5QnVpbGQvRUw5LUdOUi9tb2R1bGVzL2FsbC9Db3JlIildXS'
+        - 'wKfSwKZm4gPSAiL2hwYy9iYXNlL2N0dC9tb2R1bGVmaWxlcy9jdHQvUHJlZml4L1Byb2R1'
+        - 'Y3Rpb24ubHVhIiwKZnVsbE5hbWUgPSAiUHJlZml4L1Byb2R1Y3Rpb24iLApsb2FkT3JkZX'
+        - 'IgPSAyMSwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDEsCnN0YXR1cyA9ICJhY3RpdmUi'
+        - 'LAp1c2VyTmFtZSA9ICJQcmVmaXgvUHJvZHVjdGlvbiIsCndWID0gIl5wcm9kdWN0aW9uLi'
+        - 'p6ZmluYWwiLAp9LApUY2wgPSB7CmRlcFQgPSB7CmRlcEEgPSB7CnsKc24gPSAiemxpYiIs'
+        - 'CnZlcnNpb24gPSB7CmtpbmQgPSAiZml4ZWQiLAp2YWx1ZSA9ICIxLjMuMSIsCn0sCn0sCn'
+        - '0sCn0sCmZuID0gIi9ocGMv'
+    _ModuleTable004_:
+        - 'YmFzZS9FYXN5QnVpbGQvRUw5LUdOUi9tb2R1bGVzL2FsbC9Db21waWxlci9HQ0Njb3JlLz'
+        - 'E0LjIuMC9UY2wvOC42LjE2Lmx1YSIsCmZ1bGxOYW1lID0gIlRjbC84LjYuMTYiLApsb2Fk'
+        - 'T3JkZXIgPSAyNiwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDAsCnN0YXR1cyA9ICJhY3'
+        - 'RpdmUiLAp1c2VyTmFtZSA9ICJUY2wvOC42LjE2IiwKd1YgPSAiMDAwMDAwMDA4LjAwMDAw'
+        - 'MDAwNi4wMDAwMDAwMTYuKnpmaW5hbCIsCn0sCmFkdmlzb3IgPSB7CmZuID0gIi9ocGMvYm'
+        - 'FzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLjEvYWR2aXNvci8yMDI1LjIiLApmdWxs'
+        - 'TmFtZSA9ICJhZHZpc29yLzIwMjUuMiIsCmxvYWRPcmRlciA9IDUsCnByb3BUID0ge30sCn'
+        - 'N0YWNrRGVwdGggPSAxLApz'
+    _ModuleTable005_:
+        - 'dGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiYWR2aXNvciIsCndWID0gIjAwMDAwMj'
+        - 'AyNS4wMDAwMDAwMDIuKnpmaW5hbCIsCn0sCmJpbnV0aWxzID0gewpkZXBUID0gewpkZXBB'
+        - 'ID0gewp7CnNuID0gInpsaWIiLAp2ZXJzaW9uID0gewpraW5kID0gImZpeGVkIiwKdmFsdW'
+        - 'UgPSAiMS4zLjEiLAp9LAp9LAp9LAp9LApmbiA9ICIvaHBjL2Jhc2UvRWFzeUJ1aWxkL0VM'
+        - 'OS1HTlIvbW9kdWxlcy9hbGwvQ29tcGlsZXIvR0NDY29yZS8xNC4yLjAvYmludXRpbHMvMi'
+        - '40Mi5sdWEiLApmdWxsTmFtZSA9ICJiaW51dGlscy8yLjQyIiwKbG9hZE9yZGVyID0gMjcs'
+        - 'CnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAwLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck'
+        - '5hbWUgPSAiYmludXRpbHMi'
+    _ModuleTable006_:
+        - 'LAp3ViA9ICIwMDAwMDAwMDIuMDAwMDAwMDQyLip6ZmluYWwiLAp9LApjY2wgPSB7CmZuID'
+        - '0gIi9ocGMvYmFzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLjEvY2NsLzIwMjEuMTYu'
+        - 'MSIsCmZ1bGxOYW1lID0gImNjbC8yMDIxLjE2LjEiLApsb2FkT3JkZXIgPSA2LApwcm9wVC'
+        - 'A9IHt9LApzdGFja0RlcHRoID0gMSwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0g'
+        - 'ImNjbCIsCndWID0gIjAwMDAwMjAyMS4wMDAwMDAwMTYuMDAwMDAwMDAxLip6ZmluYWwiLA'
+        - 'p9LApjb21waWxlciA9IHsKZm4gPSAiL2hwYy9iYXNlL2ludGVsL21vZHVsZXMvaW50ZWwy'
+        - 'MDI1LjIuMS9jb21waWxlci8yMDI1LjIuMSIsCmZ1bGxOYW1lID0gImNvbXBpbGVyLzIwMj'
+        - 'UuMi4xIiwKbG9hZE9yZGVy'
+    _ModuleTable007_:
+        - 'ID0gOCwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDEsCnN0YXR1cyA9ICJhY3RpdmUiLA'
+        - 'p1c2VyTmFtZSA9ICJjb21waWxlciIsCndWID0gIjAwMDAwMjAyNS4wMDAwMDAwMDIuMDAw'
+        - 'MDAwMDAxLip6ZmluYWwiLAp9LApbImNvbXBpbGVyLWludGVsLWxsdm0iXSA9IHsKZm4gPS'
+        - 'AiL2hwYy9iYXNlL2ludGVsL21vZHVsZXMvaW50ZWwyMDI1LjIuMS9jb21waWxlci1pbnRl'
+        - 'bC1sbHZtLzIwMjUuMi4xIiwKZnVsbE5hbWUgPSAiY29tcGlsZXItaW50ZWwtbGx2bS8yMD'
+        - 'I1LjIuMSIsCmxvYWRPcmRlciA9IDcsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAxLApz'
+        - 'dGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiY29tcGlsZXItaW50ZWwtbGx2bSIsCn'
+        - 'dWID0gIjAwMDAwMjAyNS4w'
+    _ModuleTable008_:
+        - 'MDAwMDAwMDIuMDAwMDAwMDAxLip6ZmluYWwiLAp9LApbImNvbXBpbGVyLXJ0Il0gPSB7Cm'
+        - 'ZuID0gIi9ocGMvYmFzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLjEvY29tcGlsZXIt'
+        - 'cnQvMjAyNS4yLjEiLApmdWxsTmFtZSA9ICJjb21waWxlci1ydC8yMDI1LjIuMSIsCmxvYW'
+        - 'RPcmRlciA9IDMsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPSAiYWN0'
+        - 'aXZlIiwKdXNlck5hbWUgPSAiY29tcGlsZXItcnQiLAp3ViA9ICIwMDAwMDIwMjUuMDAwMD'
+        - 'AwMDAyLjAwMDAwMDAwMS4qemZpbmFsIiwKfSwKZGVidWdnZXIgPSB7CmZuID0gIi9ocGMv'
+        - 'YmFzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLjEvZGVidWdnZXIvMjAyNS4yLjAiLA'
+        - 'pmdWxsTmFtZSA9ICJkZWJ1'
+    _ModuleTable009_:
+        - 'Z2dlci8yMDI1LjIuMCIsCmxvYWRPcmRlciA9IDksCnByb3BUID0ge30sCnN0YWNrRGVwdG'
+        - 'ggPSAxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiZGVidWdnZXIiLAp3ViA9'
+        - 'ICIwMDAwMDIwMjUuMDAwMDAwMDAyLip6ZmluYWwiLAp9LApbImRldi11dGlsaXRpZXMiXS'
+        - 'A9IHsKZm4gPSAiL2hwYy9iYXNlL2ludGVsL21vZHVsZXMvaW50ZWwyMDI1LjIuMS9kZXYt'
+        - 'dXRpbGl0aWVzLzIwMjUuMi4wIiwKZnVsbE5hbWUgPSAiZGV2LXV0aWxpdGllcy8yMDI1Lj'
+        - 'IuMCIsCmxvYWRPcmRlciA9IDEwLApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMSwKc3Rh'
+        - 'dHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImRldi11dGlsaXRpZXMiLAp3ViA9ICIwMD'
+        - 'AwMDIwMjUuMDAwMDAwMDAy'
+    _ModuleTable010_:
+        - 'Lip6ZmluYWwiLAp9LApkbm5sID0gewpmbiA9ICIvaHBjL2Jhc2UvaW50ZWwvbW9kdWxlcy'
+        - '9pbnRlbDIwMjUuMi4xL2RubmwvMy44LjEiLApmdWxsTmFtZSA9ICJkbm5sLzMuOC4xIiwK'
+        - 'bG9hZE9yZGVyID0gMTEsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPS'
+        - 'AiYWN0aXZlIiwKdXNlck5hbWUgPSAiZG5ubCIsCndWID0gIjAwMDAwMDAwMy4wMDAwMDAw'
+        - 'MDguMDAwMDAwMDAxLip6ZmluYWwiLAp9LApkcGN0ID0gewpmbiA9ICIvaHBjL2Jhc2UvaW'
+        - '50ZWwvbW9kdWxlcy9pbnRlbDIwMjUuMi4xL2RwY3QvMjAyNS4yLjAiLApmdWxsTmFtZSA9'
+        - 'ICJkcGN0LzIwMjUuMi4wIiwKbG9hZE9yZGVyID0gMTIsCnByb3BUID0ge30sCnN0YWNrRG'
+        - 'VwdGggPSAxLApzdGF0dXMg'
+    _ModuleTable011_:
+        - 'PSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiZHBjdCIsCndWID0gIjAwMDAwMjAyNS4wMDAwMD'
+        - 'AwMDIuKnpmaW5hbCIsCn0sCmRwbCA9IHsKZm4gPSAiL2hwYy9iYXNlL2ludGVsL21vZHVs'
+        - 'ZXMvaW50ZWwyMDI1LjIuMS9kcGwvMjAyMi45IiwKZnVsbE5hbWUgPSAiZHBsLzIwMjIuOS'
+        - 'IsCmxvYWRPcmRlciA9IDEzLApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMSwKc3RhdHVz'
+        - 'ID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImRwbCIsCndWID0gIjAwMDAwMjAyMi4wMDAwMD'
+        - 'AwMDkuKnpmaW5hbCIsCn0sClsiZWItZW52Il0gPSB7CmFjdGlvbkEgPSB7CltbcHJlcGVu'
+        - 'ZF9wYXRoKCJNT0RVTEVQQVRIIiwiL2hwYy9iYXNlL0Vhc3lCdWlsZC9lYXN5YnVpbGQvbW'
+        - '9kdWxlcy9hbGwvQ29yZSIp'
+    _ModuleTable012_:
+        - 'XV0sCn0sCmZuID0gIi9ocGMvYmFzZS9jdHQvbW9kdWxlZmlsZXMvY3R0L2ViLWVudi5sdW'
+        - 'EiLApmdWxsTmFtZSA9ICJlYi1lbnYiLApsb2FkT3JkZXIgPSAyMiwKcHJvcFQgPSB7fSwK'
+        - 'c3RhY2tEZXB0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJlYi1lbn'
+        - 'YiLAp3ViA9ICJNLip6ZmluYWwiLAp9LApbImludGVsLWNvbXBpbGVycyJdID0gewphY3Rp'
+        - 'b25BID0gewpbW3ByZXBlbmRfcGF0aCgiTU9EVUxFUEFUSCIsIi9ocGMvYmFzZS9pbnRlbC'
+        - '9tb2R1bGVzL21ldGEiKV1dLCBbW3ByZXBlbmRfcGF0aCgiTU9EVUxFUEFUSCIsIi9ocGMv'
+        - 'YmFzZS9pbnRlbC9tb2R1bGVzL21waSIpXV0sCn0sCmZuID0gIi9ocGMvYmFzZS9jdHQvbW'
+        - '9kdWxlZmlsZXMvY3R0L2lu'
+    _ModuleTable013_:
+        - 'dGVsLWNvbXBpbGVycy5sdWEiLApmdWxsTmFtZSA9ICJpbnRlbC1jb21waWxlcnMiLApsb2'
+        - 'FkT3JkZXIgPSAxLApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMCwKc3RhdHVzID0gImFj'
+        - 'dGl2ZSIsCnVzZXJOYW1lID0gImludGVsLWNvbXBpbGVycyIsCndWID0gIk0uKnpmaW5hbC'
+        - 'IsCn0sClsiaW50ZWwyMDI1LjIuMSJdID0gewphY3Rpb25BID0gewpbW3ByZXBlbmRfcGF0'
+        - 'aCgiTU9EVUxFUEFUSCIsIi9ocGMvYmFzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLj'
+        - 'EiKV1dLAp9LApmbiA9ICIvaHBjL2Jhc2UvaW50ZWwvbW9kdWxlcy9tZXRhL2ludGVsMjAy'
+        - 'NS4yLjEubHVhIiwKZnVsbE5hbWUgPSAiaW50ZWwyMDI1LjIuMSIsCmxvYWRPcmRlciA9ID'
+        - 'IwLApwcm9wVCA9IHt9LApz'
+    _ModuleTable014_:
+        - 'dGFja0RlcHRoID0gMCwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImludGVsMj'
+        - 'AyNS4yLjEiLAp3ViA9ICJNLip6ZmluYWwiLAp9LAppbnRlbF9pcHBfaW50ZWw2NCA9IHsK'
+        - 'Zm4gPSAiL2hwYy9iYXNlL2ludGVsL21vZHVsZXMvaW50ZWwyMDI1LjIuMS9pbnRlbF9pcH'
+        - 'BfaW50ZWw2NC8yMDIyLjIiLApmdWxsTmFtZSA9ICJpbnRlbF9pcHBfaW50ZWw2NC8yMDIy'
+        - 'LjIiLApsb2FkT3JkZXIgPSAxNSwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDEsCnN0YX'
+        - 'R1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJpbnRlbF9pcHBfaW50ZWw2NCIsCndWID0g'
+        - 'IjAwMDAwMjAyMi4wMDAwMDAwMDIuKnpmaW5hbCIsCn0sCmludGVsX2lwcGNwX2ludGVsNj'
+        - 'QgPSB7CmZuID0gIi9ocGMv'
+    _ModuleTable015_:
+        - 'YmFzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLjEvaW50ZWxfaXBwY3BfaW50ZWw2NC'
+        - '8yMDI1LjIiLApmdWxsTmFtZSA9ICJpbnRlbF9pcHBjcF9pbnRlbDY0LzIwMjUuMiIsCmxv'
+        - 'YWRPcmRlciA9IDE2LApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMSwKc3RhdHVzID0gIm'
+        - 'FjdGl2ZSIsCnVzZXJOYW1lID0gImludGVsX2lwcGNwX2ludGVsNjQiLAp3ViA9ICIwMDAw'
+        - 'MDIwMjUuMDAwMDAwMDAyLip6ZmluYWwiLAp9LAppc2htZW0gPSB7CmZuID0gIi9ocGMvYm'
+        - 'FzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLjEvaXNobWVtLzEuMy4wIiwKZnVsbE5h'
+        - 'bWUgPSAiaXNobWVtLzEuMy4wIiwKbG9hZE9yZGVyID0gMTQsCnByb3BUID0ge30sCnN0YW'
+        - 'NrRGVwdGggPSAxLApzdGF0'
+    _ModuleTable016_:
+        - 'dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiaXNobWVtIiwKd1YgPSAiMDAwMDAwMDAxLj'
+        - 'AwMDAwMDAwMy4qemZpbmFsIiwKfSwKbWtsID0gewpmbiA9ICIvaHBjL2Jhc2UvaW50ZWwv'
+        - 'bW9kdWxlcy9pbnRlbDIwMjUuMi4xL21rbC8yMDI1LjIiLApmdWxsTmFtZSA9ICJta2wvMj'
+        - 'AyNS4yIiwKbG9hZE9yZGVyID0gMTcsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAxLApz'
+        - 'dGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAibWtsIiwKd1YgPSAiMDAwMDAyMDI1Lj'
+        - 'AwMDAwMDAwMi4qemZpbmFsIiwKfSwKbXBpID0gewpmbiA9ICIvaHBjL2Jhc2UvaW50ZWwv'
+        - 'bW9kdWxlcy9pbnRlbDIwMjUuMi4xL21waS8yMDIxLjE2IiwKZnVsbE5hbWUgPSAibXBpLz'
+        - 'IwMjEuMTYiLApsb2FkT3Jk'
+    _ModuleTable017_:
+        - 'ZXIgPSAxOCwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDEsCnN0YXR1cyA9ICJhY3Rpdm'
+        - 'UiLAp1c2VyTmFtZSA9ICJtcGkiLAp3ViA9ICIwMDAwMDIwMjEuMDAwMDAwMDE2Lip6Zmlu'
+        - 'YWwiLAp9LAp0YmIgPSB7CmZuID0gIi9ocGMvYmFzZS9pbnRlbC9tb2R1bGVzL2ludGVsMj'
+        - 'AyNS4yLjEvdGJiLzIwMjIuMiIsCmZ1bGxOYW1lID0gInRiYi8yMDIyLjIiLApsb2FkT3Jk'
+        - 'ZXIgPSAyLApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMSwKc3RhdHVzID0gImFjdGl2ZS'
+        - 'IsCnVzZXJOYW1lID0gInRiYiIsCndWID0gIjAwMDAwMjAyMi4wMDAwMDAwMDIuKnpmaW5h'
+        - 'bCIsCn0sCnVtZiA9IHsKZm4gPSAiL2hwYy9iYXNlL2ludGVsL21vZHVsZXMvaW50ZWwyMD'
+        - 'I1LjIuMS91bWYvMC4xMS4w'
+    _ModuleTable018_:
+        - 'IiwKZnVsbE5hbWUgPSAidW1mLzAuMTEuMCIsCmxvYWRPcmRlciA9IDQsCnByb3BUID0ge3'
+        - '0sCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAidW1m'
+        - 'IiwKd1YgPSAiMDAwMDAwMDAwLjAwMDAwMDAxMS4qemZpbmFsIiwKfSwKdnR1bmUgPSB7Cm'
+        - 'ZuID0gIi9ocGMvYmFzZS9pbnRlbC9tb2R1bGVzL2ludGVsMjAyNS4yLjEvdnR1bmUvMjAy'
+        - 'NS40IiwKZnVsbE5hbWUgPSAidnR1bmUvMjAyNS40IiwKbG9hZE9yZGVyID0gMTksCnByb3'
+        - 'BUID0ge30sCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUg'
+        - 'PSAidnR1bmUiLAp3ViA9ICIwMDAwMDIwMjUuMDAwMDAwMDA0Lip6ZmluYWwiLAp9LAp6bG'
+        - 'liID0gewpmbiA9ICIvaHBj'
+    _ModuleTable019_:
+        - 'L2Jhc2UvRWFzeUJ1aWxkL0VMOS1HTlIvbW9kdWxlcy9hbGwvQ29tcGlsZXIvR0NDY29yZS'
+        - '8xNC4yLjAvemxpYi8xLjMuMS5sdWEiLApmdWxsTmFtZSA9ICJ6bGliLzEuMy4xIiwKbG9h'
+        - 'ZE9yZGVyID0gMjUsCnByb3BUID0ge30sCnJlZl9jb3VudCA9IDIsCnN0YWNrRGVwdGggPS'
+        - 'AxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiemxpYi8xLjMuMSIsCndWID0g'
+        - 'IjAwMDAwMDAwMS4wMDAwMDAwMDMuMDAwMDAwMDAxLip6ZmluYWwiLAp9LAp9LAptcGF0aE'
+        - 'EgPSB7CiIvaHBjL2Jhc2UvRWFzeUJ1aWxkL0VMOS1HTlIvbW9kdWxlcy9hbGwvQ29tcGls'
+        - 'ZXIvR0NDY29yZS8xNC4yLjAiCiwgIi9ocGMvYmFzZS9FYXN5QnVpbGQvRUw5LUdOUi9tb2'
+        - 'R1bGVzL2FsbC9Db3JlIgos'
+    _ModuleTable020_:
+        - 'ICIvaHBjL2Jhc2UvRWFzeUJ1aWxkL2Vhc3lidWlsZC9tb2R1bGVzL2FsbC9Db3JlIgosIC'
+        - 'IvaHBjL2Jhc2UvaW50ZWwvbW9kdWxlcy9pbnRlbDIwMjUuMi4xIiwgIi9ocGMvYmFzZS9p'
+        - 'bnRlbC9tb2R1bGVzL21waSIKLCAiL2hwYy9iYXNlL2ludGVsL21vZHVsZXMvbWV0YSIsIC'
+        - 'IvZXRjL21vZHVsZWZpbGVzIiwgIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMiCiwgIi91c3Iv'
+        - 'c2hhcmUvbW9kdWxlZmlsZXMvTGludXgiLCAiL3Vzci9zaGFyZS9tb2R1bGVmaWxlcy9Db3'
+        - 'JlIgosICIvdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIiwgIi9ocGMv'
+        - 'YmFzZS9jdHQvbW9kdWxlZmlsZXMvY3R0IiwKfSwKc3lzdGVtQmFzZU1QQVRIID0gIi9ldG'
+        - 'MvbW9kdWxlZmlsZXM6L3Vz'
+    _ModuleTable021_:
+        - 'ci9zaGFyZS9tb2R1bGVmaWxlczovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4Oi91c3'
+        - 'Ivc2hhcmUvbW9kdWxlZmlsZXMvQ29yZTovdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVm'
+        - 'aWxlcy9Db3JlIiwKfQo='
+    _ModuleTable_Sz_:
+        - '21'
+    __LMOD_REF_COUNT_CLASSPATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/share/java/'
+        - 'mpi.jar:1'
+    __LMOD_REF_COUNT_CMAKE_LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/lib:'
+        - '1;/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/lib:1'
+        - ';/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/lib64:1'
+    __LMOD_REF_COUNT_CMAKE_PREFIX_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0:1;/h'
+        - 'pc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0:1;/hpc/ba'
+        - 'se/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0:1;/hpc/base/Ea'
+        - 'syBuild/EL9-GNR/software/GCCcore/14.2.0:1;/hpc/base/EasyBuild/EL9-GNR/'
+        - 'software/EasyBuild/5.1.1:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.'
+        - '2.1/mkl/2025.2/lib/cmake:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.'
+        - '2.1/ippcp/2025.2:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ipp/'
+        - '2022.2:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ishmem/1.4/lib'
+        - '/cmake/ishmem:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dpl/202'
+        - '2.9/lib/cmake/oneDPL:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/'
+        - 'dnnl/2025.2:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/'
+        - '2025.2:2;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ccl/2021.16:1;'
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/umf/0.11:1;/gpfs/gpfs_d'
+        - 'e6000/hpc/base/intel/intel2025.2.1/tbb/2022.2:1'
+    __LMOD_REF_COUNT_CPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/incl'
+        - 'ude:1;/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/i'
+        - 'nclude:1;/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.'
+        - '0/include:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16'
+        - '/include:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2/i'
+        - 'nclude:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dnnl/2025.2/in'
+        - 'clude:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/dev-utilities/2'
+        - '025.2/include:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ccl/202'
+        - '1.16/include:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/umf/0.11'
+        - '/include:1'
+    __LMOD_REF_COUNT_CPLUS_INCLUDE_PATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2/include:1;/g'
+        - 'pfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ippcp/2025.2/include:1;/g'
+        - 'pfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ipp/2022.2/include:1;/gpf'
+        - 's/gpfs_de6000/hpc/base/intel/intel2025.2.1/ishmem/1.4/include:1;/gpfs/'
+        - 'gpfs_de6000/hpc/base/intel/intel2025.2.1/dpl/2022.9/include:1;/gpfs/gp'
+        - 'fs_de6000/hpc/base/intel/intel2025.2.1/dpcpp-ct/2025.2/include:1;/gpfs'
+        - '/gpfs_de6000/hpc/base/intel/intel2025.2.1/umf/0.11/include:1;/gpfs/gpf'
+        - 's_de6000/hpc/base/intel/intel2025.2.1/tbb/2022.2/include:1'
+    __LMOD_REF_COUNT_C_INCLUDE_PATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2/include:1;/g'
+        - 'pfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ippcp/2025.2/include:1;/g'
+        - 'pfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/ipp/2022.2/include:1;/gpf'
+        - 's/gpfs_de6000/hpc/base/intel/intel2025.2.1/ishmem/1.4/include:1;/gpfs/'
+        - 'gpfs_de6000/hpc/base/intel/intel2025.2.1/umf/0.11/include:1;/gpfs/gpfs'
+        - '_de6000/hpc/base/intel/intel2025.2.1/tbb/2022.2/include:1'
+    __LMOD_REF_COUNT_DIAGUTIL_PATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/etc/com'
+        - 'piler/sys_check/sys_check.sh:3'
+    __LMOD_REF_COUNT_GDB_INFO:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/2025.2/share/i'
+        - 'nfo:1'
+    __LMOD_REF_COUNT_INFOPATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/2025.2/share/i'
+        - 'nfo:1'
+    __LMOD_REF_COUNT_LD_LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/lib:'
+        - '1;/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/lib:1'
+        - ';/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/lib:1;'
+        - '/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/lib64:1;/gpfs/gpfs'
+        - '_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/opt/mpi/libfabric/lib'
+        - ':1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/lib:1;/g'
+        - 'pfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2025.2/lib:1;/gpfs/gp'
+        - 'fs_de6000/hpc/base/intel/intel2025.2.1/ippcp/2025.2/lib:1;/gpfs/gpfs_d'
+        - 'e6000/hpc/base/intel/intel2025.2.1/ipp/2022.2/lib:1;/gpfs/gpfs_de6000/'
+        - 'hpc/base/intel/intel2025.2.1/ishmem/1.4/lib:1;/gpfs/gpfs_de6000/hpc/ba'
+        - 'se/intel/intel2025.2.1/dnnl/2025.2/lib:1;/gpfs/gpfs_de6000/hpc/base/in'
+        - 'tel/intel2025.2.1/debugger/2025.2/opt/debugger/lib:1;/gpfs/gpfs_de6000'
+        - '/hpc/base/intel/intel2025.2.1/ccl/2021.16/lib:1;/gpfs/gpfs_de6000/hpc/'
+        - 'base/intel/intel2025.2.1/umf/0.11/lib:1;/gpfs/gpfs_de6000/hpc/base/int'
+        - 'el/intel2025.2.1/compiler/2025.2/opt/compiler/lib:1;/gpfs/gpfs_de6000/'
+        - 'hpc/base/intel/intel2025.2.1/compiler/2025.2/lib:1;/gpfs/gpfs_de6000/h'
+        - 'pc/base/intel/intel2025.2.1/tbb/2022.2/lib:1'
+    __LMOD_REF_COUNT_LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/lib:'
+        - '1;/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/lib:1'
+        - ';/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/lib:1;'
+        - '/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/lib64:1;/hpc/base/'
+        - 'EasyBuild/EL9-GNR/software/GCCcore/14.2.0/lib:1;/gpfs/gpfs_de6000/hpc/'
+        - 'base/intel/intel2025.2.1/mpi/2021.16/opt/mpi/libfabric/lib:1;/gpfs/gpf'
+        - 's_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/lib:1;/gpfs/gpfs_de6'
+        - '000/hpc/base/intel/intel2025.2.1/mkl/2025.2/lib:1;/gpfs/gpfs_de6000/hp'
+        - 'c/base/intel/intel2025.2.1/ippcp/2025.2/lib:1;/gpfs/gpfs_de6000/hpc/ba'
+        - 'se/intel/intel2025.2.1/ipp/2022.2/lib:1;/gpfs/gpfs_de6000/hpc/base/int'
+        - 'el/intel2025.2.1/ishmem/1.4/lib:1;/gpfs/gpfs_de6000/hpc/base/intel/int'
+        - 'el2025.2.1/dnnl/2025.2/lib:1;/gpfs/gpfs_de6000/hpc/base/intel/intel202'
+        - '5.2.1/compiler/2025.2/lib:2;/gpfs/gpfs_de6000/hpc/base/intel/intel2025'
+        - '.2.1/ccl/2021.16/lib:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/'
+        - 'umf/0.11/lib:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/tbb/2022'
+        - '.2/lib:1'
+    __LMOD_REF_COUNT_MANPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/shar'
+        - 'e/man:1;/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0'
+        - '/share/man:1;/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-1'
+        - '4.2.0/man:1;/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14'
+        - '.2.0/share/man:1;/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/s'
+        - 'hare/man:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021.16/'
+        - 'share/man:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/debugger/20'
+        - '25.2/share/man:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compil'
+        - 'er/2025.2/share/man:2;/usr/share/lmod/lmod/share/man:1;:1'
+    __LMOD_REF_COUNT_MODULEPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/modules/all/Compiler/GCCcore/14.2.0:1;/hpc'
+        - '/base/EasyBuild/EL9-GNR/modules/all/Core:1;/hpc/base/EasyBuild/easybui'
+        - 'ld/modules/all/Core:1;/hpc/base/intel/modules/intel2025.2.1:1;/hpc/bas'
+        - 'e/intel/modules/mpi:1;/hpc/base/intel/modules/meta:1;/etc/modulefiles:'
+        - '1;/usr/share/modulefiles:1;/usr/share/modulefiles/Linux:1;/usr/share/m'
+        - 'odulefiles/Core:1;/usr/share/lmod/lmod/modulefiles/Core:1;/hpc/base/ct'
+        - 't/modulefiles/ctt:1'
+    __LMOD_REF_COUNT_NLSPATH:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/lib/com'
+        - 'piler/locale/%l_%t/%N:2'
+    __LMOD_REF_COUNT_OCL_ICD_FILENAMES:
+        - '/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/compiler/2025.2/lib/lib'
+        - 'intelocl.so:2'
+    __LMOD_REF_COUNT_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/bin:'
+        - '1;/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/bin:1'
+        - ';/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/bin:1;/hpc/base/E'
+        - 'asyBuild/EL9-GNR/software/EasyBuild/5.1.1/bin:1;/hpc/base/ctt/tools/py'
+        - 'thon_tools/tool2ods:1;/hpc/base/ctt/tools/python_tools/postp2sql:1;/hp'
+        - 'c/base/ctt/bin:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/vtune/'
+        - '2025.4/bin64:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mpi/2021'
+        - '.16/opt/mpi/libfabric/bin:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025'
+        - '.2.1/mpi/2021.16/bin:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/'
+        - 'dpcpp-ct/2025.2/bin:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/d'
+        - 'ev-utilities/2025.2/bin:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2'
+        - '.1/debugger/2025.2/bin:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.'
+        - '1/compiler/2025.2/bin:2;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1'
+        - '/compiler/2025.2/bin/compiler:1;/gpfs/gpfs_de6000/hpc/base/intel/intel'
+        - '2025.2.1/advisor/2025.2/bin64:1;/home/xcpospiech/.julia/bin:1;/home/xc'
+        - 'pospiech/.local/bin:1;/home/xcpospiech/bin:1;/usr/local/bin:1;/usr/bin'
+        - ':1;/usr/local/sbin:1;/usr/sbin:1'
+    __LMOD_REF_COUNT_PKG_CONFIG_PATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/lib/pkg'
+        - 'config:1;/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.'
+        - '0/lib/pkgconfig:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/mkl/2'
+        - '025.2/lib/pkgconfig:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/i'
+        - 'ppcp/2025.2/lib/pkgconfig:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025'
+        - '.2.1/ishmem/1.4/lib/pkgconfig:1;/gpfs/gpfs_de6000/hpc/base/intel/intel'
+        - '2025.2.1/dpl/2022.9/lib/pkgconfig:1;/gpfs/gpfs_de6000/hpc/base/intel/i'
+        - 'ntel2025.2.1/dnnl/2025.2/lib/pkgconfig:1;/gpfs/gpfs_de6000/hpc/base/in'
+        - 'tel/intel2025.2.1/compiler/2025.2/lib/pkgconfig:2;/gpfs/gpfs_de6000/hp'
+        - 'c/base/intel/intel2025.2.1/tbb/2022.2/lib/pkgconfig:1'
+    __LMOD_REF_COUNT_PYTHONPATH:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/EasyBuild/5.1.1/lib/python3.9/sit'
+        - 'e-packages:1;/gpfs/gpfs_de6000/hpc/base/intel/intel2025.2.1/advisor/20'
+        - '25.2/pythonapi:1'
+    __LMOD_REF_COUNT_XDG_DATA_DIRS:
+        - '/hpc/base/EasyBuild/EL9-GNR/software/binutils/2.42-GCCcore-14.2.0/shar'
+        - 'e:1;/hpc/base/EasyBuild/EL9-GNR/software/Tcl/8.6.16-GCCcore-14.2.0/sha'
+        - 're:1;/hpc/base/EasyBuild/EL9-GNR/software/zlib/1.3.1-GCCcore-14.2.0/sh'
+        - 'are:1;/hpc/base/EasyBuild/EL9-GNR/software/GCCcore/14.2.0/share:1;/hom'
+        - 'e/xcpospiech/.local/share/flatpak/exports/share:1;/var/lib/flatpak/exp'
+        - 'orts/share:1;/usr/local/share:1;/usr/share:1'
+    which_declare:
+        - 'declare -f'
