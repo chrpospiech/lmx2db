@@ -35,15 +35,15 @@ pub struct CliArgs {
     #[arg(short = 'f', long, default_value = "import.sql")]
     pub sql_file: String,
 
-    /// Filename of the YAML file relating modules to compiler and MPI versions
+    /// Filename of the optional YAML file for parsing compiler and MPI versions
     #[arg(short = 'm', long, default_value = "modules.yml")]
     pub module_file: String,
 
-    /// Filename of YAML file with additional data for the settings table
+    /// Filename of optional YAML file with additional data for the settings table
     #[arg(short = 's', long, default_value = "settings.yml")]
     pub settings_file: String,
 
-    /// filename of YAML file with project and code name and version
+    /// filename of compulsory YAML file with project data
     #[arg(short = 'p', long, default_value = "project.yml")]
     pub project_file: String,
 
