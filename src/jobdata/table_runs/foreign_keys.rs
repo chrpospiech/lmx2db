@@ -64,10 +64,11 @@ pub fn find_project_file(file_name: &str, args: &CliArgs) -> Result<PathBuf, io:
             args.project_file, file_name
         );
     }
-    let mut current_dir = PathBuf::from(file_name)
+    let parent_dir = Path::new(file_name)
         .parent()
-        .unwrap_or(Path::new("."))
-        .to_path_buf();
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
+    let mut current_dir = parent_dir.canonicalize()?;
 
     loop {
         let project_file_path = current_dir.join(&args.project_file);

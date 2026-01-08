@@ -28,21 +28,19 @@ pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Str
     file_name.to_str().unwrap().to_string()
 }
 
-/// Sets up a CliArgs instance with the specified project file for testing purposes.
+/// Sets up a CliArgs instance with the specified project file name for testing purposes.
+/// Only the name is set; the file itself is not created.
+/// However, the necessary directories for the file are created.
 ///
 /// # Arguments
 /// * `project_file` - The name of the project file to be set in the CliArgs.
 ///
 /// # Returns
 /// A CliArgs instance with the specified project file and default values for other fields.
-pub fn setup_cliargs_with_project_file(project_file: &str, contents: &RunsForeignKeys) -> CliArgs {
-    // Create project file and its directory
+pub fn setup_cliargs_with_project_file_name(project_file: &str) -> CliArgs {
+    // Create directory for the project file
     std::fs::create_dir_all(std::path::Path::new(project_file).parent().unwrap())
         .expect("Failed to create subdirectory");
-    // temporarily create a project file with contents from RunsForeignKeys written in yml format
-    let yml_contents =
-        serde_yaml::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
-    std::fs::write(project_file, yml_contents).expect("Failed to write to project file");
     // Create CliArgs with the specified project file
     CliArgs {
         project_file: project_file.to_string(),
@@ -50,6 +48,25 @@ pub fn setup_cliargs_with_project_file(project_file: &str, contents: &RunsForeig
         dry_run: false,
         ..Default::default()
     }
+}
+
+/// Sets up a CliArgs instance with the specified project file for testing purposes.
+/// This function creates the project file with the provided contents.
+///
+/// # Arguments
+/// * `project_file` - The name of the project file to be set in the CliArgs.
+///
+/// # Returns
+/// A CliArgs instance with the specified project file and default values for other fields.
+pub fn setup_cliargs_with_project_file(project_file: &str, contents: &RunsForeignKeys) -> CliArgs {
+    // Create directory and CliArgs with the specified project file
+    let project_cliargs = setup_cliargs_with_project_file_name(project_file);
+    // temporarily create a project file with contents from RunsForeignKeys written in yml format
+    let yml_contents =
+        serde_yaml::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
+    std::fs::write(project_file, yml_contents).expect("Failed to write to project file");
+    // Return CliArgs
+    project_cliargs
 }
 
 /// Cleans up a temporary directory created by `setup_tmp_project_file`.

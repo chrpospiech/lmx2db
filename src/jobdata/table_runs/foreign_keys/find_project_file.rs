@@ -106,7 +106,8 @@ mod tests {
             .expect("Failed to create subdirectory");
         std::env::set_current_dir(dirname).expect("Failed to change current directory");
         // We start the search from the current directory with a relative path name
-        // the file may not exist, we only care for the directories to exist for the search
+        // Since find_project_file expects a file name, we provide just "LMX_summary.yml",
+        // which does not exist, but the search should find the project file in a parent directory.
         let result = find_project_file("LMX_summary.yml", &args);
         assert!(result.is_ok());
         assert_eq!(result.unwrap().to_str().unwrap(), project_file);
