@@ -35,6 +35,10 @@ pub struct CliArgs {
     #[arg(short = 'f', long, default_value = "import.sql")]
     pub sql_file: String,
 
+    /// import unknown foreign keys rather then raising errors
+    #[arg(short = 'i', long, default_value_t = false)]
+    pub do_import: bool,
+
     /// Filename of the optional YAML file for parsing compiler and MPI versions
     #[arg(short = 'm', long, default_value = "modules.yml")]
     pub module_file: String,
@@ -64,6 +68,7 @@ pub fn echo_args(args: &CliArgs) {
         println!("Database URL: {}", args.db_url);
         println!("Transaction per job: {}", args.transaction_per_job);
         println!("SQL file: {}", args.sql_file);
+        println!("Import unknown foreign keys: {}", args.do_import);
         println!("Module file: {}", args.module_file);
         println!("Settings file: {}", args.settings_file);
         println!("Project file: {}", args.project_file);
