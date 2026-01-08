@@ -6,6 +6,8 @@ use std::path::{Path, PathBuf};
 #[cfg(test)]
 pub(crate) mod find_project_file;
 #[cfg(test)]
+pub(crate) mod import_foreign_keys;
+#[cfg(test)]
 pub(crate) mod project_mockup;
 #[cfg(test)]
 pub(crate) mod read_project_file;
