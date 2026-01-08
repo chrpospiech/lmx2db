@@ -1,4 +1,5 @@
 use crate::cmdline::CliArgs;
+use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
 
 /// Sets up a temporary project file on a new directory for testing purposes.
 ///
@@ -14,13 +15,15 @@ use crate::cmdline::CliArgs;
 /// Panics if:
 /// - The temporary directory cannot be created
 /// - The project file cannot be created or written to
-pub fn setup_tmp_project_file(args: &CliArgs) -> String {
+pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> String {
     // Create a temporary project file for testing
     let temp_dir = std::env::temp_dir().join(format!("project_file_test_{}", uuid::Uuid::new_v4()));
     std::fs::create_dir_all(&temp_dir).expect("Failed to create temp project file directory");
     let file_name = temp_dir.join(args.project_file.as_str());
-    // temporarily create a project file with some content
-    std::fs::write(&file_name, "hello world").expect("Failed to write to project file");
+    // temporarily create a project file with contents from RunsForeignKeys written in yml format
+    let yml_contents =
+        serde_yaml::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
+    std::fs::write(&file_name, yml_contents).expect("Failed to write to project file");
 
     file_name.to_str().unwrap().to_string()
 }
@@ -32,11 +35,14 @@ pub fn setup_tmp_project_file(args: &CliArgs) -> String {
 ///
 /// # Returns
 /// A CliArgs instance with the specified project file and default values for other fields.
-pub fn setup_cliargs_with_project_file(project_file: &str) -> CliArgs {
+pub fn setup_cliargs_with_project_file(project_file: &str, contents: &RunsForeignKeys) -> CliArgs {
     // Create project file and its directory
     std::fs::create_dir_all(std::path::Path::new(project_file).parent().unwrap())
         .expect("Failed to create subdirectory");
-    std::fs::write(project_file, "hello world").expect("Failed to write to project file");
+    // temporarily create a project file with contents from RunsForeignKeys written in yml format
+    let yml_contents =
+        serde_yaml::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
+    std::fs::write(project_file, yml_contents).expect("Failed to write to project file");
     // Create CliArgs with the specified project file
     CliArgs {
         project_file: project_file.to_string(),

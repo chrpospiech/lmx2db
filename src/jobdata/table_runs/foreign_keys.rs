@@ -7,6 +7,17 @@ pub(crate) mod find_project_file;
 #[cfg(test)]
 pub(crate) mod project_mockup;
 
+/// Struct to hold foreign key data for the runs table
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+pub struct RunsForeignKeys {
+    pub project: String,
+    pub code: String,
+    pub code_version: String,
+    pub test_case: String,
+    pub cluster: Option<String>,
+    pub person: Option<String>,
+}
+
 /// Function to import foreign keys for the 'runs' table
 pub fn import_foreign_keys(file_name: &str, args: &CliArgs) -> Vec<String> {
     // Collect the SQL queries into a Vec<String> and process them later.
@@ -14,6 +25,14 @@ pub fn import_foreign_keys(file_name: &str, args: &CliArgs) -> Vec<String> {
 
     // Dummy usage to avoid unused variable warnings
     let _dummy = find_project_file(file_name, args);
+    let _dummy2 = RunsForeignKeys {
+        project: String::new(),
+        code: String::new(),
+        code_version: String::new(),
+        test_case: String::new(),
+        cluster: None,
+        person: None,
+    };
 
     query_list.push("-- Inserting foreign keys into runs table;".to_string());
     query_list
