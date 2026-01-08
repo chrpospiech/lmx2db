@@ -1,4 +1,5 @@
 use crate::cmdline::CliArgs;
+use std::collections::HashMap;
 use std::io;
 use std::path::{Path, PathBuf};
 
@@ -21,7 +22,11 @@ pub struct RunsForeignKeys {
 }
 
 /// Function to import foreign keys for the 'runs' table
-pub fn import_foreign_keys(file_name: &str, args: &CliArgs) -> Vec<String> {
+pub fn import_foreign_keys(
+    file_name: &str,
+    lmx_summary: &HashMap<String, serde_yaml::Value>,
+    args: &CliArgs,
+) -> Vec<String> {
     // Collect the SQL queries into a Vec<String> and process them later.
     let mut query_list: Vec<String> = Vec::new();
 
@@ -29,10 +34,55 @@ pub fn import_foreign_keys(file_name: &str, args: &CliArgs) -> Vec<String> {
     let foreign_keys = read_project_file(file_name, args)
         .unwrap_or_else(|e| panic!("Failed to read compulsory project file: {}", e));
 
-    // Dummy usage to avoid unused variable warnings
-    let _dummy: &RunsForeignKeys = &foreign_keys;
+    // Generate SQL statement for cluster foreign key
+    let do_import = if args.do_import { "1" } else { "0" };
+    let cluster = foreign_keys.cluster.unwrap_or_else(|| "Lenox".to_string());
+    if args.verbose || args.dry_run {
+        println!("Generating cluster id for cluster: {}", cluster);
+    }
+    query_list.push(format!(
+        "SET @clid = cluster_id('{}', {});",
+        cluster, do_import
+    ));
 
-    query_list.push("-- Inserting foreign keys into runs table;".to_string());
+    // Generate SQL statement for person foreign key
+    // First extract USER from the LMX summary environment section
+    // Fallback to "unknown_user" if not found
+    // USER is expected to be a sequence of strings
+    // which we join together to form the user id
+    let user_id_owned = lmx_summary
+        .get("environ")
+        .and_then(|v| v.as_mapping())
+        .and_then(|m| m.get("USER"))
+        .and_then(|v| v.as_sequence())
+        .map(|seq| {
+            seq.iter()
+                .filter_map(|v| v.as_str())
+                .collect::<Vec<_>>()
+                .join("")
+        });
+    let user_id = user_id_owned.as_deref().unwrap_or("unknown_user");
+    // Now generate the SQL statement for person foreign key
+    // If person is specified in the project file, use that
+    // Otherwise, use the user id from the LMX summary
+    if let Some(person) = &foreign_keys.person {
+        if args.verbose || args.dry_run {
+            println!("Generating person id for person: {}", person);
+        }
+        query_list.push(format!(
+            "SET @pid = person_id('{}', {});",
+            person, do_import
+        ));
+    } else {
+        if args.verbose || args.dry_run {
+            println!("Generating person id for user: {}", user_id);
+        }
+        query_list.push(format!(
+            "SET @pid = person_id_for_uid('{}', @clid);",
+            user_id
+        ));
+    }
+
     query_list
 }
 
