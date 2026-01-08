@@ -24,7 +24,7 @@ pub struct RunsForeignKeys {
 /// Function to import foreign keys for the 'runs' table
 pub fn import_foreign_keys(
     file_name: &str,
-    lmx_summary: &HashMap<String, serde_yaml::Value>,
+    lmx_summary: &HashMap<String, HashMap<String, serde_yaml::Value>>,
     args: &CliArgs,
 ) -> Vec<String> {
     // Collect the SQL queries into a Vec<String> and process them later.
@@ -52,7 +52,6 @@ pub fn import_foreign_keys(
     // which we join together to form the user id
     let user_id_owned = lmx_summary
         .get("environ")
-        .and_then(|v| v.as_mapping())
         .and_then(|m| m.get("USER"))
         .and_then(|v| v.as_sequence())
         .map(|seq| {

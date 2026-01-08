@@ -8,7 +8,7 @@ pub(crate) mod foreign_keys;
 /// based on the provided data and sqlkeys.
 pub fn import_into_runs_table(
     file_name: &str,
-    lmx_summary: &HashMap<String, serde_yaml::Value>,
+    lmx_summary: &HashMap<String, HashMap<String, serde_yaml::Value>>,
     sqlkeys: &HashMap<String, HashMap<String, String>>,
     args: &CliArgs,
 ) -> Vec<String> {
@@ -16,7 +16,6 @@ pub fn import_into_runs_table(
     let mut query_list: Vec<String> = Vec::new();
 
     // Dummy usage to avoid unused variable warnings
-    let _dummy1: &HashMap<String, serde_yaml::Value> = lmx_summary;
     let _dummy2: &HashMap<String, HashMap<String, String>> = sqlkeys;
 
     query_list.push("-- Inserting into runs table;".to_string());

@@ -53,7 +53,7 @@ pub async fn process_lmx_file(
     let file_err_msg = format!("Failed to open LMX summary file: {}", file_name);
     let file_content = std::fs::read_to_string(file_name).expect(&file_err_msg);
     let yml_err_msg = format!("Failed to parse YAML from file: {}", file_name);
-    let lmx_summary: HashMap<String, serde_yaml::Value> =
+    let lmx_summary: HashMap<String, HashMap<String, serde_yaml::Value>> =
         serde_yaml::from_str(&file_content).expect(&yml_err_msg);
 
     // Generate SQL queries for the 'runs' table
