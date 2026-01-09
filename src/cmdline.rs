@@ -27,10 +27,6 @@ pub struct CliArgs {
     #[arg(short = 'c', long, default_value_t = false)]
     pub create_sqlkeys: bool,
 
-    /// SQL transaction per job
-    #[arg(short = 't', long, default_value_t = false)]
-    pub transaction_per_job: bool,
-
     /// Name of the SQL file with import statements
     #[arg(short = 'f', long, default_value = "import.sql")]
     pub sql_file: String,
@@ -66,7 +62,6 @@ pub fn echo_args(args: &CliArgs) {
         println!("SQLKeys file: {}", args.sqlkeys_file);
         println!("Create SQLKeys: {}", args.create_sqlkeys);
         println!("Database URL: {}", args.db_url);
-        println!("Transaction per job: {}", args.transaction_per_job);
         println!("SQL file: {}", args.sql_file);
         println!("Import unknown foreign keys: {}", args.do_import);
         println!("Module file: {}", args.module_file);

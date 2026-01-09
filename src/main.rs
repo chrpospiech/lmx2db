@@ -30,31 +30,20 @@ async fn main() {
     // Normal operation: read sqlkeys and proceed
     let sqlkeys: HashMap<String, HashMap<String, String>> =
         sqlkeys::read_sqlkeys(pool.clone(), &args).await;
-    if args.verbose {
+    if args.verbose || args.dry_run {
         println!("Read {} sqlkeys from database/file", sqlkeys.len());
     }
-    let mut transaction = if !args.transaction_per_job && !args.dry_run {
-        if let Some(p) = pool.as_ref() {
-            Some(p.begin().await.expect("Failed to begin transaction"))
-        } else {
-            None
-        }
-    } else {
-        None
-    };
+
+    // Main loop: process all LMX_SUMMARY files
     for file_name in find_lmx_summary_files(&args.files) {
         if args.verbose {
             println!("Processing file: {}", file_name);
         }
-        let return_code =
-            jobdata::process_lmx_file(&file_name, &pool, &mut transaction, &sqlkeys, &args).await;
+        let return_code = jobdata::process_lmx_file(&file_name, &pool, &sqlkeys, &args).await;
         match return_code {
             Ok(_) => {}
-            Err(e) => eprintln!("Ignoring {}: Error in SQL statements: {}", file_name, e),
+            Err(e) => eprintln!("Ignoring {} because of error: {}", file_name, e),
         }
-    }
-    if let Some(tx) = transaction {
-        tx.commit().await.expect("Failed to commit transaction");
     }
 
     // Explicit disconnect from the database

@@ -1,5 +1,5 @@
 use crate::cmdline::CliArgs;
-use sqlx::{MySql, Transaction};
+use sqlx::MySql;
 use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::io::Write;
@@ -16,7 +16,6 @@ pub(crate) mod table_runs;
 ///
 /// * `file_name` - Path to the LMX summary file to process
 /// * `pool` - Optional MySQL connection pool for database operations. If `None`, queries are written to a file
-/// * `transaction` - Optional ongoing transaction to use for query execution when `args.transaction_per_job` is false
 /// * `sqlkeys` - HashMap containing the database schema mapping for generating SQL queries
 /// * `args` - Command line arguments controlling processing behavior including verbosity, dry-run mode, and transaction settings
 ///
@@ -40,7 +39,6 @@ pub(crate) mod table_runs;
 pub async fn process_lmx_file(
     file_name: &str,
     pool: &Option<sqlx::Pool<MySql>>,
-    transaction: &mut Option<Transaction<'_, MySql>>,
     sqlkeys: &HashMap<String, HashMap<String, String>>,
     args: &CliArgs,
 ) -> Result<(), sqlx::Error> {
@@ -65,7 +63,7 @@ pub async fn process_lmx_file(
     ));
 
     // Process the collected SQL queries
-    process_sql_queries(query_list, pool, transaction, args).await?;
+    process_sql_queries(query_list, pool, args).await?;
 
     Ok(())
 }
@@ -107,11 +105,10 @@ pub async fn process_lmx_file(
 pub async fn process_sql_queries(
     query_list: Vec<String>,
     pool: &Option<sqlx::Pool<MySql>>,
-    transaction: &mut Option<Transaction<'_, MySql>>,
     args: &CliArgs,
 ) -> Result<(), sqlx::Error> {
-    // If args.transaction_per_job is true, create a new transaction for this job.
-    let mut tx_per_job = if args.transaction_per_job && !args.dry_run {
+    // If neither verbose or dry_run, create a new transaction for this job.
+    let mut tx_per_job = if !args.verbose && !args.dry_run {
         if let Some(p) = pool.as_ref() {
             Some(p.begin().await?)
         } else {
@@ -141,8 +138,6 @@ pub async fn process_sql_queries(
             }
             if !args.dry_run {
                 if let Some(tx) = tx_per_job.as_mut() {
-                    sqlx::query(&query).execute(&mut **tx).await?;
-                } else if let Some(tx) = transaction.as_mut() {
                     sqlx::query(&query).execute(&mut **tx).await?;
                 } // else case should not happen as pool is Some
             }
