@@ -7,6 +7,8 @@ use std::io::Write;
 
 type LmxSummary = HashMap<String, HashMap<String, serde_yaml::Value>>;
 
+#[cfg(test)]
+pub(crate) mod jobs_tests;
 pub(crate) mod table_runs;
 
 /// Processes a single LMX summary file by collecting SQL queries and executing them against a database.
