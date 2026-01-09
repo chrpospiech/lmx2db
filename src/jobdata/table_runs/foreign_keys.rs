@@ -1,6 +1,6 @@
 use crate::cmdline::CliArgs;
+use crate::jobdata::LmxSummary;
 use anyhow::Result;
-use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 #[cfg(test)]
@@ -26,7 +26,7 @@ pub struct RunsForeignKeys {
 /// Function to import foreign keys for the 'runs' table
 pub fn import_foreign_keys(
     file_name: &str,
-    lmx_summary: &HashMap<String, HashMap<String, serde_yaml::Value>>,
+    lmx_summary: &LmxSummary,
     args: &CliArgs,
 ) -> Result<Vec<String>> {
     // Collect the SQL queries into a Vec<String> and process them later.
@@ -83,6 +83,71 @@ pub fn import_foreign_keys(
         ));
     }
 
+    // Generate SQL statement for customer case foreign key
+    if args.verbose || args.dry_run {
+        println!(
+            "Generating customer case id from project data in file: {}",
+            args.project_file
+        );
+    }
+    query_list.push(format!(
+        "SET @ccid = customer_case_id('{}', '{}', '{}', '{}', {});",
+        foreign_keys.project,
+        foreign_keys.code,
+        foreign_keys.code_version,
+        foreign_keys.test_case,
+        do_import
+    ));
+
+    // Generate SQL statements for filesystem id
+    if args.verbose || args.dry_run {
+        println!("Generating filesystem id for run directory");
+    }
+    let base_data = lmx_summary
+        .get("base_data")
+        .ok_or_else(|| anyhow::anyhow!("Missing 'base_data' in LMX summary"))?;
+    let fstype = base_data
+        .get("fstype")
+        .ok_or_else(|| anyhow::anyhow!("Missing 'fstype' in base_data"))?
+        .as_str()
+        .ok_or_else(|| anyhow::anyhow!("'fstype' is not a string"))?;
+    let m_pt = base_data
+        .get("mount_point")
+        .ok_or_else(|| anyhow::anyhow!("Missing 'mount_point' in base_data"))?
+        .as_str()
+        .ok_or_else(|| anyhow::anyhow!("'mount_point' is not a string"))?;
+    let bsize = base_data
+        .get("blocksize")
+        .ok_or_else(|| anyhow::anyhow!("Missing 'blocksize' in base_data"))?
+        .as_i64()
+        .ok_or_else(|| anyhow::anyhow!("'blocksize' is not an integer"))?;
+    query_list.push(format!(
+        "SET @fsid = filesystem_id('{}', '{}', {});",
+        fstype, m_pt, bsize
+    ));
+
+    // Generate SQL drop statement for duplicate runs
+    // This uses person_id and timestamps from LMX summary base_data
+    // to identify duplicate runs
+    if args.verbose || args.dry_run {
+        println!("Generating drop statement for duplicate runs");
+    }
+    let start_date = base_data
+        .get("start_date")
+        .ok_or_else(|| anyhow::anyhow!("Missing 'start_time' in base_data"))?
+        .as_i64()
+        .ok_or_else(|| anyhow::anyhow!("'start_time' is not an integer"))?;
+    let start_date_n = base_data
+        .get("start_date_n")
+        .ok_or_else(|| anyhow::anyhow!("Missing 'start_time_n' in base_data"))?
+        .as_i64()
+        .ok_or_else(|| anyhow::anyhow!("'start_time_n' is not an integer"))?;
+    query_list.push(format!(
+        "CALL drop_run_by_user_start_date(@pid, {}, {});",
+        start_date, start_date_n
+    ));
+
+    // Return the list of generated SQL queries
     Ok(query_list)
 }
 

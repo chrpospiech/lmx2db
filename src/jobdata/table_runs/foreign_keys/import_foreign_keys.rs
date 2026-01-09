@@ -32,13 +32,25 @@ mod tests {
         // Call the import_foreign_keys function
         let sql_queries =
             import_foreign_keys(lmx_summary_pathbuf.to_str().unwrap(), &lmx_summary, &args);
-        assert!(sql_queries.is_ok());
+        assert!(sql_queries.is_ok(), "{}", sql_queries.as_ref().unwrap_err());
         let sql_queries = sql_queries.unwrap();
-        assert_eq!(sql_queries.len(), 2);
+        assert_eq!(sql_queries.len(), 5);
         assert_eq!(sql_queries[0], "SET @clid = cluster_id('Lenox', 0);");
         assert_eq!(
             sql_queries[1],
             "SET @pid = person_id_for_uid('xcpospiech', @clid);"
+        );
+        assert_eq!(
+            sql_queries[2],
+            "SET @ccid = customer_case_id('4paper_2025', 'NAMD', '3.0.2', 'STMV', 0);"
+        );
+        assert_eq!(
+            sql_queries[3],
+            "SET @fsid = filesystem_id('GPFS', '/gpfs/gpfs_de6000', 8192);"
+        );
+        assert_eq!(
+            sql_queries[4],
+            "CALL drop_run_by_user_start_date(@pid, 1764250902, 199871237);"
         );
 
         // Clean up the temporary project file and directory
@@ -77,13 +89,25 @@ mod tests {
         // Call the import_foreign_keys function
         let sql_queries =
             import_foreign_keys(lmx_summary_pathbuf.to_str().unwrap(), &lmx_summary, &args);
-        assert!(sql_queries.is_ok());
+        assert!(sql_queries.is_ok(), "{}", sql_queries.as_ref().unwrap_err());
         let sql_queries = sql_queries.unwrap();
-        assert_eq!(sql_queries.len(), 2);
+        assert_eq!(sql_queries.len(), 5);
         assert_eq!(sql_queries[0], "SET @clid = cluster_id('Lenox', 1);");
         assert_eq!(
             sql_queries[1],
             "SET @pid = person_id_for_uid('xcpospiech', @clid);"
+        );
+        assert_eq!(
+            sql_queries[2],
+            "SET @ccid = customer_case_id('4paper_2025', 'NAMD', '3.0.2', 'STMV', 1);"
+        );
+        assert_eq!(
+            sql_queries[3],
+            "SET @fsid = filesystem_id('GPFS', '/gpfs/gpfs_de6000', 8192);"
+        );
+        assert_eq!(
+            sql_queries[4],
+            "CALL drop_run_by_user_start_date(@pid, 1764250902, 199871237);"
         );
 
         // Clean up the temporary project file and directory
