@@ -1,8 +1,11 @@
 use crate::cmdline::CliArgs;
+use anyhow::Result;
 use sqlx::MySql;
 use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::io::Write;
+
+type LmxSummary = HashMap<String, HashMap<String, serde_yaml::Value>>;
 
 pub(crate) mod table_runs;
 
@@ -41,18 +44,14 @@ pub async fn process_lmx_file(
     pool: &Option<sqlx::Pool<MySql>>,
     sqlkeys: &HashMap<String, HashMap<String, String>>,
     args: &CliArgs,
-) -> Result<(), sqlx::Error> {
+) -> Result<()> {
     // Collect the SQL queries into a Vec<String> and process them later.
     let mut query_list: Vec<String> = Vec::new();
     // Adding a comment line as a marker for the file being processed
     query_list.push(format!("-- Queries for file {};", file_name));
 
     // Read the LMX summary file into a hashmap
-    let file_err_msg = format!("Failed to open LMX summary file: {}", file_name);
-    let file_content = std::fs::read_to_string(file_name).expect(&file_err_msg);
-    let yml_err_msg = format!("Failed to parse YAML from file: {}", file_name);
-    let lmx_summary: HashMap<String, HashMap<String, serde_yaml::Value>> =
-        serde_yaml::from_str(&file_content).expect(&yml_err_msg);
+    let lmx_summary = read_lmx_summary(file_name)?;
 
     // Generate SQL queries for the 'runs' table
     query_list.extend(table_runs::import_into_runs_table(
@@ -60,7 +59,7 @@ pub async fn process_lmx_file(
         &lmx_summary,
         sqlkeys,
         args,
-    ));
+    )?);
 
     // Process the collected SQL queries
     process_sql_queries(query_list, pool, args).await?;
@@ -98,15 +97,15 @@ pub async fn process_lmx_file(
 /// - Appends all queries to the file specified in `args.sql_file`
 /// - Creates the file if it doesn't exist
 /// - Ensures output ends with a newline
+/// - In dry-run mode, prints queries to stdout instead of writing to file
 ///
 /// # Panics
 ///
-/// Panics if file operations fail in file mode
 pub async fn process_sql_queries(
     query_list: Vec<String>,
     pool: &Option<sqlx::Pool<MySql>>,
     args: &CliArgs,
-) -> Result<(), sqlx::Error> {
+) -> Result<()> {
     // If neither verbose or dry_run, create a new transaction for this job.
     let mut tx_per_job = if !args.verbose && !args.dry_run {
         if let Some(p) = pool.as_ref() {
@@ -170,8 +169,7 @@ pub async fn process_sql_queries(
                 concatenated.push('\n');
             }
             // Write to the file
-            file.write_all(concatenated.as_bytes())
-                .expect("Failed to write queries to SQL file");
+            file.write_all(concatenated.as_bytes())?;
         }
     }
 
@@ -180,4 +178,10 @@ pub async fn process_sql_queries(
         tx.commit().await?;
     }
     Ok(())
+}
+
+fn read_lmx_summary(file_name: &str) -> Result<LmxSummary> {
+    let file_content = std::fs::read_to_string(file_name)?;
+    let lmx_summary: LmxSummary = serde_yaml::from_str(&file_content)?;
+    Ok(lmx_summary)
 }

@@ -42,7 +42,7 @@ async fn main() {
         let return_code = jobdata::process_lmx_file(&file_name, &pool, &sqlkeys, &args).await;
         match return_code {
             Ok(_) => {}
-            Err(e) => eprintln!("Ignoring {} because of error: {}", file_name, e),
+            Err(e) => eprintln!("Ignoring {} because of error:\n     {}", file_name, e),
         }
     }
 

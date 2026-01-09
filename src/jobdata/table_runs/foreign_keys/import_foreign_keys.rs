@@ -34,6 +34,8 @@ mod tests {
 
         // Call the import_foreign_keys function
         let sql_queries = import_foreign_keys(lmx_summary_path, &lmx_summary, &args);
+        assert!(sql_queries.is_ok());
+        let sql_queries = sql_queries.unwrap();
         assert_eq!(sql_queries.len(), 2);
         assert_eq!(sql_queries[0], "SET @clid = cluster_id('Lenox', 0);");
         assert_eq!(

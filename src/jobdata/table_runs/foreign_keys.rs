@@ -1,6 +1,6 @@
 use crate::cmdline::CliArgs;
+use anyhow::Result;
 use std::collections::HashMap;
-use std::io;
 use std::path::{Path, PathBuf};
 
 #[cfg(test)]
@@ -28,13 +28,12 @@ pub fn import_foreign_keys(
     file_name: &str,
     lmx_summary: &HashMap<String, HashMap<String, serde_yaml::Value>>,
     args: &CliArgs,
-) -> Vec<String> {
+) -> Result<Vec<String>> {
     // Collect the SQL queries into a Vec<String> and process them later.
     let mut query_list: Vec<String> = Vec::new();
 
     // Find a project file and read its RunsForeignKeys
-    let foreign_keys = read_project_file(file_name, args)
-        .unwrap_or_else(|e| panic!("Failed to read compulsory project file: {}", e));
+    let foreign_keys = read_project_file(file_name, args)?;
 
     // Generate SQL statement for cluster foreign key
     let do_import = if args.do_import { "1" } else { "0" };
@@ -84,25 +83,16 @@ pub fn import_foreign_keys(
         ));
     }
 
-    query_list
+    Ok(query_list)
 }
 
 /// Reads and parses the project file to extract RunsForeignKeys.
 /// Returns a RunsForeignKeys struct if successful, or an io::Error if there are issues
 /// reading or parsing the file.
-pub fn read_project_file(file_name: &str, args: &CliArgs) -> Result<RunsForeignKeys, io::Error> {
+pub fn read_project_file(file_name: &str, args: &CliArgs) -> Result<RunsForeignKeys> {
     let project_file_path = find_project_file(file_name, args)?;
     let file_contents = std::fs::read_to_string(&project_file_path)?;
-    let runs_foreign_keys: RunsForeignKeys = serde_yaml::from_str(&file_contents).map_err(|e| {
-        io::Error::new(
-            io::ErrorKind::InvalidData,
-            format!(
-                "Failed to parse project file '{}': {}",
-                project_file_path.display(),
-                e
-            ),
-        )
-    })?;
+    let runs_foreign_keys: RunsForeignKeys = serde_yaml::from_str(&file_contents)?;
     Ok(runs_foreign_keys)
 }
 
@@ -111,7 +101,7 @@ pub fn read_project_file(file_name: &str, args: &CliArgs) -> Result<RunsForeignK
 /// path and is used directly.
 /// If not, the function searches parent directories for the file.
 /// Returns the full path to the project file if found, or an io::Error if not found.
-pub fn find_project_file(file_name: &str, args: &CliArgs) -> Result<PathBuf, io::Error> {
+pub fn find_project_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
     if args.project_file.contains('/') {
         if args.verbose || args.dry_run {
             println!("Using specified project file path: '{}'", args.project_file);
@@ -120,9 +110,9 @@ pub fn find_project_file(file_name: &str, args: &CliArgs) -> Result<PathBuf, io:
         if project_file_path.exists() {
             return Ok(project_file_path);
         } else {
-            return Err(io::Error::new(
-                io::ErrorKind::NotFound,
-                format!("Project file '{}' not found", args.project_file),
+            return Err(anyhow::anyhow!(
+                "Required project file '{}' not found",
+                args.project_file
             ));
         }
     }
@@ -146,12 +136,9 @@ pub fn find_project_file(file_name: &str, args: &CliArgs) -> Result<PathBuf, io:
         }
 
         if !current_dir.pop() {
-            return Err(io::Error::new(
-                io::ErrorKind::NotFound,
-                format!(
-                    "Project file '{}' not found in directory tree",
-                    args.project_file
-                ),
+            return Err(anyhow::anyhow!(
+                "Required project file '{}' not found in directory tree",
+                args.project_file
             ));
         }
     }

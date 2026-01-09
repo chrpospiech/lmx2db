@@ -1,4 +1,5 @@
 use crate::cmdline::CliArgs;
+use anyhow::Result;
 use std::collections::HashMap;
 
 pub(crate) mod foreign_keys;
@@ -11,7 +12,7 @@ pub fn import_into_runs_table(
     lmx_summary: &HashMap<String, HashMap<String, serde_yaml::Value>>,
     sqlkeys: &HashMap<String, HashMap<String, String>>,
     args: &CliArgs,
-) -> Vec<String> {
+) -> Result<Vec<String>> {
     // Collect the SQL queries into a Vec<String> and process them later.
     let mut query_list: Vec<String> = Vec::new();
 
@@ -28,6 +29,6 @@ pub fn import_into_runs_table(
         file_name,
         lmx_summary,
         args,
-    ));
-    query_list
+    )?);
+    Ok(query_list)
 }
