@@ -5,4 +5,4 @@ __pycache__/
 .env
 *.log
 lmx2db.code-workspace
-sqlkeys.yml
+sqltypes.yml

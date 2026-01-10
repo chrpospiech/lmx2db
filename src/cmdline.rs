@@ -19,13 +19,17 @@ pub struct CliArgs {
     )]
     pub db_url: String,
 
-    /// name of sqlkeys file
-    #[arg(short = 'k', long, default_value = "sqlkeys.yml")]
-    pub sqlkeys_file: String,
+    /// name of sqltypes file
+    #[arg(short = 't', long, default_value = "sqltypes.yml")]
+    pub sqltypes_file: String,
 
-    /// create sqlkeys file from database
+    /// create sqltypes file from database
     #[arg(short = 'c', long, default_value_t = false)]
-    pub create_sqlkeys: bool,
+    pub create_sqltypes: bool,
+
+    /// check data types before inserting into database
+    #[arg(short = 'C', long, default_value_t = false)]
+    pub check_types: bool,
 
     /// Name of the SQL file with import statements
     #[arg(short = 'f', long, default_value = "import.sql")]
@@ -59,8 +63,9 @@ pub fn echo_args(args: &CliArgs) {
     if args.verbose {
         println!("Verbose: {}", args.verbose);
         println!("Dry run: {}", args.dry_run);
-        println!("SQLKeys file: {}", args.sqlkeys_file);
-        println!("Create SQLKeys: {}", args.create_sqlkeys);
+        println!("SQLTypes file: {}", args.sqltypes_file);
+        println!("Create SQLTypes: {}", args.create_sqltypes);
+        println!("Check types with database: {}", args.check_types);
         println!("Database URL: {}", args.db_url);
         println!("SQL file: {}", args.sql_file);
         println!("Import unknown foreign keys: {}", args.do_import);

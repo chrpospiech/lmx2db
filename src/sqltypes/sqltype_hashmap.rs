@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub fn check_sqlkey_values(sqlkey_map: &HashMap<String, HashMap<String, String>>) -> bool {
+pub fn check_sqltype_values(sqltype_map: &HashMap<String, HashMap<String, String>>) -> bool {
     let compare_map: HashMap<String, HashMap<String, String>> = HashMap::from([
         (
             "hpm_events".to_string(),
@@ -26,7 +26,7 @@ pub fn check_sqlkey_values(sqlkey_map: &HashMap<String, HashMap<String, String>>
     ]);
 
     compare_map.iter().all(|(key, sub_map)| {
-        sqlkey_map.get(key).is_some_and(|existing_sub_map| {
+        sqltype_map.get(key).is_some_and(|existing_sub_map| {
             sub_map
                 .iter()
                 .all(|(sub_key, sub_value)| existing_sub_map.get(sub_key) == Some(sub_value))
@@ -34,9 +34,9 @@ pub fn check_sqlkey_values(sqlkey_map: &HashMap<String, HashMap<String, String>>
     })
 }
 
-pub fn check_sqlkeys_file(sqlkeys_file: String) -> bool {
+pub fn check_sqltypes_file(sqltypes_file: String) -> bool {
     let contents =
-        std::fs::read_to_string(sqlkeys_file).expect("Failed to read sqlkey file for checking");
+        std::fs::read_to_string(sqltypes_file).expect("Failed to read sqltype file for checking");
 
     // basic content checks
     assert!(
@@ -48,13 +48,13 @@ pub fn check_sqlkeys_file(sqlkeys_file: String) -> bool {
 
     // Check YAML structure (basic check)
     let yaml: serde_yml::Value =
-        serde_yml::from_str(&contents).expect("Created sqlkey file is not valid YAML");
+        serde_yml::from_str(&contents).expect("Created sqltype file is not valid YAML");
     assert!(yaml.get("hpm_events").is_some());
     assert!(yaml.get("mpi_details").is_some());
     assert!(yaml.get("power_types").is_some());
 
     // Further checks can be added here to validate specific keys/values
-    let sqlkeys_map: HashMap<String, HashMap<String, String>> =
-        serde_yml::from_str(&contents).expect("Failed to deserialize sqlkey file into hashmap");
-    check_sqlkey_values(&sqlkeys_map)
+    let sqltypes_map: HashMap<String, HashMap<String, String>> =
+        serde_yml::from_str(&contents).expect("Failed to deserialize sqltype file into hashmap");
+    check_sqltype_values(&sqltypes_map)
 }

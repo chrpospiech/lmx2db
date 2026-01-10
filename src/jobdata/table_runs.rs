@@ -6,18 +6,18 @@ pub(crate) mod foreign_keys;
 
 /// Function to import a row into the 'runs' table
 /// This function generates the SQL INSERT statement for the 'runs' table
-/// based on the provided data and sqlkeys.
+/// based on the provided data and sqltypes.
 pub fn import_into_runs_table(
     file_name: &str,
     lmx_summary: &HashMap<String, HashMap<String, serde_yaml::Value>>,
-    sqlkeys: &HashMap<String, HashMap<String, String>>,
+    sqltypes: &HashMap<String, HashMap<String, String>>,
     args: &CliArgs,
 ) -> Result<Vec<String>> {
     // Collect the SQL queries into a Vec<String> and process them later.
     let mut query_list: Vec<String> = Vec::new();
 
     // Dummy usage to avoid unused variable warnings
-    let _dummy2: &HashMap<String, HashMap<String, String>> = sqlkeys;
+    let _dummy2: &HashMap<String, HashMap<String, String>> = sqltypes;
 
     query_list.push("-- Inserting into runs table;".to_string());
     if args.verbose || args.dry_run {

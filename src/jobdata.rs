@@ -21,7 +21,7 @@ pub(crate) mod table_runs;
 ///
 /// * `file_name` - Path to the LMX summary file to process
 /// * `pool` - Optional MySQL connection pool for database operations. If `None`, queries are written to a file
-/// * `sqlkeys` - HashMap containing the database schema mapping for generating SQL queries
+/// * `sqltypes` - HashMap containing the database schema mapping for generating SQL queries
 /// * `args` - Command line arguments controlling processing behavior including verbosity, dry-run mode, and transaction settings
 ///
 /// # Returns
@@ -31,7 +31,7 @@ pub(crate) mod table_runs;
 /// # Behavior
 ///
 /// - Reads and parses the LMX summary file as YAML
-/// - Generates SQL queries based on file content and sqlkeys schema mappings
+/// - Generates SQL queries based on file content and sqltypes schema mappings
 /// - Adds a comment marker identifying the source file being processed
 /// - Delegates query execution to `process_sql_queries()` which handles:
 ///   - Database execution (if pool is provided)
@@ -44,7 +44,7 @@ pub(crate) mod table_runs;
 pub async fn process_lmx_file(
     file_name: &str,
     pool: &Option<sqlx::Pool<MySql>>,
-    sqlkeys: &HashMap<String, HashMap<String, String>>,
+    sqltypes: &HashMap<String, HashMap<String, String>>,
     args: &CliArgs,
 ) -> Result<()> {
     // Collect the SQL queries into a Vec<String> and process them later.
@@ -59,7 +59,7 @@ pub async fn process_lmx_file(
     query_list.extend(table_runs::import_into_runs_table(
         file_name,
         &lmx_summary,
-        sqlkeys,
+        sqltypes,
         args,
     )?);
 
