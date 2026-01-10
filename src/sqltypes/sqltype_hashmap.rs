@@ -1,7 +1,8 @@
+use crate::sqltypes::SqlTypeHashMap;
 use std::collections::HashMap;
 
-pub fn check_sqltype_values(sqltype_map: &HashMap<String, HashMap<String, String>>) -> bool {
-    let compare_map: HashMap<String, HashMap<String, String>> = HashMap::from([
+pub fn check_sqltype_values(sqltype_map: &SqlTypeHashMap) -> bool {
+    let compare_map: SqlTypeHashMap = HashMap::from([
         (
             "hpm_events".to_string(),
             HashMap::from([

@@ -1,9 +1,11 @@
+use anyhow::Result;
 use connect::{connect_to_database, disconnect_from_database};
+use sqltypes::SqlTypeHashMap;
 use sqlx::{MySql, Pool};
-use std::collections::HashMap;
 
 use crate::positional_args::find_lmx_summary_files;
 
+// pub(crate) mod checktypes;
 pub(crate) mod cmdline;
 pub(crate) mod connect;
 pub(crate) mod jobdata;
@@ -11,7 +13,7 @@ pub(crate) mod positional_args;
 pub(crate) mod sqltypes;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     let args = cmdline::parse_args();
     cmdline::echo_args(&args);
 
@@ -22,14 +24,11 @@ async fn main() {
     // If create_sqltypes flag is set, create the sqltype file
     // from the database and exit
     if args.create_sqltypes {
-        match sqltypes::create_sqltype_file(pool.clone(), &args).await {
-            Ok(_) => std::process::exit(0),
-            Err(_) => std::process::exit(1),
-        }
+        sqltypes::create_sqltype_file(pool.clone(), &args).await?;
+        std::process::exit(0);
     }
     // Normal operation: read sqltypes and proceed
-    let sqltypes: HashMap<String, HashMap<String, String>> =
-        sqltypes::read_sqltypes(pool.clone(), &args).await;
+    let sqltypes: SqlTypeHashMap = sqltypes::read_sqltypes(pool.clone(), &args).await?;
     if args.verbose || args.dry_run {
         println!("Read {} sqltypes from database/file", sqltypes.len());
     }
@@ -48,4 +47,5 @@ async fn main() {
 
     // Explicit disconnect from the database
     disconnect_from_database(pool).await;
+    Ok(())
 }

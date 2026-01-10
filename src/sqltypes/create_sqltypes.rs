@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
+    use crate::cmdline::CliArgs;
     use crate::sqltypes::create_sqltype_file;
     use crate::sqltypes::sqltype_hashmap::check_sqltypes_file;
-    use crate::sqltypes::CliArgs;
     use sqlx::{MySql, Pool};
     use tempfile::NamedTempFile;
 
