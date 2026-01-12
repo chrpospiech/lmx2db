@@ -1,6 +1,8 @@
+use crate::checktypes::check_type;
 use crate::cmdline::CliArgs;
+use crate::jobdata::LmxSummary;
+use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
-use std::collections::HashMap;
 
 pub(crate) mod foreign_keys;
 
@@ -9,15 +11,19 @@ pub(crate) mod foreign_keys;
 /// based on the provided data and sqltypes.
 pub fn import_into_runs_table(
     file_name: &str,
-    lmx_summary: &HashMap<String, HashMap<String, serde_yaml::Value>>,
-    sqltypes: &HashMap<String, HashMap<String, String>>,
+    lmx_summary: &LmxSummary,
+    sqltypes: &SqlTypeHashMap,
     args: &CliArgs,
 ) -> Result<Vec<String>> {
     // Collect the SQL queries into a Vec<String> and process them later.
     let mut query_list: Vec<String> = Vec::new();
 
     // Dummy usage to avoid unused variable warnings
-    let _dummy2: &HashMap<String, HashMap<String, String>> = sqltypes;
+    let table_name = "runs";
+    let map = sqltypes;
+    let key = "dummy_key".to_string();
+    let value = serde_yaml::Value::Null;
+    let _dummy1 = check_type(table_name, &key, &value, map);
 
     query_list.push("-- Inserting into runs table;".to_string());
     if args.verbose || args.dry_run {
