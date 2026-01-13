@@ -8,6 +8,7 @@ use std::io::Write;
 pub type LmxSummary = HashMap<String, HashMap<String, serde_yaml::Value>>;
 
 pub(crate) mod checktypes;
+pub(crate) mod create_sql;
 #[cfg(test)]
 pub(crate) mod jobs_tests;
 pub(crate) mod table_runs;
