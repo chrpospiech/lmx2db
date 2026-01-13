@@ -1,5 +1,5 @@
-use crate::checktypes::check_type;
 use crate::cmdline::CliArgs;
+use crate::jobdata::checktypes::check_type;
 use crate::jobdata::LmxSummary;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
@@ -21,9 +21,8 @@ pub fn import_into_runs_table(
     // Dummy usage to avoid unused variable warnings
     let table_name = "runs";
     let map = sqltypes;
-    let key = "dummy_key".to_string();
-    let value = serde_yaml::Value::Null;
-    let _dummy1 = check_type(table_name, &key, &value, map);
+    let tuple = [("dummy_key".to_string(), serde_yaml::Value::Null)];
+    let _dummy1 = check_type(table_name, &tuple, map);
 
     query_list.push("-- Inserting into runs table;".to_string());
     if args.verbose || args.dry_run {

@@ -5,7 +5,6 @@ use sqlx::{MySql, Pool};
 
 use crate::positional_args::find_lmx_summary_files;
 
-pub(crate) mod checktypes;
 pub(crate) mod cmdline;
 pub(crate) mod connect;
 pub(crate) mod jobdata;
