@@ -5,7 +5,7 @@ mod tests {
     use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../sqltypes/tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_wrong_string_length(pool: Pool<MySql>) {
         let args = CliArgs {
             verbose: false,
@@ -31,7 +31,7 @@ mod tests {
         );
     }
 
-    #[sqlx::test(fixtures("../sqltypes/tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_int_value(pool: Pool<MySql>) {
         let args = CliArgs {
             verbose: false,
@@ -48,7 +48,7 @@ mod tests {
         assert!(result.is_ok());
     }
 
-    #[sqlx::test(fixtures("../sqltypes/tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_varbinary_length(pool: Pool<MySql>) {
         let args = CliArgs {
             verbose: false,

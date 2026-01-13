@@ -5,7 +5,7 @@ mod tests {
     use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../sqltypes/tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_wrong_table_or_key(pool: Pool<MySql>) {
         let args = CliArgs {
             verbose: false,
@@ -42,7 +42,7 @@ mod tests {
         );
     }
 
-    #[sqlx::test(fixtures("../sqltypes/tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     pub async fn test_wrong_foreign_key(pool: Pool<MySql>) {
         let args = CliArgs {
             verbose: false,
@@ -66,7 +66,7 @@ mod tests {
         );
     }
 
-    #[sqlx::test(fixtures("../sqltypes/tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     pub async fn test_correct_foreign_key(pool: Pool<MySql>) {
         let args = CliArgs {
             verbose: false,
