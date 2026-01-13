@@ -15,7 +15,7 @@ pub struct CliArgs {
     #[arg(
         short = 'u',
         long,
-        default_value = "mysql://lmxtest:lmxtest@localhost/lmxdb"
+        default_value = "mysql://lmxdb:lmxdb@localhost/lmxdb"
     )]
     pub db_url: String,
 
@@ -26,10 +26,6 @@ pub struct CliArgs {
     /// create sqltypes file from database
     #[arg(short = 'c', long, default_value_t = false)]
     pub create_sqltypes: bool,
-
-    /// check data types before inserting into database
-    #[arg(short = 'C', long, default_value_t = false)]
-    pub check_types: bool,
 
     /// Name of the SQL file with import statements
     #[arg(short = 'f', long, default_value = "import.sql")]
@@ -60,12 +56,14 @@ pub fn parse_args() -> CliArgs {
 }
 
 pub fn echo_args(args: &CliArgs) {
-    if args.verbose {
+    if args.dry_run {
+        println!("Performing a dry run");
+    }
+    if args.verbose || args.dry_run {
         println!("Verbose: {}", args.verbose);
         println!("Dry run: {}", args.dry_run);
         println!("SQLTypes file: {}", args.sqltypes_file);
         println!("Create SQLTypes: {}", args.create_sqltypes);
-        println!("Check types with database: {}", args.check_types);
         println!("Database URL: {}", args.db_url);
         println!("SQL file: {}", args.sql_file);
         println!("Import unknown foreign keys: {}", args.do_import);
@@ -73,7 +71,5 @@ pub fn echo_args(args: &CliArgs) {
         println!("Settings file: {}", args.settings_file);
         println!("Project file: {}", args.project_file);
         println!("Input files: {:?}", args.files);
-    } else if args.dry_run {
-        println!("Performing a dry run");
-    }
+    };
 }
