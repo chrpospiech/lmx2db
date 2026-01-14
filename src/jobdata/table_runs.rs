@@ -1,10 +1,12 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::create_sql::{create_import_statement, create_update_statement};
+use crate::jobdata::table_runs::timing_data::compute_collect_time;
 use crate::jobdata::LmxSummary;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
 
 pub(crate) mod foreign_keys;
+pub(crate) mod timing_data;
 
 /// Function to import a row into the 'runs' table
 /// This function generates the SQL INSERT statement for the 'runs' table
@@ -78,7 +80,7 @@ pub fn import_into_runs_table(
     let timing_data: Vec<(String, serde_yaml::Value)> = vec![
         (
             "collect_time".to_string(),
-            serde_yaml::Value::Number(serde_yaml::Number::from(0.1234f64)), // Example value
+            compute_collect_time(lmx_summary)?,
         ),
         (
             "elapsed".to_string(),
