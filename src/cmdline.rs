@@ -47,8 +47,8 @@ pub struct CliArgs {
     #[arg(short = 'p', long, default_value = "project.yml")]
     pub project_file: String,
 
-    /// Input files to process
-    pub files: Vec<String>,
+    /// Input directories to process
+    pub directories: Vec<String>,
 }
 
 pub fn parse_args() -> CliArgs {
@@ -70,6 +70,6 @@ pub fn echo_args(args: &CliArgs) {
         println!("Module file: {}", args.module_file);
         println!("Settings file: {}", args.settings_file);
         println!("Project file: {}", args.project_file);
-        println!("Input files: {:?}", args.files);
+        println!("Input directories: {:?}", args.directories);
     };
 }
