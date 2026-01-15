@@ -1,6 +1,6 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::create_sql::{create_import_statement, create_update_statement};
-use crate::jobdata::table_runs::timing_data::compute_collect_time;
+use crate::jobdata::table_runs::timing_data::{compute_collect_time, compute_elapsed_time};
 use crate::jobdata::LmxSummary;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
@@ -82,10 +82,7 @@ pub fn import_into_runs_table(
             "collect_time".to_string(),
             compute_collect_time(lmx_summary)?,
         ),
-        (
-            "elapsed".to_string(),
-            serde_yaml::Value::Number(serde_yaml::Number::from(12.34f64)), // Example value
-        ),
+        ("elapsed".to_string(), compute_elapsed_time(lmx_summary)?),
     ];
     // Call create_update_statement for timing table
     let timing_sql = create_update_statement("runs", &timing_data, "rid = @rid", sqltypes)?;
