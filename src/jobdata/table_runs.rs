@@ -1,10 +1,12 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::create_sql::{create_import_statement, create_update_statement};
+use crate::jobdata::table_runs::find_file::find_module_file;
 use crate::jobdata::table_runs::timing_data::{compute_collect_time, compute_elapsed_time};
 use crate::jobdata::LmxSummary;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
 
+pub(crate) mod find_file;
 pub(crate) mod foreign_keys;
 pub(crate) mod timing_data;
 
@@ -87,6 +89,9 @@ pub fn import_into_runs_table(
     // Call create_update_statement for timing table
     let timing_sql = create_update_statement("runs", &timing_data, "rid = @rid", sqltypes)?;
     query_list.push(timing_sql);
+
+    //dummy call to suppress unused variable warning
+    let _ = find_module_file(file_name, args);
 
     Ok(query_list)
 }

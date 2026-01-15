@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests {
     use crate::cmdline::CliArgs;
-    use crate::jobdata::table_runs::foreign_keys::import_foreign_keys;
-    use crate::jobdata::table_runs::foreign_keys::project_mockup::{
+    use crate::jobdata::table_runs::find_file::project_mockup::{
         setup_cliargs_with_project_file_name, teardown_tmp_project_file,
     };
+    use crate::jobdata::table_runs::foreign_keys::import_foreign_keys;
     use crate::jobdata::{read_lmx_summary, LmxSummary};
 
     #[test]

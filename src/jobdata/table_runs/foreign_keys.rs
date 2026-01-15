@@ -1,14 +1,10 @@
 use crate::cmdline::CliArgs;
+use crate::jobdata::table_runs::find_file::find_project_file;
 use crate::jobdata::LmxSummary;
 use anyhow::Result;
-use std::path::{Path, PathBuf};
 
 #[cfg(test)]
-pub(crate) mod find_project_file;
-#[cfg(test)]
 pub(crate) mod import_foreign_keys;
-#[cfg(test)]
-pub(crate) mod project_mockup;
 #[cfg(test)]
 pub(crate) mod read_project_file;
 
@@ -157,54 +153,9 @@ pub fn import_foreign_keys(
 pub fn read_project_file(file_name: &str, args: &CliArgs) -> Result<RunsForeignKeys> {
     let project_file_path = find_project_file(file_name, args)?;
     let file_contents = std::fs::read_to_string(&project_file_path)?;
+    if args.verbose || args.dry_run {
+        println!("Contents of project file:\n{}", file_contents);
+    }
     let runs_foreign_keys: RunsForeignKeys = serde_yaml::from_str(&file_contents)?;
     Ok(runs_foreign_keys)
-}
-
-/// Finds the project file by searching up the directory tree from the given file's location.
-/// If the project_file argument contains a path separator, it is treated as an absolute or relative
-/// path and is used directly.
-/// If not, the function searches parent directories for the file.
-/// Returns the full path to the project file if found, or an io::Error if not found.
-pub fn find_project_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
-    if args.project_file.contains('/') {
-        if args.verbose || args.dry_run {
-            println!("Using specified project file path: '{}'", args.project_file);
-        }
-        let project_file_path = PathBuf::from(&args.project_file);
-        if project_file_path.exists() {
-            return Ok(project_file_path);
-        } else {
-            return Err(anyhow::anyhow!(
-                "Required project file '{}' not found",
-                args.project_file
-            ));
-        }
-    }
-    if args.verbose || args.dry_run {
-        println!(
-            "Searching for project file '{}' starting from '{}'",
-            args.project_file, file_name
-        );
-    }
-    let parent_dir = Path::new(file_name)
-        .parent()
-        .filter(|p| !p.as_os_str().is_empty())
-        .unwrap_or(Path::new("."));
-    let mut current_dir = parent_dir.canonicalize()?;
-
-    loop {
-        let project_file_path = current_dir.join(&args.project_file);
-
-        if project_file_path.exists() {
-            return Ok(project_file_path);
-        }
-
-        if !current_dir.pop() {
-            return Err(anyhow::anyhow!(
-                "Required project file '{}' not found in directory tree",
-                args.project_file
-            ));
-        }
-    }
 }

@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
     use crate::cmdline::CliArgs;
+    use crate::jobdata::table_runs::find_file::project_mockup::teardown_tmp_project_file;
     use crate::jobdata::table_runs::foreign_keys::import_foreign_keys;
-    use crate::jobdata::table_runs::foreign_keys::project_mockup::teardown_tmp_project_file;
     use crate::jobdata::{read_lmx_summary, LmxSummary};
 
     #[tokio::test]

@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
     use crate::cmdline::CliArgs;
-    use crate::jobdata::table_runs::foreign_keys::find_project_file;
-    use crate::jobdata::table_runs::foreign_keys::project_mockup::{
+    use crate::jobdata::table_runs::find_file::find_project_file;
+    use crate::jobdata::table_runs::find_file::project_mockup::{
         setup_cliargs_with_project_file, setup_tmp_project_file, teardown_tmp_project_file,
     };
     use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
