@@ -1,7 +1,7 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::create_sql::{create_import_statement, create_update_statement};
-use crate::jobdata::table_runs::find_file::find_module_file;
 use crate::jobdata::table_runs::timing_data::{compute_collect_time, compute_elapsed_time};
+use crate::jobdata::table_runs::toolchain::get_toolchain_data;
 use crate::jobdata::LmxSummary;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
@@ -9,6 +9,7 @@ use anyhow::Result;
 pub(crate) mod find_file;
 pub(crate) mod foreign_keys;
 pub(crate) mod timing_data;
+pub(crate) mod toolchain;
 
 /// Function to import a row into the 'runs' table
 /// This function generates the SQL INSERT statement for the 'runs' table
@@ -35,6 +36,7 @@ pub fn import_into_runs_table(
     )?);
 
     // Prepare the data for insertion into the 'runs' table
+    // Start with mandatory foreign key columns
     let mut column_data: Vec<(String, serde_yaml::Value)> = vec![
         (
             "ccid".to_string(),
@@ -53,6 +55,7 @@ pub fn import_into_runs_table(
             serde_yaml::Value::String("@fsid".to_string()),
         ),
     ];
+    // Populate column_data from lmx_summary base_data section
     if let Some(runs_section) = lmx_summary.get("base_data") {
         for (key, value) in runs_section {
             let runs_types = sqltypes
@@ -64,6 +67,43 @@ pub fn import_into_runs_table(
             }
         }
     }
+    // Import toolchain data from module file and loaded modules
+    // This needs to be done before creating the import statement
+    // because the runs table doesn't allow default values for these columns.
+    // So we need to provide explicit values, even if they are "n/a".
+    let current_toolchain = get_toolchain_data(file_name, lmx_summary, args);
+    column_data.push((
+        "compiler".to_string(),
+        if let Some(compiler) = current_toolchain.compiler {
+            serde_yaml::Value::String(compiler)
+        } else {
+            serde_yaml::Value::String("n/a".to_string())
+        },
+    ));
+    column_data.push((
+        "compiler_version".to_string(),
+        if let Some(compiler_version) = current_toolchain.compiler_version {
+            serde_yaml::Value::String(compiler_version)
+        } else {
+            serde_yaml::Value::String("n/a".to_string())
+        },
+    ));
+    column_data.push((
+        "mpilib".to_string(),
+        if let Some(mpilib) = current_toolchain.mpilib {
+            serde_yaml::Value::String(mpilib)
+        } else {
+            serde_yaml::Value::String("n/a".to_string())
+        },
+    ));
+    column_data.push((
+        "mpilib_version".to_string(),
+        if let Some(mpilib_version) = current_toolchain.mpilib_version {
+            serde_yaml::Value::String(mpilib_version)
+        } else {
+            serde_yaml::Value::String("n/a".to_string())
+        },
+    ));
     let import_sql = create_import_statement("runs", &column_data, sqltypes)?;
     query_list.push(import_sql);
 
@@ -89,9 +129,6 @@ pub fn import_into_runs_table(
     // Call create_update_statement for timing table
     let timing_sql = create_update_statement("runs", &timing_data, "rid = @rid", sqltypes)?;
     query_list.push(timing_sql);
-
-    //dummy call to suppress unused variable warning
-    let _ = find_module_file(file_name, args);
 
     Ok(query_list)
 }
