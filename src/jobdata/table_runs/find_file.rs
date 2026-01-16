@@ -45,11 +45,7 @@ pub fn find_config_file(file_name: &str, args: &CliArgs, is_project_file: bool) 
             config_name, config_file, file_name
         );
     }
-    let parent_dir = Path::new(file_name)
-        .parent()
-        .filter(|p| !p.as_os_str().is_empty())
-        .unwrap_or(Path::new("."));
-    let mut current_dir = parent_dir.canonicalize()?;
+    let mut current_dir = extract_directory_path(file_name)?;
 
     loop {
         let config_file_path = current_dir.join(config_file);
@@ -73,6 +69,17 @@ pub fn find_config_file(file_name: &str, args: &CliArgs, is_project_file: bool) 
             ));
         }
     }
+}
+
+///Extracts the directory path from the given file name.
+pub fn extract_directory_path(file_name: &str) -> Result<PathBuf> {
+    let path = Path::new(file_name);
+    let dir_path = path
+        .parent()
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."))
+        .canonicalize()?;
+    Ok(dir_path.to_path_buf())
 }
 
 /// Finds the project file by searching up the directory tree from the given file's location.

@@ -1,5 +1,6 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::create_sql::{create_import_statement, create_update_statement};
+use crate::jobdata::table_runs::find_file::extract_directory_path;
 use crate::jobdata::table_runs::timing_data::{compute_collect_time, compute_elapsed_time};
 use crate::jobdata::table_runs::toolchain::get_toolchain_data;
 use crate::jobdata::LmxSummary;
@@ -103,6 +104,20 @@ pub fn import_into_runs_table(
         } else {
             serde_yaml::Value::String("n/a".to_string())
         },
+    ));
+    // Add the required dirname column as the absolute path
+    // of the directory containing the LMX_summary file
+    if args.verbose || args.dry_run {
+        println!("Adding dirname column to runs table data");
+    }
+    column_data.push((
+        "dirname".to_string(),
+        serde_yaml::Value::String(
+            extract_directory_path(file_name)?
+                .to_str()
+                .unwrap()
+                .to_string(),
+        ),
     ));
     let import_sql = create_import_statement("runs", &column_data, sqltypes)?;
     query_list.push(import_sql);
