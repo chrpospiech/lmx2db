@@ -60,10 +60,3 @@ pub fn find_lmx_type_files(file_name: &str, type_str: &str) -> Result<Vec<String
     }
     Ok(result)
 }
-
-// dummy call to avoid "unused function" warnings
-#[allow(dead_code)]
-fn _dummy() {
-    let _ = find_lmx_summary_files(&vec!["/some/path".to_string()]);
-    let _ = find_lmx_type_files("/some/path/LMX_summary.yml", "data");
-}

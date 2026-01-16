@@ -1,6 +1,9 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::create_sql::{create_import_statement, create_update_statement};
 use crate::jobdata::table_runs::find_file::extract_directory_path;
+use crate::jobdata::table_runs::misc_columns::{
+    determine_misc_columns, determine_settings_columns,
+};
 use crate::jobdata::table_runs::timing_data::import_timing_data;
 use crate::jobdata::table_runs::toolchain::import_toolchain_data;
 use crate::jobdata::LmxSummary;
@@ -9,6 +12,7 @@ use anyhow::Result;
 
 pub(crate) mod find_file;
 pub(crate) mod foreign_keys;
+pub(crate) mod misc_columns;
 pub(crate) mod timing_data;
 pub(crate) mod toolchain;
 
@@ -109,8 +113,16 @@ pub fn import_into_runs_table(
     let timing_sql = create_update_statement("runs", &timing_data, "rid = @rid", sqltypes)?;
     query_list.push(timing_sql);
 
-    // Dummy call to find_and_read_settings_file to avoid unused import warning
-    let _ = find_file::find_and_read_settings_file(file_name, args);
+    // Determine miscellaneous columns such as has_MPItrace and has_iprof
+    if args.verbose || args.dry_run {
+        println!("Determining miscellaneous columns for current run ");
+    }
+    let mut misc_columns = determine_misc_columns(file_name)?;
+    // Append columns from settings file (if any)
+    misc_columns.extend(determine_settings_columns(file_name, runs_columns, args));
+    // Create update statement for misc columns
+    let misc_sql = create_update_statement("runs", &misc_columns, "rid = @rid", sqltypes)?;
+    query_list.push(misc_sql);
 
     Ok(query_list)
 }
