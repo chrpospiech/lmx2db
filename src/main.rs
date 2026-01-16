@@ -3,12 +3,12 @@ use connect::{connect_to_database, disconnect_from_database};
 use sqltypes::SqlTypeHashMap;
 use sqlx::{MySql, Pool};
 
-use crate::positional_args::find_lmx_summary_files;
+use crate::globbing::find_lmx_summary_files;
 
 pub(crate) mod cmdline;
 pub(crate) mod connect;
+pub(crate) mod globbing;
 pub(crate) mod jobdata;
-pub(crate) mod positional_args;
 pub(crate) mod sqltypes;
 
 #[tokio::main]
