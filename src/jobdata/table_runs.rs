@@ -145,5 +145,8 @@ pub fn import_into_runs_table(
     let timing_sql = create_update_statement("runs", &timing_data, "rid = @rid", sqltypes)?;
     query_list.push(timing_sql);
 
+    // Dummy call to find_and_read_settings_file to avoid unused import warning
+    let _ = find_file::find_and_read_settings_file(file_name, args);
+
     Ok(query_list)
 }

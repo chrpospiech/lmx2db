@@ -1,11 +1,14 @@
 use crate::cmdline::CliArgs;
 use anyhow::Result;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 #[cfg(test)]
 pub(crate) mod find_project_file;
 #[cfg(test)]
 pub(crate) mod project_mockup;
+#[cfg(test)]
+pub(crate) mod read_settings;
 
 /// Finds a config file by searching up the directory tree from the given file's location.
 /// the config file can be args.project_file or args.module_file depending on the boolean
@@ -98,4 +101,37 @@ pub fn find_project_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
 /// Returns the full path to the module file if found, or an io::Error if not found.
 pub fn find_module_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
     find_config_file(file_name, args, false)
+}
+
+/// Finds and reads settings file specified in args.settings_file.
+/// The file is expected to reside in the same directory of the given file_name.
+/// If found, the file is attempted to be read and parsed as YAML
+/// returning a HashMap<String, serde_yaml::Value> representing the settings.
+/// If not found or if there are issues reading/parsing the file,
+/// an appropriate io::Error is returned.
+pub fn find_and_read_settings_file(
+    file_name: &str,
+    args: &CliArgs,
+) -> Result<HashMap<String, serde_yaml::Value>> {
+    let dir_path = extract_directory_path(file_name)?;
+    let settings_file_path = dir_path.join(&args.settings_file);
+    if args.verbose || args.dry_run {
+        println!(
+            "Looking for settings file at path: '{}'",
+            settings_file_path.to_str().unwrap()
+        );
+    }
+    if !settings_file_path.exists() {
+        return Err(anyhow::anyhow!(
+            "Settings file '{}' not found in directory '{}'",
+            args.settings_file,
+            dir_path.to_str().unwrap()
+        ));
+    }
+    let file_contents = std::fs::read_to_string(&settings_file_path)?;
+    if args.verbose || args.dry_run {
+        println!("Contents of settings file:\n{}", file_contents);
+    }
+    let settings_map: HashMap<String, serde_yaml::Value> = serde_yaml::from_str(&file_contents)?;
+    Ok(settings_map)
 }
