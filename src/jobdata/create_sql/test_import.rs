@@ -37,7 +37,7 @@ mod tests {
         let sql = create_import_statement("runs", &tuple, &sqltypes)?;
         assert_eq!(
             sql,
-            "INSERT INTO runs (rid, compiler, nodes) VALUES ('@rid', 'gcc', 16);"
+            "INSERT INTO runs (rid, compiler, nodes) VALUES (@rid, 'gcc', 16);"
         );
         Ok(())
     }

@@ -21,6 +21,10 @@ mod tests {
 
         let tuple = [
             (
+                "rid".to_string(),
+                serde_yaml::Value::String("@rid".to_string()),
+            ),
+            (
                 "compiler".to_string(),
                 serde_yaml::Value::String("gcc-10".to_string()),
             ),
@@ -33,7 +37,7 @@ mod tests {
         let sql = create_update_statement("runs", &tuple, "rid = @rid", &sqltypes)?;
         assert_eq!(
             sql,
-            "UPDATE runs SET compiler = 'gcc-10', nodes = 32 WHERE rid = @rid;"
+            "UPDATE runs SET rid = @rid, compiler = 'gcc-10', nodes = 32 WHERE rid = @rid;"
         );
         Ok(())
     }
