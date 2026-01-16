@@ -2,7 +2,6 @@
 mod tests {
     use crate::cmdline::CliArgs;
     use crate::jobdata::table_runs::toolchain::get_toolchain_data;
-    use crate::jobdata::table_runs::toolchain::ToolChain;
     use crate::jobdata::LmxSummary;
     use anyhow::Result;
 
@@ -23,15 +22,7 @@ base_data:
             ..Default::default()
         };
         let toolchain = get_toolchain_data("non_existent_file.yml", &lmx_summary, &args);
-        assert_eq!(
-            toolchain,
-            ToolChain {
-                compiler: None,
-                compiler_version: None,
-                mpilib: None,
-                mpilib_version: None,
-            }
-        );
+        assert!(toolchain.is_err());
         Ok(())
     }
 
@@ -61,15 +52,7 @@ good_compiler:
 "#;
         std::fs::write("/tmp/test_module_file.yml", module_data)?;
         let toolchain = get_toolchain_data("/tmp/test_module_file.yml", &lmx_summary, &args);
-        assert_eq!(
-            toolchain,
-            ToolChain {
-                compiler: None,
-                compiler_version: None,
-                mpilib: None,
-                mpilib_version: None,
-            }
-        );
+        assert!(toolchain.is_err());
         Ok(())
     }
 
@@ -100,15 +83,12 @@ good_compiler:
 "#;
         std::fs::write("/tmp/test_module_file.yml", module_data)?;
         let toolchain = get_toolchain_data("/tmp/test_module_file.yml", &lmx_summary, &args);
-        assert_eq!(
-            toolchain,
-            ToolChain {
-                compiler: Some("gcc".to_string()),
-                compiler_version: Some("9.3.0".to_string()),
-                mpilib: None,
-                mpilib_version: None,
-            }
-        );
+        assert!(toolchain.is_ok());
+        let toolchain = toolchain.unwrap();
+        assert_eq!(toolchain.compiler.unwrap(), "gcc");
+        assert_eq!(toolchain.compiler_version.unwrap(), "9.3.0");
+        assert!(toolchain.mpilib.is_none());
+        assert!(toolchain.mpilib_version.is_none());
         Ok(())
     }
 }

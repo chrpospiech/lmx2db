@@ -163,3 +163,42 @@ pub fn compute_elapsed_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
         ))
     }
 }
+
+/// Imports timing data into a vector of column-value pairs for the 'runs' table.
+/// This function computes the `collect_time` and `elapsed_time`
+/// from the provided LMX summary data and prepares them for insertion into the database.
+///
+/// # Arguments
+/// * `lmx_summary` - A reference to the LMX summary data containing timing information
+///
+/// # Returns
+/// * `Result<Vec<(String, serde_yaml::Value)>>` - A vector of column-value pairs on success
+///
+/// # Errors
+/// This function will return an error if:
+/// * The computation of `collect_time` or `elapsed_time` fails
+///
+/// # Example
+/// ```no_run
+/// # use lmx2db::jobdata::LmxSummary;
+/// # use lmx2db::jobdata::table_runs::timing_data::import_timing_data;
+/// let lmx_summary: LmxSummary = /* ... */;
+/// let timing_data = import_timing_data(&lmx_summary)?;
+/// # Ok::<(), anyhow::Error>(())
+/// ```
+/// # See Also
+/// * `compute_collect_time` - Function to compute the collection time
+/// * `compute_elapsed_time` - Function to compute the elapsed time
+///
+pub fn import_timing_data(lmx_summary: &LmxSummary) -> Result<Vec<(String, serde_yaml::Value)>> {
+    let mut timing_data: Vec<(String, serde_yaml::Value)> = Vec::new();
+
+    // Compute collect_time and elapsed_time
+    let collect_time = compute_collect_time(lmx_summary)?;
+    let elapsed = compute_elapsed_time(lmx_summary)?;
+
+    // Add to timing_data vector
+    timing_data.push(("collect_time".to_string(), collect_time));
+    timing_data.push(("elapsed".to_string(), elapsed));
+    Ok(timing_data)
+}

@@ -30,13 +30,83 @@ pub type ToolChainMap = HashMap<String, ToolChain>;
 /// * `args` - Command line arguments
 ///
 /// Returns:
-/// * `ToolChain` - The extracted toolchain data
+/// * `Vec<(String, serde_yaml::Value)>` - The extracted toolchain data as column-value pairs
 ///
 /// Errors:
 /// This function will never return an error - any errors encountered during
 /// file reading or parsing are caught and logged, and an empty ToolChain is returned instead.
 ///
-pub fn get_toolchain_data(file_name: &str, lmx_summary: &LmxSummary, args: &CliArgs) -> ToolChain {
+pub fn import_toolchain_data(
+    file_name: &str,
+    lmx_summary: &LmxSummary,
+    args: &CliArgs,
+) -> Vec<(String, serde_yaml::Value)> {
+    // Initialize default or returned data
+    let empty_toolchain = ToolChain {
+        compiler: None,
+        compiler_version: None,
+        mpilib: None,
+        mpilib_version: None,
+    };
+    let mut column_data: Vec<(String, serde_yaml::Value)> = Vec::new();
+    let toolchain = match get_toolchain_data(file_name, lmx_summary, args) {
+        Ok(toolchain) => toolchain,
+        Err(e) => {
+            if args.verbose || args.dry_run {
+                println!("Ignoring: {}", e);
+            }
+            empty_toolchain.clone()
+        }
+    };
+    let compiler = toolchain.compiler.unwrap_or_else(|| "n/a".to_string());
+    let compiler_version = toolchain
+        .compiler_version
+        .unwrap_or_else(|| "n/a".to_string());
+    let mpilib = toolchain.mpilib.unwrap_or_else(|| "n/a".to_string());
+    let mpilib_version = toolchain
+        .mpilib_version
+        .unwrap_or_else(|| "n/a".to_string());
+    if args.verbose || args.dry_run {
+        println!("Toolchain data extracted:");
+        println!("  Compiler: {}", compiler);
+        println!("  Compiler Version: {}", compiler_version);
+        println!("  MPI Library: {}", mpilib);
+        println!("  MPI Library Version: {}", mpilib_version);
+    }
+    column_data.push(("compiler".to_string(), serde_yaml::Value::String(compiler)));
+    column_data.push((
+        "compiler_version".to_string(),
+        serde_yaml::Value::String(compiler_version),
+    ));
+    column_data.push(("mpilib".to_string(), serde_yaml::Value::String(mpilib)));
+    column_data.push((
+        "mpilib_version".to_string(),
+        serde_yaml::Value::String(mpilib_version),
+    ));
+    column_data
+}
+
+/// Function to get toolchain data for the 'runs' table
+/// This function reads the module file and extracts toolchain information
+/// based on the loaded modules in the LMX summary.
+///
+/// Arguments:
+/// * `file_name` - The name of the job file
+/// * `lmx_summary` - The LMX summary data
+/// * `args` - Command line arguments
+///
+/// Returns:
+/// * `Result<ToolChain>` - The extracted toolchain data
+///
+/// Errors:
+/// This function will return an error if there are issues reading or parsing the module file,
+/// or if there are issues retrieving the loaded modules from the LMX summary.
+///
+pub fn get_toolchain_data(
+    file_name: &str,
+    lmx_summary: &LmxSummary,
+    args: &CliArgs,
+) -> Result<ToolChain> {
     // Initialize an empty ToolChain
     let mut current_toolchain = ToolChain {
         compiler: None,
@@ -44,24 +114,8 @@ pub fn get_toolchain_data(file_name: &str, lmx_summary: &LmxSummary, args: &CliA
         mpilib: None,
         mpilib_version: None,
     };
-    let toolchain_map = match read_module_file(file_name, args) {
-        Ok(map) => map,
-        Err(e) => {
-            if args.verbose || args.dry_run {
-                println!("Ignoring: {}", e);
-            }
-            return current_toolchain;
-        }
-    };
-    let loaded_modules = match get_loaded_modules(lmx_summary) {
-        Ok(list) => list,
-        Err(e) => {
-            if args.verbose || args.dry_run {
-                println!("Ignoring: {}", e);
-            }
-            return current_toolchain;
-        }
-    };
+    let toolchain_map = read_module_file(file_name, args)?;
+    let loaded_modules = get_loaded_modules(lmx_summary)?;
     for module in &loaded_modules {
         if let Some(toolchain) = toolchain_map.get(module) {
             if let Some(ref compiler) = toolchain.compiler {
@@ -79,7 +133,7 @@ pub fn get_toolchain_data(file_name: &str, lmx_summary: &LmxSummary, args: &CliA
         }
     }
 
-    current_toolchain
+    Ok(current_toolchain)
 }
 
 /// Reads and parses the module file to extract toolchain information.
