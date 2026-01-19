@@ -27,6 +27,22 @@ lmx2db --input <input.lmx> --output <database>
 
 See LICENSE file for details.
 
+## Hints for the Developer
+
+The distribution contains linter configuration files `rustfmt.toml`,
+`.codespell.dictionary` and `.pre-commit-config.yaml`. These are meant
+for the use of `pre-commit`. Every developer is strongly encouraged to
+use `pre-commit` to maintain code quality.
+
+To enable `pre-commit` using `uv`, please proceed as follows.
+
+- `uv init`
+- `rm .python-version main.py`
+- `uv add pre-commit`
+- `source .venv/bin/activate`
+- `pre-commit run --all`
+- `pre-commit install`
+
 ## Modules File
 
 The database moduledefs.db has been discontinued in favor of a YAML file
