@@ -70,21 +70,19 @@ memory_per_node: 64
         };
         let result =
             determine_settings_columns(lmx_summary_file.to_str().unwrap(), &runs_columns, &args);
-        let expected = vec![
-            (
-                "compiler".to_string(),
-                serde_yaml::Value::String("GNU".to_string()),
-            ),
-            (
-                "comment".to_string(),
-                serde_yaml::Value::String("Test run".to_string()),
-            ),
-            (
-                "gpus".to_string(),
-                serde_yaml::Value::Number(serde_yaml::Number::from(2)),
-            ),
-        ];
-        assert_eq!(result, expected);
+        assert_eq!(result.len(), 3);
+        assert!(result.contains(&(
+            "compiler".to_string(),
+            serde_yaml::Value::String("GNU".to_string()),
+        )));
+        assert!(result.contains(&(
+            "comment".to_string(),
+            serde_yaml::Value::String("Test run".to_string()),
+        )));
+        assert!(result.contains(&(
+            "gpus".to_string(),
+            serde_yaml::Value::Number(serde_yaml::Number::from(2)),
+        )));
 
         // Clean up
         std::fs::remove_file(&lmx_summary_file)?;

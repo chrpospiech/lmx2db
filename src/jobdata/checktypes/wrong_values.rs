@@ -17,10 +17,11 @@ mod tests {
     use crate::cmdline::CliArgs;
     use crate::jobdata::checktypes::check_type;
     use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
+    use anyhow::Result;
     use sqlx::{MySql, Pool};
 
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    async fn test_wrong_string_length(pool: Pool<MySql>) {
+    async fn test_wrong_string_length(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -28,9 +29,7 @@ mod tests {
             db_url: String::new(),
             ..Default::default()
         };
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args)
-            .await
-            .expect("Failed to read sqltypes");
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let long_string = "a".repeat(40); // Assuming max length is less than 32
         let tuple = [(
             "compiler".to_string(),
@@ -46,10 +45,11 @@ mod tests {
                 40
             )
         );
+        Ok(())
     }
 
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    async fn test_int_value(pool: Pool<MySql>) {
+    async fn test_int_value(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -57,19 +57,18 @@ mod tests {
             db_url: String::new(),
             ..Default::default()
         };
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args)
-            .await
-            .expect("Failed to read sqltypes");
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let tuple = [(
             "nodes".to_string(),
             serde_yaml::Value::Number(serde_yaml::Number::from(10000000)),
         )];
         let result = check_type("runs", &tuple, &sqltypes);
         assert!(result.is_ok());
+        Ok(())
     }
 
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    async fn test_varbinary_length(pool: Pool<MySql>) {
+    async fn test_varbinary_length(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -77,9 +76,7 @@ mod tests {
             db_url: String::new(),
             ..Default::default()
         };
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args)
-            .await
-            .expect("Failed to read sqltypes");
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let long_binary = "a".repeat(1030); // Assuming max length is less than 4096
         let tuple = [(
             "affinity".to_string(),
@@ -96,5 +93,25 @@ mod tests {
                 1030*4
             )
         );
+        Ok(())
+    }
+
+    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    async fn test_null_value(pool: Pool<MySql>) -> Result<()> {
+        let args = CliArgs {
+            verbose: false,
+            dry_run: false,
+            create_sqltypes: false,
+            db_url: String::new(),
+            ..Default::default()
+        };
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
+        let tuple = [("elapsed".to_string(), serde_yaml::Value::Null)];
+        let result = check_type("runs", &tuple, &sqltypes);
+        assert!(result.is_err());
+        let expected_msg =
+            "Column elapsed in table runs expects float, but value cannot be cast to float";
+        assert_eq!(result.unwrap_err().to_string(), expected_msg);
+        Ok(())
     }
 }
