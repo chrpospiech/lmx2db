@@ -45,6 +45,14 @@ pub struct RunsForeignKeys {
 /// If the query execution is successful, it checks whether the result is None.
 /// If so, it anyhow::bails! with an error message. Otherwise, it returns Ok(()).
 ///
+/// # Note on dry_run mode
+/// When `args.dry_run` is true, this function still executes validation queries to verify that
+/// foreign keys exist in the database. This is intentional behavior - dry_run mode validates
+/// data integrity without importing data. The actual data insertion is controlled separately
+/// by the `do_import` flag that is passed to the database functions (e.g., `cluster_id()`,
+/// `person_id()`, etc.). When `do_import` is 0, these functions only verify existence without
+/// creating new records.
+///
 /// # Arguments
 /// * `pool` - Optional reference to a MySQL connection pool
 /// * `query` - Reference to the SQL query string to execute
