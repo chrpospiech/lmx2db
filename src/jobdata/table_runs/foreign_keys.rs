@@ -36,21 +36,15 @@ pub struct RunsForeignKeys {
     pub person: Option<String>,
 }
 
-/// Helper function with parameters pool: &Option<sqlx::Pool<MySql>>,
+/// Helper function to execute a query with parameters pool: &Option<sqlx::Pool<MySql>>,
 /// query: &String and args: &CliArgs returning Result<()> to execute a query if pool is Some.
 /// If pool is None and args.dry_run or args.verbose is set, it prints an informative message.
 /// If pool is None and neither args.dry_run nor args.verbose is set, it returns OK without any action.
-/// If pool is Some, it executes the query against the database. The error is propagated using the ? operator.
-/// If the query execution is successful, it checks whether the result (Option<i32>) is None.
-/// If so, it calls bail! with an error message. Otherwise, it returns Ok(()).
-///
-/// # Note on dry_run mode
-/// When `args.dry_run` is true, this function still executes validation queries to verify that
-/// foreign keys exist in the database. This is intentional behavior - dry_run mode validates
-/// data integrity without importing data. The actual data insertion is controlled separately
-/// by the `do_import` flag that is passed to the database functions (e.g., `cluster_id()`,
-/// `person_id()`, etc.). When `do_import` is 0, these functions only verify existence without
-/// creating new records.
+/// If pool is Some, it executes the query against the database and propagates any query error
+/// using the `?` operator.
+/// If the query execution is successful, it reads the first column as an `Option<i32>` and checks
+/// whether the value is `None`. If so, it `anyhow::bail!`s with an error message. Otherwise, it
+/// returns `Ok(())`.
 ///
 /// # Arguments
 /// * `pool` - Optional reference to a MySQL connection pool
@@ -61,7 +55,7 @@ pub struct RunsForeignKeys {
 ///
 pub async fn execute_query_if_pool(
     pool: &Option<sqlx::Pool<MySql>>,
-    query: &String,
+    query: &str,
     args: &CliArgs,
 ) -> Result<()> {
     if let Some(db_pool) = pool {
@@ -71,7 +65,10 @@ pub async fn execute_query_if_pool(
         let row = sqlx::query(query).fetch_one(db_pool).await?;
         let fetched: Option<i32> = row.try_get(0)?;
         if fetched.is_none() {
-            bail!("Query execution returned no result or NULL");
+            bail!(
+                "Foreign key validation failed: query returned no result or NULL.\nQuery: {}",
+                query
+            );
         }
         Ok(())
     } else {
