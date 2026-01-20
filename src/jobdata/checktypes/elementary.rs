@@ -17,10 +17,11 @@ mod tests {
     use crate::cmdline::CliArgs;
     use crate::jobdata::checktypes::check_type;
     use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
+    use anyhow::Result;
     use sqlx::{MySql, Pool};
 
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    async fn test_wrong_table_or_key(pool: Pool<MySql>) {
+    async fn test_wrong_table_or_key(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -28,9 +29,7 @@ mod tests {
             db_url: String::new(),
             ..Default::default()
         };
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args)
-            .await
-            .expect("Failed to read sqltypes");
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
 
         let tuple = [("non_existing_key".to_string(), serde_yaml::Value::Null)];
 
@@ -49,10 +48,11 @@ mod tests {
             result.unwrap_err().to_string(),
             "Column non_existing_key not found in type check map for table runs"
         );
+        Ok(())
     }
 
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_wrong_foreign_key(pool: Pool<MySql>) {
+    pub async fn test_wrong_foreign_key(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -60,9 +60,7 @@ mod tests {
             db_url: String::new(),
             ..Default::default()
         };
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args)
-            .await
-            .expect("Failed to read sqltypes");
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
 
         let tuple = [(
             "clid".to_string(),
@@ -76,10 +74,11 @@ mod tests {
             result.unwrap_err().to_string(),
             "Column clid in table runs expects int(11), but value 'not_an_id' is neither a reference (@\\w+id) nor a valid integer"
         );
+        Ok(())
     }
 
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_correct_foreign_key(pool: Pool<MySql>) {
+    pub async fn test_correct_foreign_key(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -87,9 +86,7 @@ mod tests {
             db_url: String::new(),
             ..Default::default()
         };
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args)
-            .await
-            .expect("Failed to read sqltypes");
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
 
         // Test for foreign key that is a valid @\w+id reference
         let tuple_ref = [(
@@ -106,5 +103,6 @@ mod tests {
         )];
         let result_int = check_type("runs", &tuple_int, &sqltypes);
         assert!(result_int.is_ok());
+        Ok(())
     }
 }
