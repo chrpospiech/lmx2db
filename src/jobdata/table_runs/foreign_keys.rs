@@ -55,7 +55,7 @@ pub struct RunsForeignKeys {
 ///
 pub async fn execute_query_if_pool(
     pool: &Option<sqlx::Pool<MySql>>,
-    query: &String,
+    query: &str,
     args: &CliArgs,
 ) -> Result<()> {
     if let Some(db_pool) = pool {
