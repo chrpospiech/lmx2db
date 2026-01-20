@@ -15,10 +15,11 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::table_runs::find_file::find_project_file;
 use crate::jobdata::LmxSummary;
-use anyhow::Result;
+use anyhow::{bail, Result};
+use sqlx::{MySql, Row};
 
 #[cfg(test)]
-pub(crate) mod import_foreign_keys;
+pub(crate) mod generate_foreign_key_queries;
 #[cfg(test)]
 pub(crate) mod read_project_file;
 
@@ -33,9 +34,66 @@ pub struct RunsForeignKeys {
     pub person: Option<String>,
 }
 
-/// Function to import foreign keys for the 'runs' table
-pub fn import_foreign_keys(
+/// Helper function to with parameters pool: &Option<sqlx::Pool<MySql>>,
+/// query: &String and args: &CliArgs returning Result<()> to execute a query if pool is Some.
+/// If pool is None and args.dry_run or args.verbose is set, it prints an informative message.
+/// If pool is None and neither args.dry_run nor args.verbose is set, it returns OK without any action.
+/// If pool is Some, it executes the query against the database and returns the result which is
+/// Result<Option<u64>>. The error is propagated using the ? operator.
+/// If the query execution is successful, it checks whether the result is None.
+/// If so, it anyhow::bails! with an error message. Otherwise, it returns Ok(()).
+///
+/// # Arguments
+/// * `pool` - Optional reference to a MySQL connection pool
+/// * `query` - Reference to the SQL query string to execute
+/// * `args` - Reference to command line arguments controlling behavior
+///
+/// Returns `Result<()>` indicating success or failure of the operation
+///
+pub async fn execute_query_if_pool(
+    pool: &Option<sqlx::Pool<MySql>>,
+    query: &String,
+    args: &CliArgs,
+) -> Result<()> {
+    if let Some(db_pool) = pool {
+        if args.verbose || args.dry_run {
+            println!("Dry run / verbose mode: executing query:\n{}", query);
+        }
+        let row = sqlx::query(query).fetch_one(db_pool).await?;
+        let fetched: Option<u32> = row.try_get::<Option<u32>, _>(0).ok().flatten();
+        if fetched.is_none() {
+            bail!("Query execution returned no result or NULL");
+        }
+        Ok(())
+    } else {
+        if args.verbose || args.dry_run {
+            println!("No database pool provided. Skipping execution of foreign key test");
+        }
+        Ok(())
+    }
+}
+
+/// Generates SQL queries to set up foreign keys for the runs table based on the provided
+/// LMX summary and project file data.
+/// This function reads the project file to extract foreign key information,
+/// then constructs SQL statements to set up the necessary foreign keys for the runs table.
+/// It generates SQL for cluster, person, customer case, filesystem, and duplicate run handling.
+///
+/// # Arguments
+/// * `file_name` - Path to the LMX summary file
+/// * `pool` - Optional reference to a MySQL connection pool
+/// * `lmx_summary` - Reference to the parsed LMX summary data
+/// * `args` - Reference to command line arguments controlling behavior
+///
+/// # Returns
+/// Returns a vector of SQL query strings to set up foreign keys
+///
+/// # Errors
+/// Returns an `anyhow::Error` if there are issues reading the project file or generating queries
+///
+pub async fn generate_foreign_key_queries(
     file_name: &str,
+    pool: &Option<sqlx::Pool<MySql>>,
     lmx_summary: &LmxSummary,
     args: &CliArgs,
 ) -> Result<Vec<String>> {
@@ -51,6 +109,14 @@ pub fn import_foreign_keys(
     if args.verbose || args.dry_run {
         println!("Generating cluster id for cluster: {}", cluster);
     }
+
+    // Before generating the SQL statement, verify the cluster exists if pool is Some
+    execute_query_if_pool(
+        pool,
+        &format!("SELECT cluster_id('{}', {});", cluster, do_import),
+        args,
+    )
+    .await?;
     query_list.push(format!(
         "SET @clid = cluster_id('{}', {});",
         cluster, do_import
@@ -79,6 +145,12 @@ pub fn import_foreign_keys(
         if args.verbose || args.dry_run {
             println!("Generating person id for person: {}", person);
         }
+        execute_query_if_pool(
+            pool,
+            &format!("SELECT person_id('{}', {});", person, do_import),
+            args,
+        )
+        .await?;
         query_list.push(format!(
             "SET @pid = person_id('{}', {});",
             person, do_import
@@ -87,6 +159,12 @@ pub fn import_foreign_keys(
         if args.verbose || args.dry_run {
             println!("Generating person id for user: {}", user_id);
         }
+        execute_query_if_pool(
+            pool,
+            &format!("SELECT person_id_for_uid('{}', @clid);", user_id),
+            args,
+        )
+        .await?;
         query_list.push(format!(
             "SET @pid = person_id_for_uid('{}', @clid);",
             user_id
@@ -100,6 +178,19 @@ pub fn import_foreign_keys(
             args.project_file
         );
     }
+    execute_query_if_pool(
+        pool,
+        &format!(
+            "SELECT customer_case_id('{}', '{}', '{}', '{}', {});",
+            foreign_keys.project,
+            foreign_keys.code,
+            foreign_keys.code_version,
+            foreign_keys.test_case,
+            do_import
+        ),
+        args,
+    )
+    .await?;
     query_list.push(format!(
         "SET @ccid = customer_case_id('{}', '{}', '{}', '{}', {});",
         foreign_keys.project,
@@ -131,6 +222,12 @@ pub fn import_foreign_keys(
         .ok_or_else(|| anyhow::anyhow!("Missing 'blocksize' in base_data"))?
         .as_i64()
         .ok_or_else(|| anyhow::anyhow!("'blocksize' is not an integer"))?;
+    execute_query_if_pool(
+        pool,
+        &format!("SELECT filesystem_id('{}', '{}', {});", fstype, m_pt, bsize),
+        args,
+    )
+    .await?;
     query_list.push(format!(
         "SET @fsid = filesystem_id('{}', '{}', {});",
         fstype, m_pt, bsize
@@ -164,6 +261,14 @@ pub fn import_foreign_keys(
 /// Reads and parses the project file to extract RunsForeignKeys.
 /// Returns a RunsForeignKeys struct if successful, or an io::Error if there are issues
 /// reading or parsing the file.
+///
+/// # Arguments
+/// * `file_name` - Path to the LMX summary file
+/// * `args` - Reference to command line arguments controlling behavior
+///
+/// # Returns
+/// Returns `Result<RunsForeignKeys>` containing the parsed foreign key data
+///
 pub fn read_project_file(file_name: &str, args: &CliArgs) -> Result<RunsForeignKeys> {
     let project_file_path = find_project_file(file_name, args)?;
     let file_contents = std::fs::read_to_string(&project_file_path)?;

@@ -16,11 +16,13 @@
 mod tests {
     use crate::cmdline::CliArgs;
     use crate::jobdata::table_runs::find_file::project_mockup::teardown_tmp_project_file;
-    use crate::jobdata::table_runs::foreign_keys::import_foreign_keys;
+    use crate::jobdata::table_runs::foreign_keys::generate_foreign_key_queries;
     use crate::jobdata::{read_lmx_summary, LmxSummary};
+    use anyhow::Result;
+    use sqlx::{MySql, Pool};
 
-    #[tokio::test]
-    async fn test_missing_project_file_with_simple_namd_data() {
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    async fn test_missing_project_file_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
         // Create a temporary project file for testing
         let temp_dir =
             std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
@@ -45,12 +47,16 @@ mod tests {
 
         // Set the LMX_summary file path and read its contents
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
-        let lmx_summary: LmxSummary = read_lmx_summary(lmx_summary_pathbuf.to_str().unwrap())
-            .expect("Failed to read LMX summary");
+        let lmx_summary: LmxSummary = read_lmx_summary(lmx_summary_pathbuf.to_str().unwrap())?;
 
         // Call the import_foreign_keys function
-        let result =
-            import_foreign_keys(lmx_summary_pathbuf.to_str().unwrap(), &lmx_summary, &args);
+        let result = generate_foreign_key_queries(
+            lmx_summary_pathbuf.to_str().unwrap(),
+            &Some(pool.clone()),
+            &lmx_summary,
+            &args,
+        )
+        .await;
         assert!(result.is_err());
         let error_message = format!("{}", result.unwrap_err());
         assert!(
@@ -60,5 +66,6 @@ mod tests {
         );
         // Clean up the temporary project file and directory
         teardown_tmp_project_file(project_file.to_str().unwrap());
+        Ok(())
     }
 }
