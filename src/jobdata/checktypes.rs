@@ -55,11 +55,10 @@ pub fn check_type(
                 // Try to cast to i64
                 if value.as_i64().is_none() {
                     anyhow::bail!(
-                        "Column {} in table {} expects int(11), but value '{}' is {}",
+                        "Column {} in table {} expects int(11), but value '{}' is neither a reference (@\\w+id) nor a valid integer",
                         key,
                         table_name,
-                        value_str,
-                        "neither a reference (@\\w+id) nor a valid integer"
+                        value_str
                     );
                 }
             }
