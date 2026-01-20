@@ -42,7 +42,7 @@ pub struct RunsForeignKeys {
 /// If pool is None and neither args.dry_run nor args.verbose is set, it returns OK without any action.
 /// If pool is Some, it executes the query against the database. The error is propagated using the ? operator.
 /// If the query execution is successful, it checks whether the result (Option<i32>) is None.
-/// If so, it anyhow::bail! with an error message. Otherwise, it returns Ok(()).
+/// If so, it calls bail! with an error message. Otherwise, it returns Ok(()).
 ///
 /// # Note on dry_run mode
 /// When `args.dry_run` is true, this function still executes validation queries to verify that
