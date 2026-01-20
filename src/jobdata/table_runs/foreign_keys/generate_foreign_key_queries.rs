@@ -18,11 +18,14 @@ mod tests {
     use crate::jobdata::table_runs::find_file::project_mockup::{
         setup_cliargs_with_project_file_name, teardown_tmp_project_file,
     };
-    use crate::jobdata::table_runs::foreign_keys::import_foreign_keys;
+    use crate::jobdata::table_runs::foreign_keys::generate_foreign_key_queries;
     use crate::jobdata::{read_lmx_summary, LmxSummary};
+    use anyhow::Result;
 
-    #[test]
-    fn test_import_foreign_keys_with_simple_namd_data() {
+    // Test generating foreign key queries when the project file is missing
+    // We test with pool = None to avoid actual DB operations
+    #[tokio::test]
+    pub async fn test_generate_foreign_key_queries_with_simple_namd_data() -> Result<()> {
         // Create a temporary project file for testing
         let temp_dir =
             std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
@@ -43,9 +46,14 @@ mod tests {
         let lmx_summary: LmxSummary = read_lmx_summary(lmx_summary_pathbuf.to_str().unwrap())
             .expect("Failed to read LMX summary");
 
-        // Call the import_foreign_keys function
-        let sql_queries =
-            import_foreign_keys(lmx_summary_pathbuf.to_str().unwrap(), &lmx_summary, &args);
+        // Call the generate_foreign_key_queries function
+        let sql_queries = generate_foreign_key_queries(
+            lmx_summary_pathbuf.to_str().unwrap(),
+            &None,
+            &lmx_summary,
+            &args,
+        )
+        .await;
         assert!(sql_queries.is_ok(), "{}", sql_queries.as_ref().unwrap_err());
         let sql_queries = sql_queries.unwrap();
         assert_eq!(sql_queries.len(), 5);
@@ -69,10 +77,13 @@ mod tests {
 
         // Clean up the temporary project file and directory
         teardown_tmp_project_file(project_file.to_str().unwrap());
+        Ok(())
     }
 
-    #[test]
-    fn test_do_import_with_simple_namd_data() {
+    // Test generating foreign key queries when the project file is present
+    // We test with pool = None to allow actual DB operations
+    #[tokio::test]
+    pub async fn test_do_import_with_simple_namd_data() -> Result<()> {
         // Create a temporary project file for testing
         let temp_dir =
             std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
@@ -100,9 +111,14 @@ mod tests {
         let lmx_summary: LmxSummary = read_lmx_summary(lmx_summary_pathbuf.to_str().unwrap())
             .expect("Failed to read LMX summary");
 
-        // Call the import_foreign_keys function
-        let sql_queries =
-            import_foreign_keys(lmx_summary_pathbuf.to_str().unwrap(), &lmx_summary, &args);
+        // Call the generate_foreign_key_queries function
+        let sql_queries = generate_foreign_key_queries(
+            lmx_summary_pathbuf.to_str().unwrap(),
+            &None,
+            &lmx_summary,
+            &args,
+        )
+        .await;
         assert!(sql_queries.is_ok(), "{}", sql_queries.as_ref().unwrap_err());
         let sql_queries = sql_queries.unwrap();
         assert_eq!(sql_queries.len(), 5);
@@ -126,5 +142,6 @@ mod tests {
 
         // Clean up the temporary project file and directory
         teardown_tmp_project_file(project_file.to_str().unwrap());
+        Ok(())
     }
 }

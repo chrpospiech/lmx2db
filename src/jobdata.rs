@@ -23,9 +23,9 @@ pub type LmxSummary = HashMap<String, HashMap<String, serde_yaml::Value>>;
 
 pub(crate) mod checktypes;
 pub(crate) mod create_sql;
-#[cfg(test)]
-pub(crate) mod jobs_tests;
 pub(crate) mod table_runs;
+#[cfg(test)]
+pub(crate) mod test_job_failures;
 
 /// Processes a single LMX summary file by collecting SQL queries and executing them against a database.
 ///
@@ -72,12 +72,9 @@ pub async fn process_lmx_file(
     let lmx_summary = read_lmx_summary(file_name)?;
 
     // Generate SQL queries for the 'runs' table
-    query_list.extend(table_runs::import_into_runs_table(
-        file_name,
-        &lmx_summary,
-        sqltypes,
-        args,
-    )?);
+    query_list.extend(
+        table_runs::import_into_runs_table(file_name, pool, &lmx_summary, sqltypes, args).await?,
+    );
 
     // Process the collected SQL queries
     process_sql_queries(query_list, pool, args).await?;

@@ -23,6 +23,7 @@ use crate::jobdata::table_runs::toolchain::import_toolchain_data;
 use crate::jobdata::LmxSummary;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
+use sqlx::MySql;
 
 pub(crate) mod find_file;
 pub(crate) mod foreign_keys;
@@ -33,8 +34,19 @@ pub(crate) mod toolchain;
 /// Function to import a row into the 'runs' table
 /// This function generates the SQL INSERT statement for the 'runs' table
 /// based on the provided data and sqltypes.
-pub fn import_into_runs_table(
+///
+/// # Arguments
+/// * `file_name` - Path to the LMX summary file
+/// * `pool` - Optional reference to a MySQL connection pool
+/// * `lmx_summary` - Reference to the parsed LMX summary data
+/// * `sqltypes` - Reference to the SQL types mapping for the database schema
+/// * `args` - Reference to command line arguments controlling behavior
+///
+/// Returns `Result<Vec<String>>` containing the list of SQL queries to execute
+///
+pub async fn import_into_runs_table(
     file_name: &str,
+    pool: &Option<sqlx::Pool<MySql>>,
     lmx_summary: &LmxSummary,
     sqltypes: &SqlTypeHashMap,
     args: &CliArgs,
@@ -48,11 +60,9 @@ pub fn import_into_runs_table(
     }
 
     // Generate SQL queries for foreign keys
-    query_list.extend(foreign_keys::import_foreign_keys(
-        file_name,
-        lmx_summary,
-        args,
-    )?);
+    query_list.extend(
+        foreign_keys::generate_foreign_key_queries(file_name, pool, lmx_summary, args).await?,
+    );
 
     // List the columns in the runs table
     let runs_columns = sqltypes
