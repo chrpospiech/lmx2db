@@ -36,7 +36,7 @@ pub struct RunsForeignKeys {
     pub person: Option<String>,
 }
 
-/// Helper function to with parameters pool: &Option<sqlx::Pool<MySql>>,
+/// Helper function to execute a query with parameters pool: &Option<sqlx::Pool<MySql>>,
 /// query: &String and args: &CliArgs returning Result<()> to execute a query if pool is Some.
 /// If pool is None and args.dry_run or args.verbose is set, it prints an informative message.
 /// If pool is None and neither args.dry_run nor args.verbose is set, it returns OK without any action.
