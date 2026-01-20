@@ -22,6 +22,8 @@ use sqlx::{MySql, Row};
 pub(crate) mod generate_foreign_key_queries;
 #[cfg(test)]
 pub(crate) mod read_project_file;
+#[cfg(test)]
+pub(crate) mod test_foreign_keys;
 
 /// Struct to hold foreign key data for the runs table
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq)]
@@ -60,7 +62,7 @@ pub async fn execute_query_if_pool(
             println!("Dry run / verbose mode: executing query:\n{}", query);
         }
         let row = sqlx::query(query).fetch_one(db_pool).await?;
-        let fetched: Option<u32> = row.try_get::<Option<u32>, _>(0).ok().flatten();
+        let fetched: Option<i32> = row.try_get(0)?;
         if fetched.is_none() {
             bail!("Query execution returned no result or NULL");
         }
