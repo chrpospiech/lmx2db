@@ -65,7 +65,10 @@ pub async fn execute_query_if_pool(
         let row = sqlx::query(query).fetch_one(db_pool).await?;
         let fetched: Option<i32> = row.try_get(0)?;
         if fetched.is_none() {
-            bail!("Query execution returned no result or NULL");
+            bail!(
+                "Foreign key validation failed: query returned no result or NULL.\nQuery: {}",
+                query
+            );
         }
         Ok(())
     } else {
