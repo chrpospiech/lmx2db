@@ -26,11 +26,12 @@ use std::path::PathBuf;
 ///
 /// Returns the path to the created temporary project file as a `String`.
 ///
-/// # Panics
+/// # Errors
 ///
-/// Panics if:
+/// Returns an error if:
 /// - The temporary directory cannot be created
 /// - The project file cannot be created or written to
+/// - The file path cannot be converted to a valid UTF-8 string
 pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Result<String> {
     // Create a temporary project file for testing
     let temp_dir = std::env::temp_dir().join(format!("project_file_test_{}", uuid::Uuid::new_v4()));
@@ -105,8 +106,8 @@ pub fn setup_cliargs_with_project_file(
 /// # Returns
 /// Returns the path to the created temporary directory as a `PathBuf`.
 ///
-/// # Panics
-/// Panics if:
+/// # Errors
+/// Returns an error if:
 /// - The temporary directory cannot be created
 /// - The source directory cannot be copied
 pub fn setup_tmp_project_directory(source_path: &str) -> Result<PathBuf> {
@@ -129,9 +130,11 @@ pub fn setup_tmp_project_directory(source_path: &str) -> Result<PathBuf> {
 ///
 /// The parent directory and its contents will be removed.
 ///
-/// # Panics
+/// # Errors
 ///
-/// Panics if the directory cannot be removed.
+/// Returns an error if:
+/// - The temporary file has no parent directory
+/// - The directory cannot be removed
 pub fn teardown_tmp_project_file(temp_file: &str) -> Result<()> {
     let path = std::path::Path::new(temp_file);
     let parent = path.parent().ok_or_else(|| {
