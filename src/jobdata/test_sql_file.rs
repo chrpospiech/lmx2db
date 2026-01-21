@@ -48,6 +48,7 @@ mod test {
     #[tokio::test]
     pub async fn test_file_with_transaction() -> Result<()> {
         // Create a temporary file for test output
+        // Keep temp_file in scope to prevent automatic deletion until test completes
         let temp_file = NamedTempFile::new()?;
         let temp_path = temp_file.path().to_string_lossy().to_string();
         
