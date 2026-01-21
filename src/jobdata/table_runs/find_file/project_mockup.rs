@@ -55,7 +55,11 @@ pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Res
 /// A CliArgs instance with the specified project file and default values for other fields.
 pub fn setup_cliargs_with_project_file_name(project_file: &str) -> Result<CliArgs> {
     // Create directory for the project file
-    std::fs::create_dir_all(std::path::Path::new(project_file).parent().unwrap())?;
+    let path = std::path::Path::new(project_file);
+    let parent = path.parent().ok_or_else(|| {
+        anyhow::anyhow!("Project file '{}' has no parent directory", project_file)
+    })?;
+    std::fs::create_dir_all(parent)?;
     // Create CliArgs with the specified project file
     Ok(CliArgs {
         project_file: project_file.to_string(),
@@ -125,6 +129,10 @@ pub fn setup_tmp_project_directory(source_path: &str) -> Result<PathBuf> {
 ///
 /// Panics if the directory cannot be removed.
 pub fn teardown_tmp_project_file(temp_file: &str) -> Result<()> {
-    std::fs::remove_dir_all(std::path::Path::new(temp_file).parent().unwrap())?;
+    let path = std::path::Path::new(temp_file);
+    let parent = path.parent().ok_or_else(|| {
+        anyhow::anyhow!("Temporary file '{}' has no parent directory", temp_file)
+    })?;
+    std::fs::remove_dir_all(parent)?;
     Ok(())
 }
