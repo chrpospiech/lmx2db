@@ -51,7 +51,7 @@ mod test {
         // Keep temp_file in scope to prevent automatic deletion until test completes
         let temp_file = NamedTempFile::new()?;
         let temp_path = temp_file.path().to_string_lossy().to_string();
-        
+
         // Setup test arguments and mock database pool
         let args = CliArgs {
             verbose: false,

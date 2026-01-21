@@ -25,6 +25,8 @@ pub(crate) mod checktypes;
 pub(crate) mod create_sql;
 pub(crate) mod table_runs;
 #[cfg(test)]
+pub(crate) mod test_import;
+#[cfg(test)]
 pub(crate) mod test_job_failures;
 #[cfg(test)]
 pub(crate) mod test_sql_file;
