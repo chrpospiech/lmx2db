@@ -30,9 +30,9 @@ INSERT INTO `clusters` (
     `name`, `owner`, `accessinfo`
 ) VALUES
 ('Lenox', 'Lenovo', 'ssh lenox'),
-('thinkpad', 'Christoph Pospiech', 'no public access');
+('Thinkpad', 'Christoph Pospiech', 'no public access');
 SET @cluster_id_lenox = (SELECT `id` FROM `clusters` WHERE `name`='Lenox');
-SET @cluster_id_thinkpad = (SELECT `id` FROM `clusters` WHERE `name`='thinkpad');
+SET @cluster_id_thinkpad = (SELECT `id` FROM `clusters` WHERE `name`='Thinkpad');
 
 
 -- Data for table: userids
