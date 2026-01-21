@@ -51,7 +51,7 @@ mod tests {
         assert_eq!(sql_queries[0], "SET @clid = cluster_id('Lenox', 0);");
         assert_eq!(
             sql_queries[1],
-            "SET @pid = person_id_for_uid('xcpospiech', @clid);"
+            "SET @pid = person_id_for_uid('xcpospiech', cluster_id('Lenox', 0));"
         );
         assert_eq!(
             sql_queries[2],
@@ -106,7 +106,7 @@ mod tests {
         assert_eq!(sql_queries[0], "SET @clid = cluster_id('Lenox', 1);");
         assert_eq!(
             sql_queries[1],
-            "SET @pid = person_id_for_uid('xcpospiech', @clid);"
+            "SET @pid = person_id_for_uid('xcpospiech', cluster_id('Lenox', 1));"
         );
         assert_eq!(
             sql_queries[2],
