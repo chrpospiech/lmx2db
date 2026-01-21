@@ -48,7 +48,7 @@ mod tests {
         assert!(result.is_ok());
         assert_eq!(result.unwrap().to_str().unwrap(), project_file);
         // Clean up
-        teardown_tmp_project_file(temp_dir.to_str().unwrap())?;
+        teardown_tmp_project_file(&project_file)?;
         Ok(())
     }
 
