@@ -16,6 +16,7 @@ use crate::cmdline::CliArgs;
 use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
 use anyhow::Result;
 use std::path::PathBuf;
+use fs_extra;
 
 /// Sets up a temporary project file on a new directory for testing purposes.
 ///
