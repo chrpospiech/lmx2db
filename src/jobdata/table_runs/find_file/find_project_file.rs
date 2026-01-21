@@ -20,9 +20,10 @@ mod tests {
         setup_cliargs_with_project_file, setup_tmp_project_file, teardown_tmp_project_file,
     };
     use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
+    use anyhow::Result;
 
     #[test]
-    fn test_find_project_file_with_absolute_path() {
+    fn test_find_project_file_with_absolute_path() -> Result<()> {
         // Create a temporary project file for testing
         let temp_dir =
             std::env::temp_dir().join(format!("project_file_test_{}", uuid::Uuid::new_v4()));
@@ -39,7 +40,7 @@ mod tests {
             cluster: None,
             person: None,
         };
-        let args = setup_cliargs_with_project_file(&project_file, &project_contents);
+        let args = setup_cliargs_with_project_file(&project_file, &project_contents)?;
 
         // The file name shouldn't matter here since we provide an absolute path
         // We still call the base name LMX_summary.yml to indicate the kind of file we have in mind
@@ -47,11 +48,12 @@ mod tests {
         assert!(result.is_ok());
         assert_eq!(result.unwrap().to_str().unwrap(), project_file);
         // Clean up
-        teardown_tmp_project_file(&project_file);
+        teardown_tmp_project_file(temp_dir.to_str().unwrap())?;
+        Ok(())
     }
 
     #[test]
-    fn test_find_project_file_with_base_name() {
+    fn test_find_project_file_with_base_name() -> Result<()> {
         // Create command line arguments for testing
         let args = CliArgs {
             project_file: "test_project_file.yml".to_string(),
@@ -67,7 +69,7 @@ mod tests {
             cluster: Some("TestCluster".to_string()),
             person: Some("TestPerson".to_string()),
         };
-        let project_file = setup_tmp_project_file(&args, &project_contents);
+        let project_file = setup_tmp_project_file(&args, &project_contents)?;
 
         // Create a file name in a subdirectory by replacing "test_project_file.yml"
         // with "subdir1/subdir2/subdir3/LMX_summary.yml"
@@ -82,11 +84,12 @@ mod tests {
         assert!(result.is_ok());
         assert_eq!(result.unwrap().to_str().unwrap(), project_file);
         // Clean up
-        teardown_tmp_project_file(&project_file);
+        teardown_tmp_project_file(&project_file)?;
+        Ok(())
     }
 
     #[test]
-    fn test_find_project_file_with_relative_file_name() {
+    fn test_find_project_file_with_relative_file_name() -> Result<()> {
         // Create command line arguments for testing
         let args = CliArgs {
             project_file: "test_project_file.yml".to_string(),
@@ -102,7 +105,7 @@ mod tests {
             cluster: Some("TestCluster".to_string()),
             person: Some("TestPerson".to_string()),
         };
-        let project_file = setup_tmp_project_file(&args, &project_contents);
+        let project_file = setup_tmp_project_file(&args, &project_contents)?;
 
         // Create a file name in a subdirectory by replacing "test_project_file.yml"
         // with "subdir1/subdir2/subdir3/LMX_summary.yml"
@@ -127,11 +130,12 @@ mod tests {
         assert_eq!(result.unwrap().to_str().unwrap(), project_file);
         // Clean up
         std::env::set_current_dir(current_dir).expect("Failed to restore current directory");
-        teardown_tmp_project_file(&project_file);
+        teardown_tmp_project_file(&project_file)?;
+        Ok(())
     }
 
     #[test]
-    fn test_find_project_file_not_found() {
+    fn test_find_project_file_not_found() -> Result<()> {
         let args = CliArgs {
             project_file: "non_existent_file.yml".to_string(),
             verbose: false,
@@ -141,5 +145,6 @@ mod tests {
 
         let result = find_project_file("some/random/path/file.txt", &args);
         assert!(result.is_err());
+        Ok(())
     }
 }

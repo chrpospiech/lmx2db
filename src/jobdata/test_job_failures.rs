@@ -14,36 +14,21 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::cmdline::CliArgs;
     use crate::jobdata::process_lmx_file;
-    use crate::jobdata::table_runs::find_file::project_mockup::teardown_tmp_project_file;
+    use crate::jobdata::table_runs::find_file::project_mockup::{
+        setup_cliargs_with_project_file_name, setup_tmp_project_directory,
+    };
     use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use anyhow::Result;
     use sqlx::{MySql, Pool};
+    use std::fs::remove_dir_all;
 
     #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_missing_project_file_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
-        // Create a temporary project file for testing
-        let temp_dir =
-            std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
-
-        // Recursively copy tests/data/NAMD to temp_dir
-        let manifest_dir = env!("CARGO_MANIFEST_DIR"); // compile-time
-        let path = std::path::Path::new(manifest_dir).join("tests/data/NAMD");
-        let mut options = fs_extra::dir::CopyOptions::new();
-        options.content_only = true;
-        fs_extra::dir::copy(&path, &temp_dir, &options)
-            .map_err(std::io::Error::other)
-            .expect("Could not copy NAMD test data");
-        let project_file = temp_dir.join("project.yml");
-        // Create CliArgs with the specified project file
-        let args = CliArgs {
-            project_file: "not_there.yml".to_string(),
-            verbose: true,
-            dry_run: false,
-            do_import: true,
-            ..Default::default()
-        };
+        // Create a temporary project for testing
+        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
+        // Create CliArgs with the specified project file that does not exist
+        let args = setup_cliargs_with_project_file_name("not_there.yml")?;
 
         // Set the LMX_summary file path and read its contents
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
@@ -65,34 +50,16 @@ mod tests {
             error_message
         );
         // Clean up the temporary project file and directory
-        teardown_tmp_project_file(project_file.to_str().unwrap());
+        remove_dir_all(temp_dir)?;
         Ok(())
     }
 
     #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_cluster_id_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
         // Create a temporary project file for testing
-        let temp_dir =
-            std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
-
-        // Recursively copy tests/data/NAMD to temp_dir
-        let manifest_dir = env!("CARGO_MANIFEST_DIR"); // compile-time
-        let path = std::path::Path::new(manifest_dir).join("tests/data/NAMD");
-        let mut options = fs_extra::dir::CopyOptions::new();
-        options.content_only = true;
-        fs_extra::dir::copy(&path, &temp_dir, &options)
-            .map_err(std::io::Error::other)
-            .expect("Could not copy NAMD test data");
-        let project_file = temp_dir.join("project.yml");
-        // Create CliArgs with the specified project file
-        let args = CliArgs {
-            project_file: "project.yml".to_string(),
-            verbose: true,
-            dry_run: false,
-            do_import: true,
-            ..Default::default()
-        };
-
+        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
+        // Create CliArgs with the specified project file that does not exist
+        let args = setup_cliargs_with_project_file_name("project.yml")?;
         // Set the LMX_summary file path and read its contents
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), &args).await?;
@@ -114,7 +81,7 @@ mod tests {
             error_message
         );
         // Clean up the temporary project file and directory
-        teardown_tmp_project_file(project_file.to_str().unwrap());
+        remove_dir_all(temp_dir)?;
         Ok(())
     }
 }
