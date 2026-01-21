@@ -172,13 +172,16 @@ pub async fn generate_foreign_key_queries(
         }
         execute_query_if_pool(
             pool,
-            &format!("SELECT person_id_for_uid('{}', @clid);", user_id),
+            &format!(
+                "SELECT person_id_for_uid('{}', cluster_id('{}', 0));",
+                user_id, cluster
+            ),
             args,
         )
         .await?;
         query_list.push(format!(
-            "SET @pid = person_id_for_uid('{}', @clid);",
-            user_id
+            "SET @pid = person_id_for_uid('{}', cluster_id('{}', 0));",
+            user_id, cluster
         ));
     }
 

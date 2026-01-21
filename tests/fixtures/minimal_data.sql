@@ -41,3 +41,6 @@ INSERT INTO `userids` (
 ) VALUES
 ('cp', @cluster_id_thinkpad, @person_id),
 ('xcpospiech', @cluster_id_lenox, @person_id);
+
+-- project data
+SELECT customer_case_id('4paper_2025', 'NAMD', '3.0.2', 'STMV', 1);
