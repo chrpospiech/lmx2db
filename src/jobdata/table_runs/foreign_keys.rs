@@ -173,15 +173,15 @@ pub async fn generate_foreign_key_queries(
         execute_query_if_pool(
             pool,
             &format!(
-                "SELECT person_id_for_uid('{}', cluster_id('{}', 0));",
-                user_id, cluster
+                "SELECT person_id_for_uid('{}', cluster_id('{}', {}));",
+                user_id, cluster, do_import
             ),
             args,
         )
         .await?;
         query_list.push(format!(
-            "SET @pid = person_id_for_uid('{}', cluster_id('{}', 0));",
-            user_id, cluster
+            "SET @pid = person_id_for_uid('{}', cluster_id('{}', {}));",
+            user_id, cluster, do_import
         ));
     }
 
