@@ -58,9 +58,10 @@ pub async fn execute_query_if_pool(
     query: &str,
     args: &CliArgs,
 ) -> Result<()> {
-    if let Some(db_pool) = pool {
-        if args.verbose || args.dry_run {
-            println!("Dry run / verbose mode: executing query:\n{}", query);
+    if !args.dry_run && pool.is_some() {
+        let db_pool = pool.as_ref().unwrap();
+        if args.verbose {
+            println!("Executing query:\n{}", query);
         }
         let row = sqlx::query(query).fetch_one(db_pool).await?;
         let fetched: Option<i32> = row.try_get(0)?;
@@ -73,7 +74,11 @@ pub async fn execute_query_if_pool(
         Ok(())
     } else {
         if args.verbose || args.dry_run {
-            println!("No database pool provided. Skipping execution of foreign key test");
+            if pool.is_some() {
+                println!("Dry run mode: would execute query:\n{}", query);
+            } else {
+                println!("No database pool provided. Skipping execution of foreign key test");
+            }
         }
         Ok(())
     }

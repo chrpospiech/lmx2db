@@ -29,7 +29,7 @@ mod tests {
             ..Default::default()
         };
         let query = "SELECT 1 + 1 AS sum;";
-        let result = execute_query_if_pool(&Some(pool.clone()), &query.to_string(), &args).await;
+        let result = execute_query_if_pool(&Some(pool.clone()), query, &args).await;
         assert!(result.is_ok(), "{}", result.as_ref().unwrap_err());
         Ok(())
     }
@@ -44,7 +44,7 @@ mod tests {
             ..Default::default()
         };
         let query = "SELECT 1 + 1 AS sum;";
-        let result = execute_query_if_pool(&Some(pool.clone()), &query.to_string(), &args).await;
+        let result = execute_query_if_pool(&Some(pool.clone()), query, &args).await;
         assert!(result.is_ok(), "{}", result.as_ref().unwrap_err());
         Ok(())
     }
@@ -59,7 +59,7 @@ mod tests {
             ..Default::default()
         };
         let query = "SELECT 1 + 1 AS sum;";
-        let result = execute_query_if_pool(&None, &query.to_string(), &args).await;
+        let result = execute_query_if_pool(&None, query, &args).await;
         assert!(result.is_ok(), "{}", result.as_ref().unwrap_err());
         Ok(())
     }
@@ -74,7 +74,7 @@ mod tests {
             ..Default::default()
         };
         let query = "SELECT cluster_id('Lenox', 0);";
-        let result = execute_query_if_pool(&Some(pool.clone()), &query.to_string(), &args).await;
+        let result = execute_query_if_pool(&Some(pool.clone()), query, &args).await;
         assert!(
             result.is_err(),
             "Expected error due to missing cluster, got OK"
@@ -92,7 +92,7 @@ mod tests {
             ..Default::default()
         };
         let query = "SELECT cluster_id('Lenox', 1);";
-        let result = execute_query_if_pool(&Some(pool.clone()), &query.to_string(), &args).await;
+        let result = execute_query_if_pool(&Some(pool.clone()), query, &args).await;
         assert!(
             result.is_ok(),
             "Expected OK for existing cluster, got error: {}",
