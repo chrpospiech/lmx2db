@@ -40,7 +40,12 @@ pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Res
     let yml_contents = serde_yaml::to_string(contents)?;
     std::fs::write(&file_name, yml_contents)?;
 
-    Ok(file_name.to_str().unwrap().to_string())
+    let file_name_str = file_name
+        .into_os_string()
+        .into_string()
+        .map_err(|os_str| anyhow::anyhow!("temporary project file path is not valid UTF-8: {:?}", os_str))?;
+
+    Ok(file_name_str)
 }
 
 /// Sets up a CliArgs instance with the specified project file name for testing purposes.
