@@ -15,3 +15,25 @@
 -- limitations under the License.
 
 -- Minimal SQL data for testing purposes
+
+-- Data for table: people
+INSERT INTO `people` (
+    `id`, `title`, `first_name`, `middle`, `surname`, `affiliation`, `email`, `phone`, `mobile`
+) VALUES (
+    1, 'Dr.', 'Christoph', '', 'Pospiech', 'retiree', 'pospiech-HD@t-online.de',
+    '+49-351-86269826', '+49-1511-910-4597'
+);
+
+-- Data for table: clusters
+INSERT INTO `clusters` (
+    `id`, `name`, `owner`, `accessinfo`
+) VALUES
+(1, 'lenox', 'Lenovo', 'ssh lenox'),
+(2, 'thinkpad', 'Christoph Pospiech', 'no public access');
+
+-- Data for table: userids
+INSERT INTO `userids` (
+    `name`, `clid`, `pid`
+) VALUES
+('cp', 2, 1),
+('xcpospiech', 1, 1);
