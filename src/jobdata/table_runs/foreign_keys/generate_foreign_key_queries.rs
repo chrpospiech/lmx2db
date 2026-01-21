@@ -16,30 +16,21 @@
 mod tests {
     use crate::cmdline::CliArgs;
     use crate::jobdata::table_runs::find_file::project_mockup::{
-        setup_cliargs_with_project_file_name, teardown_tmp_project_file,
+        setup_cliargs_with_project_file_name, setup_tmp_project_directory,
     };
     use crate::jobdata::table_runs::foreign_keys::generate_foreign_key_queries;
     use crate::jobdata::{read_lmx_summary, LmxSummary};
     use anyhow::Result;
+    use std::fs::remove_dir_all;
 
     // Test generating foreign key queries when the project file is missing
     // We test with pool = None to avoid actual DB operations
     #[tokio::test]
     pub async fn test_generate_foreign_key_queries_with_simple_namd_data() -> Result<()> {
         // Create a temporary project file for testing
-        let temp_dir =
-            std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
-
-        // Recursively copy tests/data/NAMD to temp_dir
-        let manifest_dir = env!("CARGO_MANIFEST_DIR"); // compile-time
-        let path = std::path::Path::new(manifest_dir).join("tests/data/NAMD");
-        let mut options = fs_extra::dir::CopyOptions::new();
-        options.content_only = true;
-        fs_extra::dir::copy(&path, &temp_dir, &options)
-            .map_err(std::io::Error::other)
-            .expect("Could not copy NAMD test data");
+        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
         let project_file = temp_dir.join("project.yml");
-        let args = setup_cliargs_with_project_file_name(project_file.to_str().unwrap());
+        let args = setup_cliargs_with_project_file_name(project_file.to_str().unwrap())?;
 
         // Set the LMX_summary file path and read its contents
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
@@ -76,7 +67,7 @@ mod tests {
         );
 
         // Clean up the temporary project file and directory
-        teardown_tmp_project_file(project_file.to_str().unwrap());
+        remove_dir_all(temp_dir)?;
         Ok(())
     }
 
@@ -85,22 +76,12 @@ mod tests {
     #[tokio::test]
     pub async fn test_do_import_with_simple_namd_data() -> Result<()> {
         // Create a temporary project file for testing
-        let temp_dir =
-            std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
-
-        // Recursively copy tests/data/NAMD to temp_dir
-        let manifest_dir = env!("CARGO_MANIFEST_DIR"); // compile-time
-        let path = std::path::Path::new(manifest_dir).join("tests/data/NAMD");
-        let mut options = fs_extra::dir::CopyOptions::new();
-        options.content_only = true;
-        fs_extra::dir::copy(&path, &temp_dir, &options)
-            .map_err(std::io::Error::other)
-            .expect("Could not copy NAMD test data");
+        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
         let project_file = temp_dir.join("project.yml");
         // Create CliArgs with the specified project file
         let args = CliArgs {
             project_file: project_file.to_str().unwrap().to_string(),
-            verbose: true,
+            verbose: false,
             dry_run: false,
             do_import: true,
             ..Default::default()
@@ -141,7 +122,7 @@ mod tests {
         );
 
         // Clean up the temporary project file and directory
-        teardown_tmp_project_file(project_file.to_str().unwrap());
+        remove_dir_all(temp_dir)?;
         Ok(())
     }
 }

@@ -14,46 +14,32 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::cmdline::CliArgs;
-    use crate::jobdata::table_runs::find_file::project_mockup::teardown_tmp_project_file;
-    use crate::jobdata::table_runs::foreign_keys::generate_foreign_key_queries;
-    use crate::jobdata::{read_lmx_summary, LmxSummary};
+    use crate::jobdata::process_lmx_file;
+    use crate::jobdata::table_runs::find_file::project_mockup::{
+        setup_cliargs_with_project_file_name, setup_tmp_project_directory,
+    };
+    use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use anyhow::Result;
     use sqlx::{MySql, Pool};
+    use std::fs::remove_dir_all;
 
     #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_missing_project_file_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
-        // Create a temporary project file for testing
-        let temp_dir =
-            std::env::temp_dir().join(format!("foreign_key_test_{}", uuid::Uuid::new_v4()));
+        // Create a temporary project for testing
+        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
+        // Create CliArgs with the specified project file that does not exist
+        let args = setup_cliargs_with_project_file_name("not_there.yml")?;
 
-        // Recursively copy tests/data/NAMD to temp_dir
-        let manifest_dir = env!("CARGO_MANIFEST_DIR"); // compile-time
-        let path = std::path::Path::new(manifest_dir).join("tests/data/NAMD");
-        let mut options = fs_extra::dir::CopyOptions::new();
-        options.content_only = true;
-        fs_extra::dir::copy(&path, &temp_dir, &options)
-            .map_err(std::io::Error::other)
-            .expect("Could not copy NAMD test data");
-        let project_file = temp_dir.join("project.yml");
-        // Create CliArgs with the specified project file
-        let args = CliArgs {
-            project_file: "not_there.yml".to_string(),
-            verbose: true,
-            dry_run: false,
-            do_import: true,
-            ..Default::default()
-        };
-
-        // Set the LMX_summary file path and read its contents
+        // Set the LMX_summary file path
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
-        let lmx_summary: LmxSummary = read_lmx_summary(lmx_summary_pathbuf.to_str().unwrap())?;
+        // Read SQL types
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), &args).await?;
 
-        // Call the import_foreign_keys function
-        let result = generate_foreign_key_queries(
+        // Call the process_lmx_file function
+        let result = process_lmx_file(
             lmx_summary_pathbuf.to_str().unwrap(),
             &Some(pool.clone()),
-            &lmx_summary,
+            &sqltypes,
             &args,
         )
         .await;
@@ -65,7 +51,39 @@ mod tests {
             error_message
         );
         // Clean up the temporary project file and directory
-        teardown_tmp_project_file(project_file.to_str().unwrap());
+        remove_dir_all(temp_dir)?;
+        Ok(())
+    }
+
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    async fn test_cluster_id_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
+        // Create a temporary project directory for testing
+        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
+        // Create CliArgs with the specified project file that exists in the temp_dir
+        let args = setup_cliargs_with_project_file_name("project.yml")?;
+        // Set the LMX_summary file path
+        let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
+        // Read SQL types
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), &args).await?;
+
+        // Call the process_lmx_file function
+        let result = process_lmx_file(
+            lmx_summary_pathbuf.to_str().unwrap(),
+            &Some(pool.clone()),
+            &sqltypes,
+            &args,
+        )
+        .await;
+        assert!(result.is_err());
+        let error_message = format!("{}", result.unwrap_err());
+        assert!(
+            error_message
+                .contains("Foreign key validation failed: query returned no result or NULL."),
+            "Unexpected error message: {}",
+            error_message
+        );
+        // Clean up the temporary project file and directory
+        remove_dir_all(temp_dir)?;
         Ok(())
     }
 }

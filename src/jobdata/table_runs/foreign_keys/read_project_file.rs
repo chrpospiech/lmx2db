@@ -20,9 +20,11 @@ mod tests {
     };
     use crate::jobdata::table_runs::foreign_keys::read_project_file;
     use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
+    use anyhow::Result;
+    use std::fs::remove_dir_all;
 
     #[test]
-    fn test_read_project_file_success() {
+    fn test_read_project_file_success() -> Result<()> {
         // Create a temporary project file for testing
         let args = CliArgs {
             project_file: "test_project_file.yml".to_string(),
@@ -38,7 +40,7 @@ mod tests {
             cluster: Some("TestCluster".to_string()),
             person: Some("TestPerson".to_string()),
         };
-        let project_file = setup_tmp_project_file(&args, &project_contents);
+        let project_file = setup_tmp_project_file(&args, &project_contents)?;
 
         // Create a file name in a subdirectory by replacing "test_project_file.yml"
         // with "subdir1/subdir2/subdir3/LMX_summary.yml"
@@ -53,11 +55,12 @@ mod tests {
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), project_contents);
         // Clean up
-        teardown_tmp_project_file(&project_file);
+        teardown_tmp_project_file(&project_file)?;
+        Ok(())
     }
 
     #[test]
-    fn test_read_project_file_not_found() {
+    fn test_read_project_file_not_found() -> Result<()> {
         // Create command line arguments for testing
         let args = CliArgs {
             project_file: "non_existent_project_file.yml".to_string(),
@@ -68,10 +71,11 @@ mod tests {
         let file_name = "some_file.yml";
         let result = read_project_file(file_name, &args);
         assert!(result.is_err());
+        Ok(())
     }
 
     #[test]
-    fn test_read_project_file_invalid_yaml() {
+    fn test_read_project_file_invalid_yaml() -> Result<()> {
         // Create a temporary project file with invalid YAML content
         let temp_dir =
             std::env::temp_dir().join(format!("project_file_test_{}", uuid::Uuid::new_v4()));
@@ -82,18 +86,19 @@ mod tests {
             .to_string();
         // Create CliArgs with the specified project file
         // This also sets up the necessary directories
-        let args = setup_cliargs_with_project_file_name(&project_file);
+        let args = setup_cliargs_with_project_file_name(&project_file)?;
         let invalid_yaml_content = "invalid_yaml: [unclosed_list";
         std::fs::write(&project_file, invalid_yaml_content)
             .expect("Failed to write invalid YAML to project file");
         let result = read_project_file("some/random/path/LMX_summary.yml", &args);
         assert!(result.is_err());
         // Clean up
-        teardown_tmp_project_file(&project_file);
+        teardown_tmp_project_file(&project_file)?;
+        Ok(())
     }
 
     #[test]
-    fn test_read_project_file_incomplete_yaml() {
+    fn test_read_project_file_incomplete_yaml() -> Result<()> {
         // Create a temporary project file with invalid YAML content
         let temp_dir =
             std::env::temp_dir().join(format!("project_file_test_{}", uuid::Uuid::new_v4()));
@@ -104,7 +109,7 @@ mod tests {
             .to_string();
         // Create CliArgs with the specified project file
         // This also sets up the necessary directories
-        let args = setup_cliargs_with_project_file_name(&project_file);
+        let args = setup_cliargs_with_project_file_name(&project_file)?;
         let invalid_yaml_content = format!(
             "---\n{}\n{}\n{}\n",
             "project: TestProject", "code: TestCode", "code_version: 1.0"
@@ -114,11 +119,12 @@ mod tests {
         let result = read_project_file("some/random/path/LMX_summary.yml", &args);
         assert!(result.is_err());
         // Clean up
-        teardown_tmp_project_file(&project_file);
+        remove_dir_all(temp_dir)?;
+        Ok(())
     }
 
     #[test]
-    fn test_read_project_file_complete_project() {
+    fn test_read_project_file_complete_project() -> Result<()> {
         // Create a temporary project file with invalid YAML content
         let temp_dir =
             std::env::temp_dir().join(format!("project_file_test_{}", uuid::Uuid::new_v4()));
@@ -129,7 +135,7 @@ mod tests {
             .to_string();
         // Create CliArgs with the specified project file
         // This also sets up the necessary directories
-        let args = setup_cliargs_with_project_file_name(&project_file);
+        let args = setup_cliargs_with_project_file_name(&project_file)?;
         let invalid_yaml_content = format!(
             "---\n{}\n{}\n{}\n{}\n",
             "project: TestProject", "code: TestCode", "code_version: 1.0", "test_case: TestCase"
@@ -146,6 +152,7 @@ mod tests {
         assert!(runs_foreign_keys.cluster.is_none());
         assert!(runs_foreign_keys.person.is_none());
         // Clean up
-        teardown_tmp_project_file(&project_file);
+        remove_dir_all(temp_dir)?;
+        Ok(())
     }
 }

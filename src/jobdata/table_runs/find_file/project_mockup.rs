@@ -14,6 +14,9 @@
 
 use crate::cmdline::CliArgs;
 use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
+use anyhow::Result;
+use fs_extra::dir::{copy, CopyOptions};
+use std::path::PathBuf;
 
 /// Sets up a temporary project file on a new directory for testing purposes.
 ///
@@ -24,22 +27,27 @@ use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
 ///
 /// Returns the path to the created temporary project file as a `String`.
 ///
-/// # Panics
+/// # Errors
 ///
-/// Panics if:
+/// Returns an error if:
 /// - The temporary directory cannot be created
 /// - The project file cannot be created or written to
-pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> String {
+/// - The file path cannot be converted to a valid UTF-8 string
+pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Result<String> {
     // Create a temporary project file for testing
     let temp_dir = std::env::temp_dir().join(format!("project_file_test_{}", uuid::Uuid::new_v4()));
-    std::fs::create_dir_all(&temp_dir).expect("Failed to create temp project file directory");
+    std::fs::create_dir_all(&temp_dir)?;
     let file_name = temp_dir.join(args.project_file.as_str());
     // temporarily create a project file with contents from RunsForeignKeys written in yml format
-    let yml_contents =
-        serde_yaml::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
-    std::fs::write(&file_name, yml_contents).expect("Failed to write to project file");
+    let yml_contents = serde_yaml::to_string(contents)?;
+    std::fs::write(&file_name, yml_contents)?;
 
-    file_name.to_str().unwrap().to_string()
+    let file_name_str = file_name
+        .into_os_string()
+        .into_string()
+        .map_err(|os_str| anyhow::anyhow!("temporary project file path is not valid UTF-8: {:?}", os_str))?;
+
+    Ok(file_name_str)
 }
 
 /// Sets up a CliArgs instance with the specified project file name for testing purposes.
@@ -51,17 +59,20 @@ pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Str
 ///
 /// # Returns
 /// A CliArgs instance with the specified project file and default values for other fields.
-pub fn setup_cliargs_with_project_file_name(project_file: &str) -> CliArgs {
+pub fn setup_cliargs_with_project_file_name(project_file: &str) -> Result<CliArgs> {
     // Create directory for the project file
-    std::fs::create_dir_all(std::path::Path::new(project_file).parent().unwrap())
-        .expect("Failed to create subdirectory");
+    let path = std::path::Path::new(project_file);
+    let parent = path.parent().ok_or_else(|| {
+        anyhow::anyhow!("Project file '{}' has no parent directory", project_file)
+    })?;
+    std::fs::create_dir_all(parent)?;
     // Create CliArgs with the specified project file
-    CliArgs {
+    Ok(CliArgs {
         project_file: project_file.to_string(),
-        verbose: true,
+        verbose: false,
         dry_run: false,
         ..Default::default()
-    }
+    })
 }
 
 /// Sets up a CliArgs instance with the specified project file for testing purposes.
@@ -72,18 +83,47 @@ pub fn setup_cliargs_with_project_file_name(project_file: &str) -> CliArgs {
 ///
 /// # Returns
 /// A CliArgs instance with the specified project file and default values for other fields.
-pub fn setup_cliargs_with_project_file(project_file: &str, contents: &RunsForeignKeys) -> CliArgs {
+pub fn setup_cliargs_with_project_file(
+    project_file: &str,
+    contents: &RunsForeignKeys,
+) -> Result<CliArgs> {
     // Create directory and CliArgs with the specified project file
-    let project_cliargs = setup_cliargs_with_project_file_name(project_file);
+    let project_cliargs = setup_cliargs_with_project_file_name(project_file)?;
     // temporarily create a project file with contents from RunsForeignKeys written in yml format
     let yml_contents =
         serde_yaml::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
-    std::fs::write(project_file, yml_contents).expect("Failed to write to project file");
+    std::fs::write(project_file, yml_contents)?;
     // Return CliArgs
-    project_cliargs
+    Ok(project_cliargs)
 }
 
-/// Cleans up a temporary directory created by `setup_tmp_project_file`.
+/// sets up a temporary directory for testing purposes, copied from a given source path.
+/// The directory is copied to a new temporary location with a unique UUID-based name.
+/// This might include a given project file inside it.
+///
+/// # Arguments
+/// * `source_path` - The source path relative to the Cargo manifest directory.
+///
+/// # Returns
+/// Returns the path to the created temporary directory as a `PathBuf`.
+///
+/// # Errors
+/// Returns an error if:
+/// - The temporary directory cannot be created
+/// - The source directory cannot be copied
+pub fn setup_tmp_project_directory(source_path: &str) -> Result<PathBuf> {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR"); // compile-time
+    let path = std::path::Path::new(manifest_dir).join(source_path);
+    // Create a temporary directory for testing
+    let temp_dir = std::env::temp_dir().join(format!("project_dir_test_{}", uuid::Uuid::new_v4()));
+    // Recursively copy source_path to temp_dir
+    let mut options = CopyOptions::new();
+    options.content_only = true;
+    copy(&path, &temp_dir, &options)?;
+    Ok(temp_dir)
+}
+
+/// Cleans up a temporary directory as created by previous functions.
 ///
 /// # Arguments
 ///
@@ -91,10 +131,16 @@ pub fn setup_cliargs_with_project_file(project_file: &str, contents: &RunsForeig
 ///
 /// The parent directory and its contents will be removed.
 ///
-/// # Panics
+/// # Errors
 ///
-/// Panics if the directory cannot be removed.
-pub fn teardown_tmp_project_file(temp_file: &str) {
-    std::fs::remove_dir_all(std::path::Path::new(temp_file).parent().unwrap())
-        .expect("Failed to remove temp project file directory");
+/// Returns an error if:
+/// - The temporary file has no parent directory
+/// - The directory cannot be removed
+pub fn teardown_tmp_project_file(temp_file: &str) -> Result<()> {
+    let path = std::path::Path::new(temp_file);
+    let parent = path.parent().ok_or_else(|| {
+        anyhow::anyhow!("Temporary file '{}' has no parent directory", temp_file)
+    })?;
+    std::fs::remove_dir_all(parent)?;
+    Ok(())
 }
