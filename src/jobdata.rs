@@ -26,6 +26,8 @@ pub(crate) mod create_sql;
 pub(crate) mod table_runs;
 #[cfg(test)]
 pub(crate) mod test_job_failures;
+#[cfg(test)]
+pub(crate) mod test_sql_file;
 
 /// Processes a single LMX summary file by collecting SQL queries and executing them against a database.
 ///
