@@ -20,6 +20,7 @@ mod test {
     use sqlx::MySql;
     use std::fs::OpenOptions;
     use std::io::Read;
+    use tempfile::NamedTempFile;
 
     /// Helper function reading a SQL file and verifying its content against expected lines.
     /// Each expected line must be present in the file in the given order.
@@ -46,11 +47,16 @@ mod test {
 
     #[tokio::test]
     pub async fn test_file_with_transaction() -> Result<()> {
+        // Create a temporary file for test output
+        // Keep temp_file in scope to prevent automatic deletion until test completes
+        let temp_file = NamedTempFile::new()?;
+        let temp_path = temp_file.path().to_string_lossy().to_string();
+        
         // Setup test arguments and mock database pool
         let args = CliArgs {
             verbose: false,
             dry_run: false,
-            sql_file: "test_output.sql".to_string(),
+            sql_file: temp_path.clone(),
             ..Default::default()
         };
         let pool: Option<sqlx::Pool<MySql>> = None;
@@ -70,8 +76,7 @@ mod test {
                 "COMMIT;",
             ],
         )?;
-        // Clean up test output file
-        std::fs::remove_file(&args.sql_file)?;
+        // Temporary file will be automatically cleaned up when temp_file goes out of scope
         Ok(())
     }
 }
