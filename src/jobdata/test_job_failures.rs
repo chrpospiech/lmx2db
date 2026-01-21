@@ -30,11 +30,12 @@ mod tests {
         // Create CliArgs with the specified project file that does not exist
         let args = setup_cliargs_with_project_file_name("not_there.yml")?;
 
-        // Set the LMX_summary file path and read its contents
+        // Set the LMX_summary file path
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
+        // Read SQL types
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), &args).await?;
 
-        // Call the import_foreign_keys function
+        // Call the process_lmx_file function
         let result = process_lmx_file(
             lmx_summary_pathbuf.to_str().unwrap(),
             &Some(pool.clone()),
@@ -60,11 +61,12 @@ mod tests {
         let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
         // Create CliArgs with the specified project file that does not exist
         let args = setup_cliargs_with_project_file_name("project.yml")?;
-        // Set the LMX_summary file path and read its contents
+        // Set the LMX_summary file path
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
+        // Read SQL types
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), &args).await?;
 
-        // Call the import_foreign_keys function
+        // Call the process_lmx_file function
         let result = process_lmx_file(
             lmx_summary_pathbuf.to_str().unwrap(),
             &Some(pool.clone()),
