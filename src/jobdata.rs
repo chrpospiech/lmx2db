@@ -158,6 +158,10 @@ pub async fn process_sql_queries(
         }
     } else {
         // No database connection available, write (append) them to a file.
+        let mut query_list_with_transaction = vec!["START TRANSACTION;".to_string()];
+        query_list_with_transaction.extend(query_list);
+        query_list_with_transaction.push("COMMIT;".to_string());
+        let query_list = query_list_with_transaction;
         if args.verbose || args.dry_run {
             println!(
                 "No database connection available, writing {} lines with queries to file: {}",
