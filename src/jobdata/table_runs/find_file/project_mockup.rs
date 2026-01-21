@@ -42,10 +42,12 @@ pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Res
     let yml_contents = serde_yaml::to_string(contents)?;
     std::fs::write(&file_name, yml_contents)?;
 
-    let file_name_str = file_name
-        .into_os_string()
-        .into_string()
-        .map_err(|os_str| anyhow::anyhow!("temporary project file path is not valid UTF-8: {:?}", os_str))?;
+    let file_name_str = file_name.into_os_string().into_string().map_err(|os_str| {
+        anyhow::anyhow!(
+            "temporary project file path is not valid UTF-8: {:?}",
+            os_str
+        )
+    })?;
 
     Ok(file_name_str)
 }
@@ -138,9 +140,9 @@ pub fn setup_tmp_project_directory(source_path: &str) -> Result<PathBuf> {
 /// - The directory cannot be removed
 pub fn teardown_tmp_project_file(temp_file: &str) -> Result<()> {
     let path = std::path::Path::new(temp_file);
-    let parent = path.parent().ok_or_else(|| {
-        anyhow::anyhow!("Temporary file '{}' has no parent directory", temp_file)
-    })?;
+    let parent = path
+        .parent()
+        .ok_or_else(|| anyhow::anyhow!("Temporary file '{}' has no parent directory", temp_file))?;
     std::fs::remove_dir_all(parent)?;
     Ok(())
 }

@@ -26,6 +26,8 @@ pub(crate) mod create_sql;
 pub(crate) mod table_runs;
 #[cfg(test)]
 pub(crate) mod test_job_failures;
+#[cfg(test)]
+pub(crate) mod test_sql_file;
 
 /// Processes a single LMX summary file by collecting SQL queries and executing them against a database.
 ///
@@ -158,16 +160,20 @@ pub async fn process_sql_queries(
         }
     } else {
         // No database connection available, write (append) them to a file.
+        let mut query_list_with_transaction = vec!["START TRANSACTION;".to_string()];
+        query_list_with_transaction.extend(query_list);
+        query_list_with_transaction.push("COMMIT;".to_string());
+        let extended_query_list = query_list_with_transaction;
         if args.verbose || args.dry_run {
             println!(
                 "No database connection available, writing {} lines with queries to file: {}",
-                query_list.len(),
+                extended_query_list.len(),
                 args.sql_file
             );
         }
         if args.dry_run {
             println!("Dry run mode - not writing to file. Queries would be:");
-            for query in &query_list {
+            for query in &extended_query_list {
                 println!("Query to write: {}", query);
             }
         } else {
@@ -178,7 +184,7 @@ pub async fn process_sql_queries(
                 .open(&args.sql_file)
                 .expect("Failed to open SQL file for writing");
             // Concatenate all queries into a single string
-            let mut concatenated = query_list.join("\n");
+            let mut concatenated = extended_query_list.join("\n");
             // Ensure it ends with a newline
             if !concatenated.ends_with('\n') {
                 concatenated.push('\n');
