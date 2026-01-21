@@ -15,6 +15,7 @@
 use crate::cmdline::CliArgs;
 use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
 use anyhow::Result;
+use fs_extra::dir::{copy, CopyOptions};
 use std::path::PathBuf;
 
 /// Sets up a temporary project file on a new directory for testing purposes.
@@ -116,9 +117,9 @@ pub fn setup_tmp_project_directory(source_path: &str) -> Result<PathBuf> {
     // Create a temporary directory for testing
     let temp_dir = std::env::temp_dir().join(format!("project_dir_test_{}", uuid::Uuid::new_v4()));
     // Recursively copy source_path to temp_dir
-    let mut options = fs_extra::dir::CopyOptions::new();
+    let mut options = CopyOptions::new();
     options.content_only = true;
-    fs_extra::dir::copy(&path, &temp_dir, &options)?;
+    copy(&path, &temp_dir, &options)?;
     Ok(temp_dir)
 }
 
