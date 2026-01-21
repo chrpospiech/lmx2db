@@ -57,7 +57,7 @@ mod tests {
 
     #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     async fn test_cluster_id_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
-        // Create a temporary project file for testing
+        // Create a temporary project directory for testing
         let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
         // Create CliArgs with the specified project file that exists in the temp_dir
         let args = setup_cliargs_with_project_file_name("project.yml")?;
