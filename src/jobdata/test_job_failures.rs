@@ -59,7 +59,7 @@ mod tests {
     async fn test_cluster_id_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
         // Create a temporary project file for testing
         let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
-        // Create CliArgs with the specified project file that does not exist
+        // Create CliArgs with the specified project file that exists in the temp_dir
         let args = setup_cliargs_with_project_file_name("project.yml")?;
         // Set the LMX_summary file path
         let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
