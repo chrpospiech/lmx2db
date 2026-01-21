@@ -18,22 +18,26 @@
 
 -- Data for table: people
 INSERT INTO `people` (
-    `id`, `title`, `first_name`, `middle`, `surname`, `affiliation`, `email`, `phone`, `mobile`
+    `title`, `first_name`, `middle`, `surname`, `affiliation`, `email`, `phone`, `mobile`
 ) VALUES (
-    1, 'Dr.', 'Christoph', '', 'Pospiech', 'retiree', 'pospiech-HD@t-online.de',
+    'Dr.', 'Christoph', '', 'Pospiech', 'retiree', 'pospiech-HD@t-online.de',
     '+49-351-86269826', '+49-1511-910-4597'
 );
+SET @person_id = LAST_INSERT_ID();
 
 -- Data for table: clusters
 INSERT INTO `clusters` (
-    `id`, `name`, `owner`, `accessinfo`
+    `name`, `owner`, `accessinfo`
 ) VALUES
-(1, 'lenox', 'Lenovo', 'ssh lenox'),
-(2, 'thinkpad', 'Christoph Pospiech', 'no public access');
+('Lenox', 'Lenovo', 'ssh lenox'),
+('thinkpad', 'Christoph Pospiech', 'no public access');
+SET @cluster_id_lenox = (SELECT `id` FROM `clusters` WHERE `name`='Lenox');
+SET @cluster_id_thinkpad = (SELECT `id` FROM `clusters` WHERE `name`='thinkpad');
+
 
 -- Data for table: userids
 INSERT INTO `userids` (
     `name`, `clid`, `pid`
 ) VALUES
-('cp', 2, 1),
-('xcpospiech', 1, 1);
+('cp', @cluster_id_thinkpad, @person_id),
+('xcpospiech', @cluster_id_lenox, @person_id);
