@@ -60,8 +60,8 @@ mod tests {
         // Assert the values of the returned row
         let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
         assert_eq!(*rid, 1);
-        assert_eq!(*clid, 3);
-        assert_eq!(*pid, 24);
+        assert_eq!(*clid, 1);
+        assert_eq!(*pid, 3);
         assert_eq!(*ccid, 1);
         assert_eq!(*nodes, 1);
         assert!(!*has_mpi_trace);

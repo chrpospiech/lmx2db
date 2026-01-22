@@ -14,19 +14,14 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
-/*M!999999\- enable the sandbox mode */
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clusters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `owner` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `accessinfo` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `locations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` enum('nodes','nets','fs','chassis') NOT NULL COMMENT 'type of location',
@@ -36,19 +31,15 @@ CREATE TABLE `locations` (
   KEY `clid` (`clid`),
   CONSTRAINT `locations_ibfk_1` FOREIGN KEY (`clid`) REFERENCES `clusters` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   `version` varchar(32) NOT NULL,
   `www` varchar(256) NOT NULL DEFAULT 'https://www.google.de/',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `testcases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(11) NOT NULL,
@@ -56,19 +47,15 @@ CREATE TABLE `testcases` (
   PRIMARY KEY (`id`),
   KEY `cid` (`cid`),
   CONSTRAINT `testcases_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `codes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `projects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   `comment` varchar(256) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `customer_cases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tcid` int(11) NOT NULL,
@@ -78,10 +65,8 @@ CREATE TABLE `customer_cases` (
   KEY `prid` (`prid`) USING BTREE,
   CONSTRAINT `customer_cases_ibfk_1` FOREIGN KEY (`tcid`) REFERENCES `testcases` (`id`) ON DELETE CASCADE,
   CONSTRAINT `customer_cases_ibfk_2` FOREIGN KEY (`prid`) REFERENCES `projects` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `people` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(12) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT 'Prof. Dr.',
@@ -93,10 +78,8 @@ CREATE TABLE `people` (
   `phone` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `mobile` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `userids` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `name` varchar(32) NOT NULL COMMENT 'userId',
@@ -107,10 +90,8 @@ CREATE TABLE `userids` (
   KEY `pid` (`pid`),
   CONSTRAINT `userids_ibfk_1` FOREIGN KEY (`clid`) REFERENCES `clusters` (`id`),
   CONSTRAINT `userids_ibfk_2` FOREIGN KEY (`pid`) REFERENCES `people` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `runs` (
   `rid` int(11) NOT NULL AUTO_INCREMENT,
   `ccid` int(11) NOT NULL COMMENT 'Foreign key from customer_cases',
@@ -153,10 +134,8 @@ CREATE TABLE `runs` (
   CONSTRAINT `runs_ibfk_1` FOREIGN KEY (`ccid`) REFERENCES `customer_cases` (`id`) ON DELETE CASCADE,
   CONSTRAINT `runs_ibfk_2` FOREIGN KEY (`pid`) REFERENCES `people` (`id`) ON DELETE CASCADE,
   CONSTRAINT `runs_ibfk_3` FOREIGN KEY (`clid`) REFERENCES `clusters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `appl_builtin_prof` (
   `rid` int(11) NOT NULL DEFAULT 0,
   `tid` int(6) DEFAULT NULL,
@@ -172,28 +151,22 @@ CREATE TABLE `appl_builtin_prof` (
   `bandwidth` float DEFAULT NULL COMMENT '[MBytes/s]',
   KEY `rid` (`rid`),
   CONSTRAINT `appl_builtin_prof_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `environ` (
   `rid` int(11) NOT NULL DEFAULT 0,
   `k` varchar(64) NOT NULL,
   `value` varchar(8192) NOT NULL DEFAULT '',
   KEY `rid` (`rid`),
   CONSTRAINT `environ_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(512) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `filesystems` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mount_point` varchar(256) NOT NULL,
@@ -201,8 +174,7 @@ CREATE TABLE `filesystems` (
   `blocksize` int(11) NOT NULL COMMENT 'block size in KB',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `fileops` (
   `rid` int(11) NOT NULL DEFAULT 0,
   `fid` int(11) NOT NULL DEFAULT 0,
@@ -215,11 +187,8 @@ CREATE TABLE `fileops` (
   KEY `fid` (`fid`),
   CONSTRAINT `fileops_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE,
   CONSTRAINT `fileops_ibfk_2` FOREIGN KEY (`fid`) REFERENCES `files` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `hpm_events` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'event id',
   `name` varchar(512) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'event name',
@@ -228,9 +197,7 @@ CREATE TABLE `hpm_events` (
   `comment` varchar(1024) NOT NULL DEFAULT '' COMMENT 'further information',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `hpm` (
   `rid` int(11) NOT NULL COMMENT 'run id from table runs',
   `tid` int(6) NOT NULL COMMENT 'MPI rank',
@@ -241,10 +208,8 @@ CREATE TABLE `hpm` (
   KEY `evid` (`evid`),
   CONSTRAINT `hpm_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE,
   CONSTRAINT `hpm_ibfk_2` FOREIGN KEY (`evid`) REFERENCES `hpm_events` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `io` (
   `rid` int(11) NOT NULL DEFAULT 0,
   `tid` int(6) NOT NULL,
@@ -254,10 +219,8 @@ CREATE TABLE `io` (
   `time` float NOT NULL DEFAULT 0,
   KEY `rid` (`rid`),
   CONSTRAINT `io_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `io_details` (
   `rid` int(11) NOT NULL DEFAULT 0,
   `tid` int(6) NOT NULL,
@@ -268,18 +231,14 @@ CREATE TABLE `io_details` (
   `time` float NOT NULL DEFAULT 0,
   KEY `rid` (`rid`),
   CONSTRAINT `io_details_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `prof_libs` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `name` varchar(1024) NOT NULL COMMENT 'libraries containing the profiled routines',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `prof_names` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `lib_id` int(11) NOT NULL COMMENT 'foreign key relating to libraries',
@@ -288,9 +247,7 @@ CREATE TABLE `prof_names` (
   KEY `lib_id` (`lib_id`),
   CONSTRAINT `prof_names_ibfk_1` FOREIGN KEY (`lib_id`) REFERENCES `prof_libs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `iprof` (
   `rid` int(11) NOT NULL DEFAULT 0 COMMENT 'foreign key relating to table runs',
   `tid` int(6) NOT NULL COMMENT 'MPI rank',
@@ -302,9 +259,7 @@ CREATE TABLE `iprof` (
   CONSTRAINT `iprof_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE,
   CONSTRAINT `iprof_ibfk_2` FOREIGN KEY (`routine_id`) REFERENCES `prof_names` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `mmm` (
   `rid` int(11) NOT NULL,
   `mincomm` float DEFAULT NULL,
@@ -333,10 +288,8 @@ CREATE TABLE `mmm` (
   `mediotask` int(6) DEFAULT NULL,
   KEY `rid` (`rid`),
   CONSTRAINT `mmm_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `mpi_names` (
   `id` smallint(8) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL COMMENT 'Name of the MPI call',
@@ -345,9 +298,7 @@ CREATE TABLE `mpi_names` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `mpi_names_inx` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=349 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `mpi` (
   `rid` int(11) NOT NULL DEFAULT 0,
   `tid` int(6) NOT NULL,
@@ -359,10 +310,8 @@ CREATE TABLE `mpi` (
   KEY `mpi_ibfk_2` (`mid`),
   CONSTRAINT `mpi_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE,
   CONSTRAINT `mpi_ibfk_2` FOREIGN KEY (`mid`) REFERENCES `mpi_names` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `mpi_details` (
   `rid` int(11) NOT NULL DEFAULT 0,
   `tid` int(6) NOT NULL,
@@ -375,10 +324,8 @@ CREATE TABLE `mpi_details` (
   KEY `mpi_details_ibfk_2` (`mid`),
   CONSTRAINT `mpi_details_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE,
   CONSTRAINT `mpi_details_ibfk_2` FOREIGN KEY (`mid`) REFERENCES `mpi_names` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `power_types` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'power type id',
   `aggregation` enum('current','average','maximum','integral') NOT NULL DEFAULT 'current' COMMENT 'kind of aggregation',
@@ -388,9 +335,7 @@ CREATE TABLE `power_types` (
   `comment` varchar(128) NOT NULL DEFAULT '' COMMENT 'Additional comments',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `power_aggregated` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `rid` int(11) NOT NULL DEFAULT 0 COMMENT 'foreign key relating to run id',
@@ -405,9 +350,7 @@ CREATE TABLE `power_aggregated` (
   CONSTRAINT `power_aggregated_ibfk_2` FOREIGN KEY (`lid`) REFERENCES `locations` (`id`) ON DELETE CASCADE,
   CONSTRAINT `power_aggregated_ibfk_3` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `power_timeline` (
   `timestamp` int(11) unsigned NOT NULL DEFAULT 0 COMMENT 'Seconds since Jan 1, 1970 UTC',
   `timestamp_n` int(11) unsigned NOT NULL DEFAULT 0 COMMENT 'nanoseconds part of timestamp',
@@ -420,19 +363,15 @@ CREATE TABLE `power_timeline` (
   CONSTRAINT `power_timeline_ibfk_1` FOREIGN KEY (`lid`) REFERENCES `locations` (`id`) ON DELETE CASCADE,
   CONSTRAINT `power_timeline_ibfk_2` FOREIGN KEY (`type`) REFERENCES `power_types` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `settings` (
   `rid` int(11) NOT NULL,
   `k` varchar(64) NOT NULL COMMENT 'keyword',
   `value` varchar(8192) DEFAULT NULL,
   KEY `rid` (`rid`) USING BTREE,
   CONSTRAINT `settings_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
 CREATE TABLE `tasks` (
   `rid` int(11) NOT NULL COMMENT 'run identifier',
   `tid` int(6) NOT NULL COMMENT 'MPI rank',
@@ -451,7 +390,7 @@ CREATE TABLE `tasks` (
   KEY `lid` (`lid`),
   CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `runs` (`rid`) ON DELETE CASCADE,
   CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`lid`) REFERENCES `locations` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 CREATE DEFINER=`cp`@`localhost` FUNCTION `cluster_id`(`cl_name` VARCHAR(32) CHARSET utf8mb3, `do_insert` INT(1)) RETURNS int(11)
     MODIFIES SQL DATA
