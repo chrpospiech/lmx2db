@@ -1,0 +1,949 @@
+# ----------------------------------------------------------------------------
+#
+#       Lightweight MPI traces with eXtensions
+#
+#       LMX_trace summary output in YAML format.
+#
+#       This output is both human and machine readable.
+#
+# ----------------------------------------------------------------------------
+---
+base_data:
+    library_version:                         2.0.0.rc3
+    MPI_ranks:                                      64
+    collect_scope:            MPI_Init to MPI_Finalize
+# ----------------------------------------------------------------------------
+# The following is the file system type, the block size in KB
+# and the mount point of the execution directory.
+# ----------------------------------------------------------------------------
+    fstype:                                       GPFS
+    blocksize:                                    8192
+    mount_point:                     /gpfs/gpfs_de6000
+# ----------------------------------------------------------------------------
+# YAML tag      | Meaning
+# --------------|-------------------------------------------------------------
+# start_date    | UNIX time stamp in seconds at MPI_Init()
+# start_date_n  | UNIX time stamp in nanoseconds at MPI_Init()
+# stop_date     | UNIX time stamp in seconds at MPI_Finalize()
+# stop_date_n   | UNIX time stamp in nanoseconds at MPI_Finalize()
+# ----------------------------------------------------------------------------
+    start_date:                             1763643120
+    start_date_n:                            436056186
+    stop_date:                              1763644192
+    stop_date_n:                             984976097
+# ----------------------------------------------------------------------------
+#         Minimum, Median and Maximum Values of Communication Times
+#
+# The following table lists the ranks, time values and fraction of
+# the total time for the minimum, median and maximum value of the
+# corresponding part of the communication time.
+# The times are given for the collect scope as specified
+# earlier in this file. Each time value is formatted with
+# four digits after the decimal point if the value is above
+# 0.001 and in scientific format otherwise.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with approprately named key, and the value being an array of
+# three numbers with indices 0,1,2
+# ----------------------------------------------------------------------------
+min_max_times:
+# ----------------------------------------------------------------------------
+#    minmax_                  MPI            time            time
+#    _time                   rank        value[s]     fraction[%]
+# ----------------------------------------------------------------------------
+    min_comm:            [    30,       216.5484,        20.1901 ]
+    med_comm:            [    27,       500.2836,        46.6444 ]
+    max_comm:            [    59,       816.5747,        76.1340 ]
+    min_mpiio:           [    63,   0.000000e+00,   0.000000e+00 ]
+    med_mpiio:           [    31,   0.000000e+00,   0.000000e+00 ]
+    max_mpiio:           [     0,   0.000000e+00,   0.000000e+00 ]
+    min_loadimb:         [    27,         2.9793,         0.2778 ]
+    med_loadimb:         [    48,         8.9282,         0.8324 ]
+    max_loadimb:         [    20,        68.6740,         6.4029 ]
+# ----------------------------------------------------------------------------
+#        Communication Times for each MPI Rank
+#
+# The following table lists the total communication time
+# and the time spent in MPI-IO for each MPI rank. The time spent
+# for MPI-IO is also included in the value of the total communication
+# time. Next to each of these two communication values in seconds is
+# the precentage of real time as given in the last table.
+#
+# The rows of the table are sorted with respect to the total
+# communication time in ascending order.
+#
+# The times are given for the collect scope as specified
+# earlier in this file. Each time value is formatted with
+# four digits after the decimal point if the value is above
+# 0.001 and in scientific format otherwise.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the MPI rank as key, and the value being an array of
+# four numbers with indices 0,1,2,3
+# ----------------------------------------------------------------------------
+communication_times:
+# ----------------------------------------------------------------------------
+#   MPI       communication  communication          MPI-IO          MPI-IO
+#   rank      time [s]       time [%]             time [s]        time [%]
+# ----------------------------------------------------------------------------
+    59:     [       816.5747,        76.1340,   0.000000e+00,   0.000000e+00 ]
+    3:      [       807.7528,        75.3116,   0.000000e+00,   0.000000e+00 ]
+    11:     [       794.3984,        74.0664,   0.000000e+00,   0.000000e+00 ]
+    4:      [       732.2394,        68.2710,   0.000000e+00,   0.000000e+00 ]
+    12:     [       729.0328,        67.9720,   0.000000e+00,   0.000000e+00 ]
+    60:     [       726.9402,        67.7769,   0.000000e+00,   0.000000e+00 ]
+    58:     [       722.0753,        67.3233,   0.000000e+00,   0.000000e+00 ]
+    10:     [       720.3817,        67.1654,   0.000000e+00,   0.000000e+00 ]
+    2:      [       719.9162,        67.1220,   0.000000e+00,   0.000000e+00 ]
+    18:     [       718.9039,        67.0276,   0.000000e+00,   0.000000e+00 ]
+    20:     [       717.3487,        66.8826,   0.000000e+00,   0.000000e+00 ]
+    52:     [       715.5838,        66.7181,   0.000000e+00,   0.000000e+00 ]
+    51:     [       715.0563,        66.6689,   0.000000e+00,   0.000000e+00 ]
+    50:     [       713.6785,        66.5404,   0.000000e+00,   0.000000e+00 ]
+    36:     [       710.1176,        66.2084,   0.000000e+00,   0.000000e+00 ]
+    42:     [       710.0380,        66.2010,   0.000000e+00,   0.000000e+00 ]
+    44:     [       708.7589,        66.0817,   0.000000e+00,   0.000000e+00 ]
+    34:     [       704.9911,        65.7304,   0.000000e+00,   0.000000e+00 ]
+    26:     [       704.6718,        65.7007,   0.000000e+00,   0.000000e+00 ]
+    28:     [       700.7037,        65.3307,   0.000000e+00,   0.000000e+00 ]
+    15:     [       698.1255,        65.0903,   0.000000e+00,   0.000000e+00 ]
+    63:     [       695.6853,        64.8629,   0.000000e+00,   0.000000e+00 ]
+    7:      [       690.7884,        64.4062,   0.000000e+00,   0.000000e+00 ]
+    55:     [       689.5593,        64.2917,   0.000000e+00,   0.000000e+00 ]
+    39:     [       684.3239,        63.8035,   0.000000e+00,   0.000000e+00 ]
+    47:     [       683.7016,        63.7455,   0.000000e+00,   0.000000e+00 ]
+    31:     [       682.3370,        63.6183,   0.000000e+00,   0.000000e+00 ]
+    23:     [       679.2003,        63.3259,   0.000000e+00,   0.000000e+00 ]
+    19:     [       589.0221,        54.9180,   0.000000e+00,   0.000000e+00 ]
+    35:     [       558.0869,        52.0337,   0.000000e+00,   0.000000e+00 ]
+    43:     [       521.3987,        48.6131,   0.000000e+00,   0.000000e+00 ]
+    27:     [       500.2836,        46.6444,   0.000000e+00,   0.000000e+00 ]
+    9:      [       449.6243,        41.9211,   0.000000e+00,   0.000000e+00 ]
+    1:      [       433.6894,        40.4354,   0.000000e+00,   0.000000e+00 ]
+    57:     [       421.1730,        39.2685,   0.000000e+00,   0.000000e+00 ]
+    61:     [       386.1889,        36.0067,   0.000000e+00,   0.000000e+00 ]
+    49:     [       379.4064,        35.3743,   0.000000e+00,   0.000000e+00 ]
+    17:     [       354.5301,        33.0549,   0.000000e+00,   0.000000e+00 ]
+    5:      [       345.4211,        32.2056,   0.000000e+00,   0.000000e+00 ]
+    41:     [       342.8184,        31.9630,   0.000000e+00,   0.000000e+00 ]
+    13:     [       326.8340,        30.4726,   0.000000e+00,   0.000000e+00 ]
+    25:     [       324.9133,        30.2936,   0.000000e+00,   0.000000e+00 ]
+    33:     [       321.7014,        29.9941,   0.000000e+00,   0.000000e+00 ]
+    53:     [       311.0307,        28.9992,   0.000000e+00,   0.000000e+00 ]
+    62:     [       249.2117,        23.2355,   0.000000e+00,   0.000000e+00 ]
+    45:     [       248.4789,        23.1671,   0.000000e+00,   0.000000e+00 ]
+    40:     [       245.3531,        22.8757,   0.000000e+00,   0.000000e+00 ]
+    56:     [       244.8511,        22.8289,   0.000000e+00,   0.000000e+00 ]
+    48:     [       244.7272,        22.8174,   0.000000e+00,   0.000000e+00 ]
+    32:     [       243.5371,        22.7064,   0.000000e+00,   0.000000e+00 ]
+    54:     [       239.4225,        22.3228,   0.000000e+00,   0.000000e+00 ]
+    21:     [       235.9247,        21.9966,   0.000000e+00,   0.000000e+00 ]
+    46:     [       235.6130,        21.9676,   0.000000e+00,   0.000000e+00 ]
+    8:      [       234.5251,        21.8662,   0.000000e+00,   0.000000e+00 ]
+    14:     [       233.3186,        21.7537,   0.000000e+00,   0.000000e+00 ]
+    24:     [       230.5447,        21.4950,   0.000000e+00,   0.000000e+00 ]
+    16:     [       230.2649,        21.4689,   0.000000e+00,   0.000000e+00 ]
+    37:     [       229.1357,        21.3637,   0.000000e+00,   0.000000e+00 ]
+    22:     [       228.3650,        21.2918,   0.000000e+00,   0.000000e+00 ]
+    38:     [       227.1613,        21.1796,   0.000000e+00,   0.000000e+00 ]
+    29:     [       226.2326,        21.0930,   0.000000e+00,   0.000000e+00 ]
+    0:      [       224.8063,        20.9600,   0.000000e+00,   0.000000e+00 ]
+    6:      [       224.6611,        20.9465,   0.000000e+00,   0.000000e+00 ]
+    30:     [       216.5484,        20.1901,   0.000000e+00,   0.000000e+00 ]
+# ----------------------------------------------------------------------------
+#        Times spend in Load Imbalance for each MPI Rank
+#
+# The following table lists the time spent in load imbalance for each
+# MPI rank - measured when piling up at a collective MPI call.
+# Next to the load imbalance time in seconds is the precentage
+# of this time with respect to total communication and of real time,
+# respectively, as given in the last table.
+#
+# The rows of the table are sorted with respect to the time spent
+# in load imbalance in ascending order.
+#
+# The times are given for the collect scope as specified
+# earlier in this file. Each time value is formatted with
+# four digits after the decimal point if the value is above
+# 0.001 and in scientific format otherwise.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the MPI rank as key, and the value being an array of
+# three numbers with indices 0,1,2
+# ----------------------------------------------------------------------------
+load_imbalance_times:
+# ----------------------------------------------------------------------------
+#   MPI        load imbalance   load imbalance    load imbalance
+#   rank       time [s]         time [% comm]      time [% real]
+# ----------------------------------------------------------------------------
+    20:     [        68.6740,         9.5733,         6.4029 ]
+    28:     [        66.6118,         9.5064,         6.2106 ]
+    18:     [        62.0508,         8.6313,         5.7854 ]
+    26:     [        60.0728,         8.5249,         5.6009 ]
+    15:     [        59.9999,         8.5944,         5.5941 ]
+    12:     [        58.0599,         7.9640,         5.4133 ]
+    60:     [        48.9950,         6.7399,         4.5681 ]
+    4:      [        48.5908,         6.6359,         4.5304 ]
+    36:     [        47.3448,         6.6672,         4.4142 ]
+    23:     [        46.8806,         6.9023,         4.3710 ]
+    2:      [        45.1190,         6.2673,         4.2067 ]
+    44:     [        44.7151,         6.3089,         4.1690 ]
+    10:     [        44.4479,         6.1700,         4.1441 ]
+    52:     [        42.2593,         5.9056,         3.9401 ]
+    55:     [        41.3910,         6.0025,         3.8591 ]
+    58:     [        41.2033,         5.7062,         3.8416 ]
+    63:     [        40.5348,         5.8266,         3.7793 ]
+    7:      [        39.9655,         5.7855,         3.7262 ]
+    42:     [        38.2547,         5.3877,         3.5667 ]
+    34:     [        36.9469,         5.2408,         3.4448 ]
+    50:     [        36.6811,         5.1397,         3.4200 ]
+    39:     [        36.0754,         5.2717,         3.3635 ]
+    47:     [        34.4416,         5.0375,         3.2112 ]
+    31:     [        27.0906,         3.9703,         2.5258 ]
+    0:      [        11.1213,         4.9471,         1.0369 ]
+    56:     [        10.8850,         4.4456,         1.0149 ]
+    6:      [        10.0097,         4.4555,         0.9333 ]
+    62:     [         9.8136,         3.9379,         0.9150 ]
+    40:     [         9.2886,         3.7858,         0.8660 ]
+    3:      [         9.2857,         1.1496,         0.8658 ]
+    59:     [         9.1386,         1.1191,         0.8520 ]
+    48:     [         8.9282,         3.6482,         0.8324 ]
+    32:     [         8.8740,         3.6438,         0.8274 ]
+    8:      [         8.7220,         3.7190,         0.8132 ]
+    14:     [         8.7164,         3.7358,         0.8127 ]
+    5:      [         8.3728,         2.4239,         0.7806 ]
+    1:      [         8.2175,         1.8948,         0.7662 ]
+    61:     [         8.1894,         2.1206,         0.7635 ]
+    57:     [         7.9983,         1.8991,         0.7457 ]
+    16:     [         7.8008,         3.3878,         0.7273 ]
+    11:     [         7.7922,         0.9809,         0.7265 ]
+    24:     [         7.6974,         3.3388,         0.7177 ]
+    54:     [         7.6218,         3.1834,         0.7106 ]
+    46:     [         7.5794,         3.2169,         0.7067 ]
+    22:     [         7.3763,         3.2300,         0.6877 ]
+    38:     [         6.9171,         3.0450,         0.6449 ]
+    9:      [         6.7397,         1.4990,         0.6284 ]
+    13:     [         6.6260,         2.0273,         0.6178 ]
+    30:     [         6.3548,         2.9346,         0.5925 ]
+    41:     [         5.8492,         1.7062,         0.5454 ]
+    51:     [         5.3799,         0.7524,         0.5016 ]
+    49:     [         5.3697,         1.4153,         0.5006 ]
+    53:     [         5.0726,         1.6309,         0.4729 ]
+    33:     [         4.9171,         1.5285,         0.4584 ]
+    45:     [         4.8849,         1.9659,         0.4554 ]
+    43:     [         4.6598,         0.8937,         0.4345 ]
+    37:     [         4.5273,         1.9758,         0.4221 ]
+    35:     [         4.5155,         0.8091,         0.4210 ]
+    21:     [         4.5006,         1.9076,         0.4196 ]
+    17:     [         4.4652,         1.2595,         0.4163 ]
+    19:     [         4.3626,         0.7407,         0.4068 ]
+    25:     [         4.0042,         1.2324,         0.3733 ]
+    29:     [         3.5029,         1.5484,         0.3266 ]
+    27:     [         2.9793,         0.5955,         0.2778 ]
+# ----------------------------------------------------------------------------
+#        Memory Usage and Times for each MPI Rank
+#
+# The following table lists the real, user and system time
+# and the memory high water marks for each MPI rank.
+# The times are given for the collect scope as specified
+# earlier in this file. Each time value is formatted with
+# four digits after the decimal point if the value is above
+# 0.001 and in scientific format otherwise.
+#
+# The rows of the table are sorted with respect to the elapsed
+# (or wall clock) time in ascending order.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the MPI rank as key, and the value being an array of
+# five numbers with indices 0,1,2,3,4
+# ----------------------------------------------------------------------------
+rank_summary:
+# ----------------------------------------------------------------------------
+#   MPI          elapsed          user        system     max_rss      peakVM
+#   rank        time [s]      time [s]      time [s]       [MiB]       [MiB]
+# ----------------------------------------------------------------------------
+    10:    [    1072.5490,    4266.7290,      74.7122,    208.551,  10755.094 ]
+    15:    [    1072.5490,    4266.0134,      72.1552,    216.754,   2698.746 ]
+    33:    [    1072.5490,    4253.9595,      31.3509,    197.121,   2606.949 ]
+    34:    [    1072.5490,    4262.5986,      73.5451,    212.070,  16749.145 ]
+    44:    [    1072.5490,    4261.1035,      70.8361,    206.754,   8423.148 ]
+    0:     [    1072.5489,    4254.7849,      22.0466,    204.363,  14953.680 ]
+    1:     [    1072.5489,    4257.1574,      42.7783,    198.949,   2767.844 ]
+    5:     [    1072.5489,    4257.2225,      34.5967,    185.492,   9284.402 ]
+    7:     [    1072.5489,    4263.9676,      72.8001,    211.980,   8855.637 ]
+    9:     [    1072.5489,    4258.8153,      45.3247,    198.590,  14315.129 ]
+    11:    [    1072.5489,    4259.1365,      79.6547,    200.102,   6552.359 ]
+    16:    [    1072.5489,    4260.5163,      21.3558,    205.309,   7987.406 ]
+    18:    [    1072.5489,    4267.8835,      73.0978,    209.125,   7920.762 ]
+    30:    [    1072.5489,    4258.8691,      21.2114,    185.055,  10526.422 ]
+    32:    [    1072.5489,    4253.1318,      22.9540,    188.785,  11096.926 ]
+    36:    [    1072.5489,    4260.3003,      71.1652,    215.387,  13443.000 ]
+    41:    [    1072.5489,    4254.2875,      34.0727,    197.609,   5135.422 ]
+    53:    [    1072.5489,    4253.6320,      31.3200,    188.348,  14675.062 ]
+    59:    [    1072.5489,    4256.2075,      82.5594,    199.266,   8001.027 ]
+    2:     [    1072.5488,    4266.5823,      75.9031,    215.055,   5511.105 ]
+    13:    [    1072.5488,    4257.9757,      33.0284,    187.984,   3302.109 ]
+    17:    [    1072.5488,    4261.0696,      34.2527,    200.562,   2437.160 ]
+    19:    [    1072.5488,    4261.5571,      60.0310,    192.488,  11892.324 ]
+    24:    [    1072.5488,    4259.6902,      21.2075,    196.469,  14953.094 ]
+    29:    [    1072.5488,    4258.1332,      23.9305,    202.770,  17441.867 ]
+    35:    [    1072.5488,    4254.6864,      57.5221,    199.012,   3679.301 ]
+    39:    [    1072.5488,    4261.2233,      71.6192,    213.516,  16887.965 ]
+    40:    [    1072.5488,    4252.7110,      22.8883,    204.688,  13747.965 ]
+    56:    [    1072.5488,    4255.5194,      23.2625,    202.594,   5754.352 ]
+    20:    [    1072.5487,    4265.5594,      72.4923,    215.469,   5142.250 ]
+    22:    [    1072.5487,    4258.2680,      21.7236,    185.633,  16298.512 ]
+    43:    [    1072.5487,    4255.1382,      51.5031,    197.422,   9408.191 ]
+    45:    [    1072.5487,    4252.1171,      27.5266,    197.336,  15721.594 ]
+    51:    [    1072.5487,    4255.3280,      70.8534,    200.000,   8451.230 ]
+    55:    [    1072.5487,    4262.4046,      72.6911,    205.734,   5554.344 ]
+    60:    [    1072.5487,    4261.9122,      74.5264,    198.980,  12048.324 ]
+    4:     [    1072.5486,    4264.6016,      73.0284,    212.371,   8608.480 ]
+    12:    [    1072.5486,    4265.5952,      75.1949,    198.512,  16041.297 ]
+    14:    [    1072.5486,    4258.6050,      22.1242,    192.281,  13570.270 ]
+    21:    [    1072.5486,    4258.0163,      24.1234,    187.891,  17486.715 ]
+    26:    [    1072.5486,    4267.4762,      73.6558,    213.363,   8069.895 ]
+    37:    [    1072.5486,    4252.6848,      24.4427,    202.156,  11952.500 ]
+    38:    [    1072.5486,    4253.4759,      22.7358,    194.488,  18181.336 ]
+    47:    [    1072.5486,    4261.9043,      73.8757,    206.598,   2760.352 ]
+    48:    [    1072.5486,    4254.4912,      23.1223,    198.305,   5871.145 ]
+    50:    [    1072.5486,    4263.0838,      74.8060,    215.969,  12455.336 ]
+    52:    [    1072.5486,    4261.7010,      71.8269,    207.086,   9886.945 ]
+    54:    [    1072.5486,    4253.9825,      23.5570,    188.750,  17013.598 ]
+    28:    [    1072.5485,    4266.1430,      73.0535,    206.777,  18600.746 ]
+    61:    [    1072.5485,    4254.1328,      38.6437,    197.477,   9324.324 ]
+    8:     [    1072.5484,    4258.2676,      21.4011,    198.590,   3461.824 ]
+    42:    [    1072.5484,    4262.4249,      72.2518,    207.707,  15332.605 ]
+    3:     [    1072.5481,    4258.8075,      79.5852,    185.938,  16097.883 ]
+    49:    [    1072.5481,    4254.6829,      37.9159,    198.641,  17679.598 ]
+    58:    [    1072.5481,    4263.6753,      76.2572,    211.930,  17117.438 ]
+    62:    [    1072.5481,    4254.6828,      24.3189,    202.570,   3057.695 ]
+    23:    [    1072.5480,    4265.6139,      69.8103,    209.934,  13788.641 ]
+    46:    [    1072.5480,    4254.5122,      22.7104,    198.496,  11276.203 ]
+    6:     [    1072.5479,    4257.8661,      22.1321,    201.098,   5567.230 ]
+    25:    [    1072.5479,    4258.7655,      31.4349,    182.465,  18013.059 ]
+    27:    [    1072.5479,    4259.9121,      51.1909,    195.770,  13211.164 ]
+    31:    [    1072.5479,    4266.2941,      71.0888,    205.691,  15947.688 ]
+    57:    [    1072.5479,    4255.6849,      41.9872,    194.637,  11748.855 ]
+    63:    [    1072.5479,    4262.2555,      73.7606,    211.805,   5689.258 ]
+# ----------------------------------------------------------------------------
+#        CPU Affinity Information across all MPI Ranks
+#
+# The system function sched_getaffinity() is used to query the CPU
+# affinity prior to MPI_Finalize(). The result is a bit mask with as
+# many bits as there are logical cores. The bits are set for those cores
+# where the MPI rank and all threads started from it are allowed to run.
+# To save space, the following output groups four adjacent bits into a
+# hexadecimal digit resulting in a string of HEX codes. This string may
+# be longer than the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+#
+# Each entry below is a keyword value pair with the MPI rank as key and
+# and array as value. The first array element with index 0 is the hostname,
+# the remaining array elements are created by chopping the string of HEX codes
+# into pieces of at most 80 charactes.
+#
+# The rows of the table are sorted with respect to the MPI rank
+# in ascending order.
+#
+# This array is printed in compact form, if it fits onto a sigle line. It is
+# printed with one array element per row with a preceeding hyphen otherwise.
+#
+# When reading from Python, use ''.join(<array>) to piece the HEX string together.
+# ----------------------------------------------------------------------------
+CPU_affinity:
+# ----------------------------------------------------------------------------
+# MPI rank    hostname    CPU affinity
+# ----------------------------------------------------------------------------
+    0: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000000000300000000000000000000000000000003']
+    1: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000000000c0000000000000000000000000000000c']
+    2: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000000003000000000000000000000000000000030']
+    3: [ 'amd4125.hpc.eu.lenovo.com', '000000000000000000000000000000c0000000000000000000000000000000c0']
+    4: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000000030000000000000000000000000000000300']
+    5: [ 'amd4125.hpc.eu.lenovo.com', '00000000000000000000000000000c0000000000000000000000000000000c00']
+    6: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000000300000000000000000000000000000003000']
+    7: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000000c0000000000000000000000000000000c000']
+    8: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000003000000000000000000000000000000030000']
+    9: [ 'amd4125.hpc.eu.lenovo.com', '000000000000000000000000000c0000000000000000000000000000000c0000']
+    10: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000030000000000000000000000000000000300000']
+    11: [ 'amd4125.hpc.eu.lenovo.com', '00000000000000000000000000c0000000000000000000000000000000c00000']
+    12: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000300000000000000000000000000000003000000']
+    13: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000000c0000000000000000000000000000000c000000']
+    14: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000003000000000000000000000000000000030000000']
+    15: [ 'amd4125.hpc.eu.lenovo.com', '000000000000000000000000c0000000000000000000000000000000c0000000']
+    16: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000030000000000000000000000000000000300000000']
+    17: [ 'amd4125.hpc.eu.lenovo.com', '00000000000000000000000c0000000000000000000000000000000c00000000']
+    18: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000300000000000000000000000000000003000000000']
+    19: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000000c0000000000000000000000000000000c000000000']
+    20: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000003000000000000000000000000000000030000000000']
+    21: [ 'amd4125.hpc.eu.lenovo.com', '000000000000000000000c0000000000000000000000000000000c0000000000']
+    22: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000030000000000000000000000000000000300000000000']
+    23: [ 'amd4125.hpc.eu.lenovo.com', '00000000000000000000c0000000000000000000000000000000c00000000000']
+    24: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000300000000000000000000000000000003000000000000']
+    25: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000000c0000000000000000000000000000000c000000000000']
+    26: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000003000000000000000000000000000000030000000000000']
+    27: [ 'amd4125.hpc.eu.lenovo.com', '000000000000000000c0000000000000000000000000000000c0000000000000']
+    28: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000030000000000000000000000000000000300000000000000']
+    29: [ 'amd4125.hpc.eu.lenovo.com', '00000000000000000c0000000000000000000000000000000c00000000000000']
+    30: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000300000000000000000000000000000003000000000000000']
+    31: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000000c0000000000000000000000000000000c000000000000000']
+    32: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000003000000000000000000000000000000030000000000000000']
+    33: [ 'amd4125.hpc.eu.lenovo.com', '000000000000000c0000000000000000000000000000000c0000000000000000']
+    34: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000030000000000000000000000000000000300000000000000000']
+    35: [ 'amd4125.hpc.eu.lenovo.com', '00000000000000c0000000000000000000000000000000c00000000000000000']
+    36: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000300000000000000000000000000000003000000000000000000']
+    37: [ 'amd4125.hpc.eu.lenovo.com', '0000000000000c0000000000000000000000000000000c000000000000000000']
+    38: [ 'amd4125.hpc.eu.lenovo.com', '0000000000003000000000000000000000000000000030000000000000000000']
+    39: [ 'amd4125.hpc.eu.lenovo.com', '000000000000c0000000000000000000000000000000c0000000000000000000']
+    40: [ 'amd4125.hpc.eu.lenovo.com', '0000000000030000000000000000000000000000000300000000000000000000']
+    41: [ 'amd4125.hpc.eu.lenovo.com', '00000000000c0000000000000000000000000000000c00000000000000000000']
+    42: [ 'amd4125.hpc.eu.lenovo.com', '0000000000300000000000000000000000000000003000000000000000000000']
+    43: [ 'amd4125.hpc.eu.lenovo.com', '0000000000c0000000000000000000000000000000c000000000000000000000']
+    44: [ 'amd4125.hpc.eu.lenovo.com', '0000000003000000000000000000000000000000030000000000000000000000']
+    45: [ 'amd4125.hpc.eu.lenovo.com', '000000000c0000000000000000000000000000000c0000000000000000000000']
+    46: [ 'amd4125.hpc.eu.lenovo.com', '0000000030000000000000000000000000000000300000000000000000000000']
+    47: [ 'amd4125.hpc.eu.lenovo.com', '00000000c0000000000000000000000000000000c00000000000000000000000']
+    48: [ 'amd4125.hpc.eu.lenovo.com', '0000000300000000000000000000000000000003000000000000000000000000']
+    49: [ 'amd4125.hpc.eu.lenovo.com', '0000000c0000000000000000000000000000000c000000000000000000000000']
+    50: [ 'amd4125.hpc.eu.lenovo.com', '0000003000000000000000000000000000000030000000000000000000000000']
+    51: [ 'amd4125.hpc.eu.lenovo.com', '000000c0000000000000000000000000000000c0000000000000000000000000']
+    52: [ 'amd4125.hpc.eu.lenovo.com', '0000030000000000000000000000000000000300000000000000000000000000']
+    53: [ 'amd4125.hpc.eu.lenovo.com', '00000c0000000000000000000000000000000c00000000000000000000000000']
+    54: [ 'amd4125.hpc.eu.lenovo.com', '0000300000000000000000000000000000003000000000000000000000000000']
+    55: [ 'amd4125.hpc.eu.lenovo.com', '0000c0000000000000000000000000000000c000000000000000000000000000']
+    56: [ 'amd4125.hpc.eu.lenovo.com', '0003000000000000000000000000000000030000000000000000000000000000']
+    57: [ 'amd4125.hpc.eu.lenovo.com', '000c0000000000000000000000000000000c0000000000000000000000000000']
+    58: [ 'amd4125.hpc.eu.lenovo.com', '0030000000000000000000000000000000300000000000000000000000000000']
+    59: [ 'amd4125.hpc.eu.lenovo.com', '00c0000000000000000000000000000000c00000000000000000000000000000']
+    60: [ 'amd4125.hpc.eu.lenovo.com', '0300000000000000000000000000000003000000000000000000000000000000']
+    61: [ 'amd4125.hpc.eu.lenovo.com', '0c0000000000000000000000000000000c000000000000000000000000000000']
+    62: [ 'amd4125.hpc.eu.lenovo.com', '3000000000000000000000000000000030000000000000000000000000000000']
+    63: [ 'amd4125.hpc.eu.lenovo.com', 'c0000000000000000000000000000000c0000000000000000000000000000000']
+# ----------------------------------------------------------------------------
+#        Environment Variables on MPI Rank 0
+#
+# The value of an environment variable may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# Bash functions are excluded from this list of
+# environment variables.
+#
+# ----------------------------------------------------------------------------
+environ:
+    BASH_ENV:
+        - '/usr/share/lmod/lmod/init/bash'
+    CMAKE_PREFIX_PATH:
+        - '/hpc/base/EasyBuild/EL9-zen5/software/EasyBuild/5.1.1:/hpc/base/EasyBu'
+        - 'ild/EL9-zen4/software/binutils/2.45'
+    CPATH:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/include'
+    CPLUS_INCLUDE_PATH:
+        - '/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/include:/hpc/base/amd/aocl/5.0.'
+        - '0/aocc/include:/gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-'
+        - '5.0.0/include'
+    CTT:
+        - '/hpc/base/ctt'
+    CTT_BASE:
+        - '/hpc/base'
+    C_INCLUDE_PATH:
+        - '/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/include:/hpc/base/amd/aocl/5.0.'
+        - '0/aocc/include:/gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-'
+        - '5.0.0/include'
+    DBUS_SESSION_BUS_ADDRESS:
+        - 'unix:path=/run/user/1234510321/bus'
+    EAR_APP_NAME:
+        - 'GROMACS'
+    EAR_INSTALL_PATH:
+        - '/hpc/base/EAR/ear6.0.03.25'
+    EAR_TMP:
+        - '/var/ear'
+    EASYBUILD_BUILDPATH:
+        - '/tmp/xcpospiech'
+    EASYBUILD_MODULE_NAMING_SCHEME:
+        - 'HierarchicalMNS'
+    EASYBUILD_PREFIX:
+        - '/hpc/base/EasyBuild/EL9-zen5'
+    EASYBUILD_SOURCEPATH:
+        - '/hpc/base/EasyBuild/sources'
+    EBDEVELBINUTILS:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/easybuild/Core-bin'
+        - 'utils-2.45-easybuild-devel'
+    EBDEVELEASYBUILD:
+        - '/hpc/base/EasyBuild/EL9-zen5/software/EasyBuild/5.1.1/easybuild/Core-E'
+        - 'asyBuild-5.1.1-easybuild-devel'
+    EBROOTBINUTILS:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45'
+    EBROOTEASYBUILD:
+        - '/hpc/base/EasyBuild/EL9-zen5/software/EasyBuild/5.1.1'
+    EBVERSIONBINUTILS:
+        - '2.45'
+    EBVERSIONEASYBUILD:
+        - '5.1.1'
+    EB_INSTALLPYTHON:
+        - '/usr/bin/python3'
+    ENVIRONMENT:
+        - 'BATCH'
+    FPATH:
+        - '/usr/share/lmod/lmod/init/ksh_funcs'
+    HCOLL_HOME_DIR:
+        - '/opt/mellanox/hcoll/lib/..'
+    HCOLL_IB_IF_INCLUDE:
+        - 'mlx5_0:1'
+    HCOLL_MCAST_IB_IF:
+        - 'mlx5_0:1'
+    HCOLL_SHARP_IB_IF:
+        - 'mlx5_0:1'
+    HFI_NO_BACKTRACE:
+        - '1'
+    HISTCONTROL:
+        - 'ignoredups'
+    HISTSIZE:
+        - '1000'
+    HOME:
+        - '/home/xcpospiech'
+    HOSTNAME:
+        - 'amd4125'
+    HYDRA_BOOTSTRAP:
+        - 'slurm'
+    HYDRA_LAUNCHER_EXTRA_ARGS:
+        - '--external-launcher'
+    IPATH_NO_BACKTRACE:
+        - '1'
+    I_MPI_HYDRA_BOOTSTRAP:
+        - 'slurm'
+    I_MPI_HYDRA_BOOTSTRAP_EXEC_EXTRA_ARGS:
+        - '--external-launcher'
+    LANG:
+        - 'C.UTF-8'
+    LD_LIBRARY_PATH:
+        - '/home/xcpospiech/bench/4paper/gromacs_aocc/install_aocc/lib:/hpc/base/'
+        - 'EasyBuild/EL9-zen4/software/binutils/2.45/lib:/hpc/base/amd/openmpi/5.'
+        - '0.8/aocc/5.0.0/lib64:/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/lib:/hpc/b'
+        - 'ase/amd/aocl/5.0.0/aocc/lib:/usr/lib64:/usr/lib:/gpfs/gpfs_de6000/hpc/'
+        - 'base/amd/compilers/aocc-compiler-5.0.0/lib32:/gpfs/gpfs_de6000/hpc/bas'
+        - 'e/amd/compilers/aocc-compiler-5.0.0/lib:/gpfs/gpfs_de6000/hpc/base/amd'
+        - '/compilers/aocc-compiler-5.0.0/ompd'
+    LD_PRELOAD:
+        - '/home/xcpospiech/bench/4paper/lmxtrace_build_aocc/lmx_trace-2.0.0.rc3/'
+        - 'install_aocc/lib/libmpitrace.so'
+    LESSOPEN:
+        - '||/usr/bin/lesspipe.sh %s'
+    LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/lib:/hpc/base/amd/'
+        - 'openmpi/5.0.8/aocc/5.0.0/lib64:/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/'
+        - 'lib:/hpc/base/amd/aocl/5.0.0/aocc/lib:/usr/lib64:/usr/lib:/gpfs/gpfs_d'
+        - 'e6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/lib32:/gpfs/gpfs_de60'
+        - '00/hpc/base/amd/compilers/aocc-compiler-5.0.0/lib'
+    LMOD_CMD:
+        - '/usr/share/lmod/lmod/libexec/lmod'
+    LMOD_DIR:
+        - '/usr/share/lmod/lmod/libexec'
+    LMOD_PACKAGE_PATH:
+        - '/hpc/base/ctt/bin/setup_modules.d'
+    LMOD_PKG:
+        - '/usr/share/lmod/lmod'
+    LMOD_ROOT:
+        - '/usr/share/lmod'
+    LMOD_SETTARG_FULL_SUPPORT:
+        - 'no'
+    LMOD_SHORT_TIME:
+        - '86400'
+    LMOD_VERSION:
+        - '8.7.65'
+    LMOD_sys:
+        - 'Linux'
+    LMX_EVENTLIST:
+        - 'PAPI_TOT_INS,PAPI_TOT_CYC'
+    LMX_IMBALANCE:
+        - '1'
+    LMX_ITIMERPROF:
+        - '1'
+    LOADEDMODULES:
+        - 'amd-compilers:aocc/5.0.0:aocl/aocc/5.0.0:openmpi/5.0.8:Prefix/Producti'
+        - 'on:eb-env:binutils/2.45:EasyBuild/5.1.1'
+    LOGNAME:
+        - 'xcpospiech'
+    MAIL:
+        - '/var/spool/mail/xcpospiech'
+    MANPATH:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/share/man:/usr/sha'
+        - 're/lmod/lmod/share/man::'
+    MODULEPATH:
+        - '/hpc/base/EasyBuild/EL9-zen5/modules/all/Core:/hpc/base/EasyBuild/easy'
+        - 'build/modules/all/Core:/hpc/base/amd/modules/profiling/aocc/5.0.0:/hpc'
+        - '/base/amd/modules/scilibs/aocc/5.0.0:/hpc/base/amd/modules/mpi/aocc/5.'
+        - '0.0:/hpc/base/amd/modules/compilers:/hpc/base/amd/modules/mathlibs:/et'
+        - 'c/modulefiles:/usr/share/modulefiles:/usr/share/modulefiles/Linux:/usr'
+        - '/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/hpc/bas'
+        - 'e/ctt/modulefiles/ctt'
+    MODULEPATH_ROOT:
+        - '/usr/share/modulefiles'
+    MODULESHOME:
+        - '/usr/share/lmod/lmod'
+    OLDPWD:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/gromacs_aocc'
+    OMPI_ARGV:
+        - 'LMX_ITIMERPROF=1 LMX_IMBALANCE=1 LD_PRELOAD=/home/xcpospiech/bench/4pa'
+        - 'per/lmxtrace_build_aocc/lmx_trace-2.0.0.rc3/install_aocc/lib/libmpitra'
+        - 'ce.so gmx_mpi mdrun -nsteps -1 -maxh 0.3 -s /home/xcpospiech/bench/4pa'
+        - 'per/input/benchMEM.tpr'
+    OMPI_COMMAND:
+        - 'env'
+    OMPI_COMM_WORLD_LOCAL_RANK:
+        - '0'
+    OMPI_COMM_WORLD_LOCAL_SIZE:
+        - '64'
+    OMPI_COMM_WORLD_NODE_RANK:
+        - '0'
+    OMPI_COMM_WORLD_RANK:
+        - '0'
+    OMPI_COMM_WORLD_SIZE:
+        - '64'
+    OMPI_FILE_LOCATION:
+        - '/tmp/prterun.amd4125.376209.1234510321/1/0'
+    OMPI_LIBDIR_LOC:
+        - '/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/lib'
+    OMPI_MCA_PREFIXES:
+        - 'mca,opal,ompi,atomic,memheap,scoll,spml,sshmem,bml,coll,fbtl,fcoll,fs,'
+        - 'hook,io,mtl,op,osc,part,pml,sharedfp,topo,vprotocol,accelerator,alloca'
+        - 'tor,backtrace,btl,dl,hwloc,if,installdirs,memchecker,memcpy,memory,mpo'
+        - 'ol,patcher,rcache,reachable,shmem,smsc,threads,timer'
+    OMPI_MCA_cpu_type:
+        - 'x86_64'
+    OMPI_MCA_initial_wdir:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/gromacs_aocc/run_64_max'
+        - 'h_1774185'
+    OMPI_MCA_num_procs:
+        - '64'
+    OMPI_MCA_plm_slurm_args:
+        - '--external-launcher'
+    OMPI_NUM_APP_CTX:
+        - '1'
+    OMPI_TOOL_NAME:
+        - 'mpirun'
+    OMPI_UNIVERSE_SIZE:
+        - '64'
+    OMPI_VERSION:
+        - '5.0.8'
+    OMPI_WORLD_LOCAL_SIZE:
+        - '64'
+    OMPI_WORLD_SIZE:
+        - '64'
+    OMP_NUM_THREADS:
+        - '4'
+    OPAL_USER_PARAMS_GIVEN:
+        - '1'
+    OPENMPI_ROOT:
+        - '/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0'
+    PATH:
+        - '/home/xcpospiech/bench/4paper/gromacs_aocc/install_aocc/bin:/hpc/base/'
+        - 'EasyBuild/EL9-zen5/software/EasyBuild/5.1.1/bin:/hpc/base/EasyBuild/EL'
+        - '9-zen4/software/binutils/2.45/bin:/hpc/base/ctt/tools/python_tools/too'
+        - 'l2ods:/hpc/base/ctt/tools/python_tools/postp2sql:/hpc/base/ctt/bin:/hp'
+        - 'c/base/amd/openmpi/5.0.8/aocc/5.0.0/bin:/gpfs/gpfs_de6000/hpc/base/amd'
+        - '/compilers/aocc-compiler-5.0.0/bin:/gpfs/gpfs_de6000/hpc/base/amd/comp'
+        - 'ilers/aocc-compiler-5.0.0/share/opt-viewer:/home/xcpospiech/.julia/bin'
+        - ':/home/xcpospiech/.local/bin:/home/xcpospiech/bin:/usr/local/bin:/usr/'
+        - 'bin:/usr/local/sbin:/usr/sbin'
+    PMIX_BFROP_BUFFER_TYPE:
+        - 'PMIX_BFROP_BUFFER_NON_DESC'
+    PMIX_GDS_MODULE:
+        - 'shmem2,hash'
+    PMIX_HOSTNAME:
+        - 'amd4125'
+    PMIX_MCA_psec:
+        - 'native'
+    PMIX_NAMESPACE:
+        - 'prterun-amd4125-376209@1'
+    PMIX_PARAM_FILE_PASSED:
+        - '1'
+    PMIX_RANK:
+        - '0'
+    PMIX_SECURITY_MODE:
+        - 'native'
+    PMIX_SERVER_TMPDIR:
+        - '/tmp/prterun.amd4125.376209.1234510321'
+    PMIX_SERVER_URI21:
+        - 'prterun-amd4125-376209@0.0;tcp4://172.30.81.25:39957'
+    PMIX_SERVER_URI2:
+        - 'prterun-amd4125-376209@0.0;tcp4://172.30.81.25:39957'
+    PMIX_SERVER_URI3:
+        - 'prterun-amd4125-376209@0.0;tcp4://172.30.81.25:39957'
+    PMIX_SERVER_URI41:
+        - 'prterun-amd4125-376209@0.0;tcp4://172.30.81.25:39957'
+    PMIX_SERVER_URI4:
+        - 'prterun-amd4125-376209@0.0;tcp4://172.30.81.25:39957'
+    PMIX_SYSTEM_TMPDIR:
+        - '/tmp'
+    PMIX_VERSION:
+        - '5.0.8a1'
+    PREFIX_BUILDER:
+        - 'EasyBuild'
+    PREFIX_OLD_FULL_PREFIX:
+        - '/hpc/base/EasyBuild/EL9-zen5'
+    PRTE_LAUNCHED:
+        - '1'
+    PRTE_SHARED_FS:
+        - 'FALSE'
+    PWD:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/gromacs_aocc/run_64_max'
+        - 'h_1774185'
+    PYTHONPATH:
+        - '/hpc/base/EasyBuild/EL9-zen5/software/EasyBuild/5.1.1/lib/python3.9/si'
+        - 'te-packages'
+    SHELL:
+        - '/bin/bash'
+    SHLVL:
+        - '2'
+    SLURMD_NODENAME:
+        - 'amd4125'
+    SLURM_CLUSTER_NAME:
+        - '(null)'
+    SLURM_CONF:
+        - '/var/spool/slurmd/conf-cache/slurm.conf'
+    SLURM_CPUS_ON_NODE:
+        - '256'
+    SLURM_CPUS_PER_TASK:
+        - '4'
+    SLURM_EPC_LIBRARY:
+        - '0'
+    SLURM_EPC_PLUGIN:
+        - '1'
+    SLURM_EPV_CON_EARD_SBATCH:
+        - '1'
+    SLURM_EPV_CON_EARD_TASK:
+        - '1'
+    SLURM_EPV_LAST_CONTEXT:
+        - 'sbatch'
+    SLURM_EPV_PASSED_SBATCH:
+        - '1'
+    SLURM_EXPORT_ENV:
+        - 'None'
+    SLURM_GET_USER_ENV:
+        - '1'
+    SLURM_GTIDS:
+        - '0'
+    SLURM_JOBID:
+        - '1774185'
+    SLURM_JOB_ACCOUNT:
+        - 'xlenovo'
+    SLURM_JOB_CPUS_PER_NODE:
+        - '256'
+    SLURM_JOB_END_TIME:
+        - '1763645513'
+    SLURM_JOB_GID:
+        - '1234510320'
+    SLURM_JOB_ID:
+        - '1774185'
+    SLURM_JOB_LICENSES:
+        - 'lenox@power:1100,lenox@cdu:1045,lenox@air:55'
+    SLURM_JOB_NAME:
+        - 'GROMACS'
+    SLURM_JOB_NODELIST:
+        - 'amd4125'
+    SLURM_JOB_NUM_NODES:
+        - '1'
+    SLURM_JOB_PARTITION:
+        - 'amd9555'
+    SLURM_JOB_QOS:
+        - 'normal'
+    SLURM_JOB_START_TIME:
+        - '1763643112'
+    SLURM_JOB_UID:
+        - '1234510321'
+    SLURM_JOB_USER:
+        - 'xcpospiech'
+    SLURM_LOCALID:
+        - '0'
+    SLURM_NNODES:
+        - '1'
+    SLURM_NODEID:
+        - '0'
+    SLURM_NODELIST:
+        - 'amd4125'
+    SLURM_NPROCS:
+        - '64'
+    SLURM_NTASKS:
+        - '64'
+    SLURM_PRIO_PROCESS:
+        - '0'
+    SLURM_PROCID:
+        - '0'
+    SLURM_SUBMIT_DIR:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/gromacs_aocc'
+    SLURM_SUBMIT_HOST:
+        - 'login4601.hpc.eu.lenovo.com'
+    SLURM_TASKS_PER_NODE:
+        - '64'
+    SLURM_TASK_PID:
+        - '376104'
+    SLURM_TOPOLOGY_ADDR:
+        - 'amd4125'
+    SLURM_TOPOLOGY_ADDR_PATTERN:
+        - 'node'
+    SLURM_TRES_PER_TASK:
+        - 'cpu:4'
+    TMPDIR:
+        - '/tmp'
+    UCX_NET_DEVICES:
+        - 'mlx5_0:1'
+    USER:
+        - 'xcpospiech'
+    XDG_DATA_DIRS:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/share:/home/xcposp'
+        - 'iech/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share'
+        - ':/usr/local/share:/usr/share'
+    XDG_RUNTIME_DIR:
+        - '/run/user/1234510321'
+    XDG_SESSION_CLASS:
+        - 'background'
+    XDG_SESSION_ID:
+        - 'c8997'
+    XDG_SESSION_TYPE:
+        - 'unspecified'
+    _:
+        - '/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/bin/mpirun'
+    _LMFILES_:
+        - '/hpc/base/ctt/modulefiles/ctt/amd-compilers.lua:/hpc/base/amd/modules/'
+        - 'compilers/aocc/5.0.0.lua:/hpc/base/amd/modules/mathlibs/aocl/aocc/5.0.'
+        - '0:/hpc/base/amd/modules/mpi/aocc/5.0.0/openmpi/5.0.8.lua:/hpc/base/ctt'
+        - '/modulefiles/ctt/Prefix/Production.lua:/hpc/base/ctt/modulefiles/ctt/e'
+        - 'b-env.lua:/hpc/base/EasyBuild/EL9-zen5/modules/all/Core/binutils/2.45.'
+        - 'lua:/hpc/base/EasyBuild/EL9-zen5/modules/all/Core/EasyBuild/5.1.1.lua'
+    _ModuleTable001_:
+        - 'X01vZHVsZVRhYmxlXyA9IHsKTVR2ZXJzaW9uID0gMywKY19yZWJ1aWxkVGltZSA9IGZhbH'
+        - 'NlLApjX3Nob3J0VGltZSA9IGZhbHNlLApkZXB0aFQgPSB7fSwKZmFtaWx5ID0ge30sCm1U'
+        - 'ID0gewpFYXN5QnVpbGQgPSB7CmZuID0gIi9ocGMvYmFzZS9FYXN5QnVpbGQvRUw5LXplbj'
+        - 'UvbW9kdWxlcy9hbGwvQ29yZS9FYXN5QnVpbGQvNS4xLjEubHVhIiwKZnVsbE5hbWUgPSAi'
+        - 'RWFzeUJ1aWxkLzUuMS4xIiwKbG9hZE9yZGVyID0gOCwKcHJvcFQgPSB7fSwKc3RhY2tEZX'
+        - 'B0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJFYXN5QnVpbGQiLAp3'
+        - 'ViA9ICIwMDAwMDAwMDUuMDAwMDAwMDAxLjAwMDAwMDAwMS4qemZpbmFsIiwKfSwKUHJlZm'
+        - 'l4ID0gewphY3Rpb25BID0g'
+    _ModuleTable002_:
+        - 'ewpbW3ByZXBlbmRfcGF0aCgiTU9EVUxFUEFUSCIsIi9ocGMvYmFzZS9FYXN5QnVpbGQvRU'
+        - 'w5LXplbjUvbW9kdWxlcy9hbGwvQ29yZSIpXV0sCn0sCmZuID0gIi9ocGMvYmFzZS9jdHQv'
+        - 'bW9kdWxlZmlsZXMvY3R0L1ByZWZpeC9Qcm9kdWN0aW9uLmx1YSIsCmZ1bGxOYW1lID0gIl'
+        - 'ByZWZpeC9Qcm9kdWN0aW9uIiwKbG9hZE9yZGVyID0gNSwKcHJvcFQgPSB7fSwKc3RhY2tE'
+        - 'ZXB0aCA9IDEsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJQcmVmaXgvUHJvZH'
+        - 'VjdGlvbiIsCndWID0gIl5wcm9kdWN0aW9uLip6ZmluYWwiLAp9LApbImFtZC1jb21waWxl'
+        - 'cnMiXSA9IHsKYWN0aW9uQSA9IHsKW1twcmVwZW5kX3BhdGgoIk1PRFVMRVBBVEgiLCIvaH'
+        - 'BjL2Jhc2UvYW1kL21vZHVs'
+    _ModuleTable003_:
+        - 'ZXMvbWF0aGxpYnMiKV1dLCBbW3ByZXBlbmRfcGF0aCgiTU9EVUxFUEFUSCIsIi9ocGMvYm'
+        - 'FzZS9hbWQvbW9kdWxlcy9jb21waWxlcnMiKV1dLAp9LApmbiA9ICIvaHBjL2Jhc2UvY3R0'
+        - 'L21vZHVsZWZpbGVzL2N0dC9hbWQtY29tcGlsZXJzLmx1YSIsCmZ1bGxOYW1lID0gImFtZC'
+        - '1jb21waWxlcnMiLApsb2FkT3JkZXIgPSAxLApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0g'
+        - 'MCwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImFtZC1jb21waWxlcnMiLAp3Vi'
+        - 'A9ICJNLip6ZmluYWwiLAp9LAphb2NjID0gewphY3Rpb25BID0gewpbW3ByZXBlbmRfcGF0'
+        - 'aCgiTU9EVUxFUEFUSCIsIi9ocGMvYmFzZS9hbWQvbW9kdWxlcy9tcGkvYW9jYy81LjAuMC'
+        - 'IpXV0KLCBbW3ByZXBlbmRf'
+    _ModuleTable004_:
+        - 'cGF0aCgiTU9EVUxFUEFUSCIsIi9ocGMvYmFzZS9hbWQvbW9kdWxlcy9zY2lsaWJzL2FvY2'
+        - 'MvNS4wLjAiKV1dLCBbW3ByZXBlbmRfcGF0aCgiTU9EVUxFUEFUSCIsIi9ocGMvYmFzZS9h'
+        - 'bWQvbW9kdWxlcy9wcm9maWxpbmcvYW9jYy81LjAuMCIpXV0sCn0sCmZuID0gIi9ocGMvYm'
+        - 'FzZS9hbWQvbW9kdWxlcy9jb21waWxlcnMvYW9jYy81LjAuMC5sdWEiLApmdWxsTmFtZSA9'
+        - 'ICJhb2NjLzUuMC4wIiwKbG9hZE9yZGVyID0gMiwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aC'
+        - 'A9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJhb2NjLzUuMC4wIiwKd1Yg'
+        - 'PSAiMDAwMDAwMDA1Lip6ZmluYWwiLAp9LApbImFvY2wvYW9jYyJdID0gewpmbiA9ICIvaH'
+        - 'BjL2Jhc2UvYW1kL21vZHVs'
+    _ModuleTable005_:
+        - 'ZXMvbWF0aGxpYnMvYW9jbC9hb2NjLzUuMC4wIiwKZnVsbE5hbWUgPSAiYW9jbC9hb2NjLz'
+        - 'UuMC4wIiwKbG9hZE9yZGVyID0gMywKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDAsCnN0'
+        - 'YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJhb2NsL2FvY2MvNS4wLjAiLAp3ViA9IC'
+        - 'IwMDAwMDAwMDUuKnpmaW5hbCIsCn0sCmJpbnV0aWxzID0gewpmbiA9ICIvaHBjL2Jhc2Uv'
+        - 'RWFzeUJ1aWxkL0VMOS16ZW41L21vZHVsZXMvYWxsL0NvcmUvYmludXRpbHMvMi40NS5sdW'
+        - 'EiLApmdWxsTmFtZSA9ICJiaW51dGlscy8yLjQ1IiwKbG9hZE9yZGVyID0gNywKcHJvcFQg'
+        - 'PSB7fSwKc3RhY2tEZXB0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9IC'
+        - 'JiaW51dGlscyIsCndWID0g'
+    _ModuleTable006_:
+        - 'IjAwMDAwMDAwMi4wMDAwMDAwNDUuKnpmaW5hbCIsCn0sClsiZWItZW52Il0gPSB7CmFjdG'
+        - 'lvbkEgPSB7CltbcHJlcGVuZF9wYXRoKCJNT0RVTEVQQVRIIiwiL2hwYy9iYXNlL0Vhc3lC'
+        - 'dWlsZC9lYXN5YnVpbGQvbW9kdWxlcy9hbGwvQ29yZSIpXV0sCn0sCmZuID0gIi9ocGMvYm'
+        - 'FzZS9jdHQvbW9kdWxlZmlsZXMvY3R0L2ViLWVudi5sdWEiLApmdWxsTmFtZSA9ICJlYi1l'
+        - 'bnYiLApsb2FkT3JkZXIgPSA2LApwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMCwKc3RhdH'
+        - 'VzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImViLWVudiIsCndWID0gIk0uKnpmaW5hbCIs'
+        - 'Cn0sCm9wZW5tcGkgPSB7CmZuID0gIi9ocGMvYmFzZS9hbWQvbW9kdWxlcy9tcGkvYW9jYy'
+        - '81LjAuMC9vcGVubXBpLzUu'
+    _ModuleTable007_:
+        - 'MC44Lmx1YSIsCmZ1bGxOYW1lID0gIm9wZW5tcGkvNS4wLjgiLApsb2FkT3JkZXIgPSA0LA'
+        - 'pwcm9wVCA9IHt9LApzdGFja0RlcHRoID0gMCwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJO'
+        - 'YW1lID0gIm9wZW5tcGkvNS4wLjgiLAp3ViA9ICIwMDAwMDAwMDUuMDAwMDAwMDAwLjAwMD'
+        - 'AwMDAwOC4qemZpbmFsIiwKfSwKfSwKbXBhdGhBID0gewoiL2hwYy9iYXNlL0Vhc3lCdWls'
+        - 'ZC9FTDktemVuNS9tb2R1bGVzL2FsbC9Db3JlIgosICIvaHBjL2Jhc2UvRWFzeUJ1aWxkL2'
+        - 'Vhc3lidWlsZC9tb2R1bGVzL2FsbC9Db3JlIgosICIvaHBjL2Jhc2UvYW1kL21vZHVsZXMv'
+        - 'cHJvZmlsaW5nL2FvY2MvNS4wLjAiCiwgIi9ocGMvYmFzZS9hbWQvbW9kdWxlcy9zY2lsaW'
+        - 'JzL2FvY2MvNS4wLjAiCiwg'
+    _ModuleTable008_:
+        - 'Ii9ocGMvYmFzZS9hbWQvbW9kdWxlcy9tcGkvYW9jYy81LjAuMCIsICIvaHBjL2Jhc2UvYW'
+        - '1kL21vZHVsZXMvY29tcGlsZXJzIgosICIvaHBjL2Jhc2UvYW1kL21vZHVsZXMvbWF0aGxp'
+        - 'YnMiLCAiL2V0Yy9tb2R1bGVmaWxlcyIsICIvdXNyL3NoYXJlL21vZHVsZWZpbGVzIgosIC'
+        - 'IvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4IiwgIi91c3Ivc2hhcmUvbW9kdWxlZmls'
+        - 'ZXMvQ29yZSIKLCAiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIsIC'
+        - 'IvaHBjL2Jhc2UvY3R0L21vZHVsZWZpbGVzL2N0dCIsCn0sCnN5c3RlbUJhc2VNUEFUSCA9'
+        - 'ICIvZXRjL21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlZmlsZXM6L3Vzci9zaGFyZS'
+        - '9tb2R1bGVmaWxlcy9MaW51'
+    _ModuleTable009_:
+        - 'eDovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmU6L3Vzci9zaGFyZS9sbW9kL2xtb2QvbW'
+        - '9kdWxlZmlsZXMvQ29yZSIsCn0K'
+    _ModuleTable_Sz_:
+        - '9'
+    __LMOD_REF_COUNT_CMAKE_PREFIX_PATH:
+        - '/hpc/base/EasyBuild/EL9-zen5/software/EasyBuild/5.1.1:1;/hpc/base/Easy'
+        - 'Build/EL9-zen4/software/binutils/2.45:1'
+    __LMOD_REF_COUNT_CPATH:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/include:1'
+    __LMOD_REF_COUNT_CPLUS_INCLUDE_PATH:
+        - '/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/include:1;/hpc/base/amd/aocl/5.'
+        - '0.0/aocc/include:1;/gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compi'
+        - 'ler-5.0.0/include:1'
+    __LMOD_REF_COUNT_C_INCLUDE_PATH:
+        - '/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/include:1;/hpc/base/amd/aocl/5.'
+        - '0.0/aocc/include:1;/gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compi'
+        - 'ler-5.0.0/include:1'
+    __LMOD_REF_COUNT_LD_LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/lib:1;/hpc/base/am'
+        - 'd/openmpi/5.0.8/aocc/5.0.0/lib64:1;/hpc/base/amd/openmpi/5.0.8/aocc/5.'
+        - '0.0/lib:1;/hpc/base/amd/aocl/5.0.0/aocc/lib:2;/usr/lib64:2;/usr/lib:2;'
+        - '/gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/lib32:1;/'
+        - 'gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/lib:1;/gpf'
+        - 's/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/ompd:1'
+    __LMOD_REF_COUNT_LIBRARY_PATH:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/lib:1;/hpc/base/am'
+        - 'd/openmpi/5.0.8/aocc/5.0.0/lib64:1;/hpc/base/amd/openmpi/5.0.8/aocc/5.'
+        - '0.0/lib:1;/hpc/base/amd/aocl/5.0.0/aocc/lib:2;/usr/lib64:2;/usr/lib:2;'
+        - '/gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/lib32:1;/'
+        - 'gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/lib:1'
+    __LMOD_REF_COUNT_MANPATH:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/share/man:1;/usr/s'
+        - 'hare/lmod/lmod/share/man:1;:1'
+    __LMOD_REF_COUNT_MODULEPATH:
+        - '/hpc/base/EasyBuild/EL9-zen5/modules/all/Core:1;/hpc/base/EasyBuild/ea'
+        - 'sybuild/modules/all/Core:1;/hpc/base/amd/modules/profiling/aocc/5.0.0:'
+        - '1;/hpc/base/amd/modules/scilibs/aocc/5.0.0:1;/hpc/base/amd/modules/mpi'
+        - '/aocc/5.0.0:1;/hpc/base/amd/modules/compilers:1;/hpc/base/amd/modules/'
+        - 'mathlibs:1;/etc/modulefiles:1;/usr/share/modulefiles:1;/usr/share/modu'
+        - 'lefiles/Linux:1;/usr/share/modulefiles/Core:1;/usr/share/lmod/lmod/mod'
+        - 'ulefiles/Core:1;/hpc/base/ctt/modulefiles/ctt:2'
+    __LMOD_REF_COUNT_PATH:
+        - '/hpc/base/EasyBuild/EL9-zen5/software/EasyBuild/5.1.1/bin:1;/hpc/base/'
+        - 'EasyBuild/EL9-zen4/software/binutils/2.45/bin:1;/hpc/base/ctt/tools/py'
+        - 'thon_tools/tool2ods:1;/hpc/base/ctt/tools/python_tools/postp2sql:1;/hp'
+        - 'c/base/ctt/bin:1;/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/bin:1;/gpfs/gp'
+        - 'fs_de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/bin:1;/gpfs/gpfs_'
+        - 'de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/share/opt-viewer:1;/'
+        - 'home/xcpospiech/.julia/bin:1;/home/xcpospiech/.local/bin:1;/home/xcpos'
+        - 'piech/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1'
+    __LMOD_REF_COUNT_PYTHONPATH:
+        - '/hpc/base/EasyBuild/EL9-zen5/software/EasyBuild/5.1.1/lib/python3.9/si'
+        - 'te-packages:1'
+    __LMOD_REF_COUNT_XDG_DATA_DIRS:
+        - '/hpc/base/EasyBuild/EL9-zen4/software/binutils/2.45/share:1;/home/xcpo'
+        - 'spiech/.local/share/flatpak/exports/share:1;/var/lib/flatpak/exports/s'
+        - 'hare:1;/usr/local/share:1;/usr/share:1'
+    which_declare:
+        - 'declare -f'

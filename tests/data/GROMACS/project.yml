@@ -1,0 +1,7 @@
+---
+benchmark: 4paper_2025
+code_name: GROMACS
+code_version: 2025.3
+testcase: benchMEM
+cluster: Lenox
+person: Christoph Pospiech
