@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[cfg(test)]
 use crate::cmdline::CliArgs;
 use crate::jobdata::process_lmx_file;
 use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
