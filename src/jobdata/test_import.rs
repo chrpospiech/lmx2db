@@ -14,34 +14,24 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::jobdata::process_lmx_file;
     use crate::jobdata::table_runs::find_file::project_mockup::{
-        setup_cliargs_with_project_file_name, setup_tmp_project_directory,
+        setup_cliargs_with_project_file_name, test_import_single_lmx_file,
     };
-    use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use anyhow::Result;
     use sqlx::MySql;
-    use std::fs::remove_dir_all;
 
     #[sqlx::test(fixtures(
         "../../tests/fixtures/lmxtest.sql",
         "../../tests/fixtures/minimal_data.sql"
     ))]
     pub async fn test_import_namd_jobdata(pool: sqlx::Pool<MySql>) -> Result<()> {
-        // Create a temporary project directory for testing
-        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
         // Create CliArgs with the specified project file that exists in the temp_dir
         let args = setup_cliargs_with_project_file_name("project.yml")?;
-        // Set the LMX_summary file path
-        let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
-        // Read SQL types
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), &args).await?;
-
-        // Call the process_lmx_file function
-        let result = process_lmx_file(
-            lmx_summary_pathbuf.to_str().unwrap(),
-            &Some(pool.clone()),
-            &sqltypes,
+        // Call the test_import_single_lmx_file
+        let result = test_import_single_lmx_file(
+            &pool,
+            None,
+            "tests/data/NAMD/run_0001/LMX_summary.225250.0.yml",
             &args,
         )
         .await;
@@ -51,9 +41,6 @@ mod tests {
             "Processing LMX file failed: {:?}",
             result.err()
         );
-
-        // Clean up if necessary
-        remove_dir_all(temp_dir)?;
 
         Ok(())
     }

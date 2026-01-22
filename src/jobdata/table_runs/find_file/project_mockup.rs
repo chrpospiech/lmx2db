@@ -13,9 +13,12 @@
 // limitations under the License.
 
 use crate::cmdline::CliArgs;
+use crate::jobdata::process_lmx_file;
 use crate::jobdata::table_runs::foreign_keys::RunsForeignKeys;
+use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
 use anyhow::Result;
 use fs_extra::dir::{copy, CopyOptions};
+use sqlx::MySql;
 use std::path::PathBuf;
 
 /// Sets up a temporary project file on a new directory for testing purposes.
@@ -123,6 +126,55 @@ pub fn setup_tmp_project_directory(source_path: &str) -> Result<PathBuf> {
     options.content_only = true;
     copy(&path, &temp_dir, &options)?;
     Ok(temp_dir)
+}
+
+/// Helper function to test the import of a single LMX_summary file.
+/// This test uses a predefined fixture database, an optional base directory,
+/// a path to a sample LMX_summary file and a set of CliArgs.
+/// The path to the LMX summary file is a relative path
+/// constructed based on the base directory. If the base directory is
+/// not provided, it defaults to CARGO_MANIFEST_DIR.
+///
+/// The helper function verifies that the `process_lmx_file` function
+/// correctly processes the LMX summary file and imports the data into the database.
+///
+/// #Arguments
+/// * `pool` - A connection pool to the test database provided by sqlx.
+/// * `base_dir` - An optional base directory for constructing the LMX summary file path.
+/// * `summary_file_path` - The path to the LMX summary file to be tested.
+/// * `args` - A reference to the CliArgs instance containing command-line arguments.
+///
+/// # Returns
+/// * `Result<()>` - Returns Ok(()) if the import is successful, otherwise returns an error.
+///
+/// # Errors
+/// Returns an error if:
+/// - The LMX summary file cannot be processed.
+pub async fn test_import_single_lmx_file(
+    pool: &sqlx::Pool<MySql>,
+    base_dir: Option<&str>,
+    summary_file_path: &str,
+    args: &CliArgs,
+) -> Result<()> {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR"); // compile-time
+    let lmx_summary_pathbuf = if let Some(base) = base_dir {
+        std::path::Path::new(manifest_dir)
+            .join(base)
+            .join(summary_file_path)
+    } else {
+        std::path::Path::new(manifest_dir).join(summary_file_path)
+    };
+    // Read SQL types
+    let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), args).await?;
+    // Call the process_lmx_file function
+    process_lmx_file(
+        lmx_summary_pathbuf.to_str().unwrap(),
+        &Some(pool.clone()),
+        &sqltypes,
+        args,
+    )
+    .await?;
+    Ok(())
 }
 
 /// Cleans up a temporary directory as created by previous functions.
