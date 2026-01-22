@@ -73,7 +73,7 @@ CREATE TABLE `people` (
   `first_name` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT 'Given name',
   `middle` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT 'Middle name',
   `surname` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'surname',
-  `affiliation` enum('Lenovo','IBM','retiree','Intel','BSC','NVIDIA') NOT NULL DEFAULT 'Lenovo' COMMENT 'employer',
+  `affiliation` enum('Lenovo','IBM','retiree','Intel','BSC','NVIDIA','unknown') NOT NULL DEFAULT 'unknown' COMMENT 'employer',
   `email` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'not@known' COMMENT 'email address',
   `phone` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `mobile` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
