@@ -1,0 +1,44 @@
+---
+maxh: "0.3"
+Precision: "mixed"
+Memory_model: "64 bit"
+mpilib: "OpenMPI"
+mpilib_version: "5.0.8"
+OpenMP_support: "enabled (GMX_OPENMP_MAX_THREADS = 128)"
+GPU_support: "disabled"
+SIMD_instructions: "AVX_512"
+CPU_FFT_library: "fftw-3.3.10-sse2-avx2-avx2_128"
+GPU_FFT_library: "none"
+RDTSCP_usage: "enabled"
+TNG_support: "enabled"
+Hwloc_support: "hwloc-2.7.1"
+Tracing_support: "disabled"
+C_compiler: "/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/bin/mpicc Clang 17.0.6"
+compiler: "Clang"
+compiler_version: "17.0.6"
+nodes: 1
+DD: "8x1x5"
+PME: "24"
+PME_DD: "24x1x1"
+mpi: 64
+threads: 4
+atoms: 81743
+date_submit: 1763646723
+date_submit_n: 0
+date_start: 1763646723
+date_start_n: 0
+runid: 1763646723958309
+MFLOPs: "6894564379.002"
+percent_load_imbalance: 17.3
+percent_PP_PME_imbalance: 4.2
+time_neighbor_search: "20.484"
+runtime2: "1069.287"
+perf_unit: "ns/day"
+hour_per_ns: "0.075"
+date_finish: 1763647792
+date_finish_n: 000000
+nstlist: "80"
+nsteps: "1976240"
+resetsteps: "0"
+nsteps_eff: "1976240"
+validrun: 1

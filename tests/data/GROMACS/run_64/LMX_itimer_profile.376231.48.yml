@@ -1,0 +1,722 @@
+# ----------------------------------------------------------------------------
+#
+#       Lightweight MPI traces with eXtensions
+#
+#       LMX_trace interval timer output in YAML format.
+#
+#       This output is both human and machine readable.
+#
+# ----------------------------------------------------------------------------
+---
+base_data:
+    library_version:                         2.0.0.rc3
+    MPI_ranks:                                      64
+    my_MPI_rank:                                    48
+    collect_scope:            MPI_Init to MPI_Finalize
+    real_time:                               1072.5486
+    user_time:                               4254.4912
+    sys_time:                                  23.1223
+    total_comm_time:                          244.7272
+    mpiio_time:                           0.000000e+00
+    itimer_ticks_total:                          10724
+# ----------------------------------------------------------------------------
+# The histogram for the libraries has are the following entries.
+#
+#       element name       | use
+#      --------------------|--------------------------------------
+#       short name         | Abreviated name of the library
+#       itimer ticks       | Number of itimer ticks in this library
+#       percent total time | Percent of the totel number of ticks
+#
+# The rows in this table are sorted by descending number of ticks.
+# The short name is made unique by preceeding it with the row number.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the short name as key, and the value being an array of
+# two numbers with indices 0,1
+#
+# ----------------------------------------------------------------------------
+#     short name                    itimer ticks         percent time
+# ----------------------------------------------------------------------------
+library_histogram:
+    000/libgromacs_mpi.so.10.0.0:   [             7403,      69.0321]
+    001/libuct.so.0.0.0:            [              778,       7.2548]
+    002/libmpi.so.40.40.7:          [              737,       6.8724]
+    003/libc.so.6:                  [              671,       6.2570]
+    004/libucp.so.0.0.0:            [              377,       3.5155]
+    005/libomp.so:                  [              323,       3.0119]
+    006/libopen-pal.so.80.0.5:      [              225,       2.0981]
+    007/hmca_bcol_basesmuma.so:     [              131,       1.2216]
+    008/unknown:                    [               29,       0.2704]
+    009/libmpitrace.so:             [               24,       0.2238]
+    010/libhcoll.so.1.0.9:          [                9,       0.0839]
+    011/ld-linux-x86-64.so.2:       [                5,       0.0466]
+    012/libm.so.6:                  [                5,       0.0466]
+    013/libucs.so.0.0.0:            [                5,       0.0466]
+    014/libuct_xpmem.so.0.0.0:      [                2,       0.0186]
+# ----------------------------------------------------------------------------
+# The detailed flat profile lists the libraries as before,
+# and for each entry there is a table with the following entries.
+#
+#       element name       | use
+#      --------------------|--------------------------------------
+#       short name         | Abreviated name of the library
+#       itimer ticks       | Number of itimer ticks in this library
+#       percent total time | Percent of the totel number of ticks
+#
+# The rows in this table are sorted by descending number of ticks.
+# The short name is made unique by preceeding it with the library
+# and the row number.
+#
+# When digested with yaml.load_safe(), each row is a dict entry
+# with the short name as key, and the value being an array of
+# two numbers with indices 0,1.
+#
+# ----------------------------------------------------------------------------
+#         short name                itimer ticks         percent time
+# ----------------------------------------------------------------------------
+flat_profile:
+    000/libgromacs_mpi.so.10.0.0:
+        000.000/_ZN3gmx15nbnxmKer:  [             5853,      54.5785]
+        000.001/_ZN3gmx15nbnxmKer:  [              357,       3.3290]
+        000.002/_ZN3gmx7csettleER:  [              143,       1.3335]
+        000.003/_Z9dd_move_xP12gm:  [              124,       1.1563]
+        000.004/_ZN3gmx11Pairlist:  [              121,       1.1283]
+        000.005/_ZN3gmx31nbnxn_at:  [              114,       1.0630]
+        000.006/_ZN3gmx18nonbonde:  [               81,       0.7553]
+        000.007/_ZN3gmx12_GLOBAL_:  [               75,       0.6994]
+        000.008/_ZN8t_nblist9addI:  [               67,       0.6248]
+        000.009/_ZN3gmx15nbnxmKer:  [               61,       0.5688]
+        000.010/_ZN3gmx15nbnxmKer:  [               45,       0.4196]
+        000.011/_ZN3gmx16nbnxn_at:  [               39,       0.3637]
+        000.012/_ZN10gmx_pme_ppD2:  [               25,       0.2331]
+        000.013/_ZN3gmx8do_forceE:  [               25,       0.2331]
+        000.014/_ZN3gmx15nbnxmKer:  [               23,       0.2145]
+        000.015/_ZN3gmx6Update4Im:  [               22,       0.2051]
+        000.016/_Z15compute_globa:  [               21,       0.1958]
+        000.017/_ZL13comm_cost_es:  [               21,       0.1958]
+        000.018/_ZN3gmxL27setupLo:  [               14,       0.1305]
+        000.019/_ZN3gmx19dd_parti:  [               12,       0.1119]
+        000.020/_ZN3gmx4Grid8fill:  [               12,       0.1119]
+        000.021/_Z7calc_muiiN3gmx:  [                9,       0.0839]
+        000.022/_Z38pressureCoupl:  [                6,       0.0559]
+        000.023/_ZN3gmx15LegacySi:  [                6,       0.0559]
+        000.024/_ZN3gmx18FreeEner:  [                6,       0.0559]
+        000.025/hidden:             [                6,       0.0559]
+        000.026/_Z16dd_move_f_spe:  [                5,       0.0466]
+        000.027/_ZL22setup_dd_com:  [                5,       0.0466]
+        000.028/_ZL24make_local_b:  [                5,       0.0466]
+        000.029/_ZL8walk_outiiiii:  [                5,       0.0466]
+        000.030/_ZN3gmx4Grid22sor:  [                5,       0.0466]
+        000.031/_ZNSt6vectorISt5a:  [                5,       0.0466]
+        000.032/_Z16dd_move_x_spe:  [                4,       0.0373]
+        000.033/_ZN3gmx11Constrai:  [                4,       0.0373]
+        000.034/_ZN3gmxL12do_nb_v:  [                4,       0.0373]
+        000.035/_ZN3gmxL15combine:  [                4,       0.0373]
+        000.036/_ZNSt10filesystem:  [                4,       0.0373]
+        000.037/_Z18dd_redistribu:  [                3,       0.0280]
+        000.038/_Z8atoms2mdRK10gm:  [                3,       0.0280]
+        000.039/_ZN24CpuPpLongRan:  [                3,       0.0280]
+        000.040/_ZN3gmx15constrai:  [                3,       0.0280]
+        000.041/_ZL11energyDriftN:  [                2,       0.0186]
+        000.042/_ZN3gmx11Pairlist:  [                2,       0.0186]
+        000.043/_ZN3gmx12ResetHan:  [                2,       0.0186]
+        000.044/_ZN3gmx15constrai:  [                2,       0.0186]
+        000.045/_ZN3gmx16getVdwKe:  [                2,       0.0186]
+        000.046/_ZN3gmx18nonbonde:  [                2,       0.0186]
+        000.047/_ZN3gmx21generate:  [                2,       0.0186]
+        000.048/_ZN3gmxL10sort_at:  [                2,       0.0186]
+        000.049/_ZNK3gmx18nonbond:  [                2,       0.0186]
+        000.050/_ZNSt6vectorIiN3g:  [                2,       0.0186]
+        000.051/_ZNSt6vectorIiSaI:  [                2,       0.0186]
+        000.052/_Z11gen_sblocksP8:  [                1,       0.0093]
+        000.053/_Z11global_statRK:  [                1,       0.0093]
+        000.054/_Z11gmx_pmeonlyPP:  [                1,       0.0093]
+        000.055/_Z11pbc_dx_aiucPK:  [                1,       0.0093]
+        000.056/_Z17ddRankFromDDC:  [                1,       0.0093]
+        000.057/_Z17dd_make_local:  [                1,       0.0093]
+        000.058/_Z17dd_natoms_mda:  [                1,       0.0093]
+        000.059/_Z38putUpdateGrou:  [                1,       0.0093]
+        000.060/_ZL11turn_on_dlbR:  [                1,       0.0093]
+        000.061/_ZL12turn_off_dlb:  [                1,       0.0093]
+        000.062/_ZL13do_stopcm_gr:  [                1,       0.0093]
+        000.063/_ZL20make_exclusi:  [                1,       0.0093]
+        000.064/_ZN12gmx_stochd_t:  [                1,       0.0093]
+        000.065/_ZN24CpuPpLongRan:  [                1,       0.0093]
+        000.066/_ZN3gmx11Pairlist:  [                1,       0.0093]
+        000.067/_ZN3gmx14makeImdS:  [                1,       0.0093]
+        000.068/_ZN3gmx15constrai:  [                1,       0.0093]
+        000.069/_ZN3gmx15nbnxmKer:  [                1,       0.0093]
+        000.070/_ZN3gmx16nbnxn_at:  [                1,       0.0093]
+        000.071/_ZN3gmx21generate:  [                1,       0.0093]
+        000.072/_ZN3gmx26reduce_e:  [                1,       0.0093]
+        000.073/_ZN3gmx4Grid8Geom:  [                1,       0.0093]
+        000.074/_ZN3gmx6Update4Im:  [                1,       0.0093]
+        000.075/_ZN3gmx7GridSet9p:  [                1,       0.0093]
+        000.076/_ZN3gmx7GridSetC1:  [                1,       0.0093]
+        000.077/_ZN3gmxL19lincs_m:  [                1,       0.0093]
+        000.078/_ZN3gmxL19makeLin:  [                1,       0.0093]
+        000.079/_ZN3gmxL23nbnxn_a:  [                1,       0.0093]
+        000.080/_ZN3gmxL27someInt:  [                1,       0.0093]
+        000.081/_ZNSt6vectorIfN3g:  [                1,       0.0093]
+        000.082/_ZNSt6vectorIfN3g:  [                1,       0.0093]
+    001/libuct.so.0.0.0:
+        001.000/hidden:             [              633,       5.9026]
+        001.001/uct_mm_ep_am_bcop:  [              143,       1.3335]
+        001.002/uct_mm_ep_am_shor:  [                2,       0.0186]
+    002/libmpi.so.40.40.7:
+        002.000/ompi_osc_sm_test:   [              308,       2.8721]
+        002.001/mca_part_base_sel:  [              256,       2.3872]
+        002.002/mca_pml_base_pml_:  [               99,       0.9232]
+        002.003/mca_coll_self_com:  [               18,       0.1678]
+        002.004/libnbc_open:        [               15,       0.1399]
+        002.005/__muldc3:           [               14,       0.1305]
+        002.006/hidden:             [                6,       0.0559]
+        002.007/mca_pml_ucx_init:   [                4,       0.0373]
+        002.008/ompi_grequest_com:  [                3,       0.0280]
+        002.009/ompi_grequest_fre:  [                3,       0.0280]
+        002.010/mca_pml_v_compone:  [                2,       0.0186]
+        002.011/ompi_request_defa:  [                2,       0.0186]
+        002.012/ompi_request_defa:  [                2,       0.0186]
+        002.013/MPI_Type_dup:       [                1,       0.0093]
+        002.014/mca_pml_base_sele:  [                1,       0.0093]
+        002.015/mca_pml_v_compone:  [                1,       0.0093]
+        002.016/ompi_errcode_get_:  [                1,       0.0093]
+        002.017/ompi_request_cons:  [                1,       0.0093]
+    003/libc.so.6:
+        003.000/__memmove_avx512_:  [              598,       5.5763]
+        003.001/pthread_mutex_loc:  [               40,       0.3730]
+        003.002/__GI___pthread_mu:  [                8,       0.0746]
+        003.003/pthread_spin_lock:  [                7,       0.0653]
+        003.004/openat64:           [                6,       0.0559]
+        003.005/__clock_gettime:    [                5,       0.0466]
+        003.006/__memset_avx512_u:  [                5,       0.0466]
+        003.007/__sched_yield:      [                1,       0.0093]
+        003.008/sched_setaffinity:  [                1,       0.0093]
+    004/libucp.so.0.0.0:
+        004.000/ucp_worker_progre:  [              157,       1.4640]
+        004.001/ucp_request_test:   [               65,       0.6061]
+        004.002/ucp_eager_middle_:  [               43,       0.4010]
+        004.003/ucp_eager_only_ha:  [               35,       0.3264]
+        004.004/hidden:             [               32,       0.2984]
+        004.005/ucp_eager_first_h:  [               17,       0.1585]
+        004.006/ucp_tag_send_nbx:   [               15,       0.1399]
+        004.007/ucp_tag_recv_nbx:   [                4,       0.0373]
+        004.008/ucp_proto_rndv_se:  [                3,       0.0280]
+        004.009/ucp_ep_rkey_unpac:  [                1,       0.0093]
+        004.010/ucp_proto_rndv_at:  [                1,       0.0093]
+        004.011/ucp_request_free:   [                1,       0.0093]
+        004.012/ucp_tag_frag_list:  [                1,       0.0093]
+        004.013/ucp_tag_rndv_matc:  [                1,       0.0093]
+        004.014/ucp_tag_rndv_rts_:  [                1,       0.0093]
+    005/libomp.so:
+        005.000/_ZL26__kmp_hyper_:  [               99,       0.9232]
+        005.001/__kmp_invoke_micr:  [               78,       0.7273]
+        005.002/_ZL27__kmp_hyper_:  [               34,       0.3170]
+        005.003/__kmp_fork_call:    [               17,       0.1585]
+        005.004/__kmp_hardware_ti:  [               15,       0.1399]
+        005.005/__kmp_release_tic:  [               12,       0.1119]
+        005.006/__kmp_join_call.l:  [               10,       0.0932]
+        005.007/_Z22__kmp_barrier:  [                6,       0.0559]
+        005.008/__kmp_internal_fo:  [                6,       0.0559]
+        005.009/__kmp_invoke_task:  [                6,       0.0559]
+        005.010/_Z18__kmp_join_ba:  [                4,       0.0373]
+        005.011/__kmp_acquire_tic:  [                4,       0.0373]
+        005.012/__kmp_task_team_s:  [                4,       0.0373]
+        005.013/__kmp_task_team_s:  [                4,       0.0373]
+        005.014/__kmp_allocate_te:  [                3,       0.0280]
+        005.015/__kmp_finish_impl:  [                3,       0.0280]
+        005.016/__kmpc_for_static:  [                3,       0.0280]
+        005.017/__kmp_get_global_:  [                2,       0.0186]
+        005.018/__kmpc_for_static:  [                2,       0.0186]
+        005.019/__kmpc_fork_call:   [                2,       0.0186]
+        005.020/_Z18__kmp_fork_ba:  [                1,       0.0093]
+        005.021/_ZN22OmptReturnAd:  [                1,       0.0093]
+        005.022/__kmp_init_implic:  [                1,       0.0093]
+        005.023/__kmp_internal_jo:  [                1,       0.0093]
+        005.024/__kmp_task_team_w:  [                1,       0.0093]
+        005.025/__kmp_yield:        [                1,       0.0093]
+        005.026/__kmpc_for_static:  [                1,       0.0093]
+        005.027/hidden:             [                1,       0.0093]
+        005.028/omp_get_thread_nu:  [                1,       0.0093]
+    006/libopen-pal.so.80.0.5:
+        006.000/hidden:             [              139,       1.2962]
+        006.001/opal_tsd_tracked_:  [               86,       0.8019]
+    007/hmca_bcol_basesmuma.so:
+        007.000/hmca_bcol_basesmu:  [               97,       0.9045]
+        007.001/hmca_bcol_basesmu:  [               28,       0.2611]
+        007.002/hmca_bcol_basesmu:  [                4,       0.0373]
+        007.003/hmca_bcol_basesmu:  [                2,       0.0186]
+    008/unknown:
+    009/libmpitrace.so:
+        009.000/LMX_print_mmm_tim:  [               14,       0.1305]
+        009.001/LMX_print_MPI_sum:  [                5,       0.0466]
+        009.002/MPI_Probe:          [                3,       0.0280]
+        009.003/LMX_print_MPI_det:  [                1,       0.0093]
+        009.004/MPI_Improbe:        [                1,       0.0093]
+    010/libhcoll.so.1.0.9:
+        010.000/hcoll_ml_progress:  [                7,       0.0653]
+        010.001/hcoll_ml_progress:  [                1,       0.0093]
+        010.002/hmca_coll_ml_barr:  [                1,       0.0093]
+    011/ld-linux-x86-64.so.2:
+        011.000/__tls_get_addr:     [                4,       0.0373]
+        011.001/memset:             [                1,       0.0093]
+    012/libm.so.6:
+        012.000/erfcf:              [                2,       0.0186]
+        012.001/hidden:             [                2,       0.0186]
+        012.002/exp:                [                1,       0.0093]
+    013/libucs.so.0.0.0:
+        013.000/ucs_pgtable_looku:  [                5,       0.0466]
+    014/libuct_xpmem.so.0.0.0:
+        014.000/hidden:             [                2,       0.0186]
+# ----------------------------------------------------------------------------
+#        Directory of Library Names
+#
+# The full path library name may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# ----------------------------------------------------------------------------
+library_names:
+    000/libgromacs_mpi.so.10.0.0:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/gromacs_aocc/install_ao'
+        - 'cc/lib64/libgromacs_mpi.so.10.0.0'
+    001/libuct.so.0.0.0:
+        - '/usr/lib64/libuct.so.0.0.0'
+    002/libmpi.so.40.40.7:
+        - '/gpfs/gpfs_de6000/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/lib/libmpi.so.'
+        - '40.40.7'
+    003/libc.so.6:
+        - '/usr/lib64/libc.so.6'
+    004/libucp.so.0.0.0:
+        - '/usr/lib64/libucp.so.0.0.0'
+    005/libomp.so:
+        - '/gpfs/gpfs_de6000/hpc/base/amd/compilers/aocc-compiler-5.0.0/lib/libom'
+        - 'p.so'
+    006/libopen-pal.so.80.0.5:
+        - '/gpfs/gpfs_de6000/hpc/base/amd/openmpi/5.0.8/aocc/5.0.0/lib/libopen-pa'
+        - 'l.so.80.0.5'
+    007/hmca_bcol_basesmuma.so:
+        - '/opt/mellanox/hcoll/lib/hcoll/hmca_bcol_basesmuma.so'
+    008/unknown:
+        - 'unknown'
+    009/libmpitrace.so:
+        - '/gpfs/gpfs_de6000/home/xcpospiech/bench/4paper/lmxtrace_build_aocc/lmx'
+        - '_trace-2.0.0.rc3/install_aocc/lib/libmpitrace.so'
+    010/libhcoll.so.1.0.9:
+        - '/opt/mellanox/hcoll/lib/libhcoll.so.1.0.9'
+    011/ld-linux-x86-64.so.2:
+        - '/usr/lib64/ld-linux-x86-64.so.2'
+    012/libm.so.6:
+        - '/usr/lib64/libm.so.6'
+    013/libucs.so.0.0.0:
+        - '/usr/lib64/libucs.so.0.0.0'
+    014/libuct_xpmem.so.0.0.0:
+        - '/usr/lib64/ucx/libuct_xpmem.so.0.0.0'
+# ----------------------------------------------------------------------------
+#        Directory of Soubroutine Names
+#
+# The full de-mangled subroutine name may be longer than
+# the maximum line length that is allowed by yamllint.
+# Hence it will be split into an array of strings.
+# Any line feeds already in the variable will be replaced
+# by blanks. Also the chunks are also enclosed in ticks to
+# exclude them from YAML linting. When reading from Python,
+# use ''.join(<array>) to piece them together.
+#
+# ----------------------------------------------------------------------------
+subroutine_names:
+    000/libgromacs_mpi.so.10.0.0:
+        000.000/_ZN3gmx15nbnxmKer:
+            - 'gmx::nbnxmKernelSimd<(KernelLayout)1, (gmx::KernelCoulombType)1, ('
+            - 'VdwCutoffCheck)1, (gmx::LJCombinationRule)2, (InteractionModifiers'
+            - ')1, (LJEwald)0, (EnergyOutput)0>'
+        000.001/_ZN3gmx15nbnxmKer:
+            - 'gmx::nbnxmKernelSimd<(KernelLayout)1, (gmx::KernelCoulombType)1, ('
+            - 'VdwCutoffCheck)1, (gmx::LJCombinationRule)2, (InteractionModifiers'
+            - ')3, (LJEwald)0, (EnergyOutput)2>'
+        000.002/_ZN3gmx7csettleER:
+            - 'gmx::csettle'
+        000.003/_Z9dd_move_xP12gm:
+            - 'dd_move_x'
+        000.004/_ZN3gmx11Pairlist:
+            - 'gmx::PairlistSet::constructPairlists'
+        000.005/_ZN3gmx31nbnxn_at:
+            - 'gmx::nbnxn_atomdata_copy_x_to_nbat_x'
+        000.006/_ZN3gmx18nonbonde:
+            - 'gmx::nonbonded_verlet_t::dispatchPruneKernelGpu'
+        000.007/_ZN3gmx12_GLOBAL_:
+            - 'gmx::(anonymous namespace)::cornerToBoundingBoxDistance'
+        000.008/_ZN8t_nblist9addI:
+            - 't_nblist::addIEntry'
+        000.009/_ZN3gmx15nbnxmKer:
+            - 'gmx::nbnxmKernelSimd<(KernelLayout)1, (gmx::KernelCoulombType)1, ('
+            - 'VdwCutoffCheck)1, (gmx::LJCombinationRule)2, (InteractionModifiers'
+            - ')1, (LJEwald)0, (EnergyOutput)1>'
+        000.010/_ZN3gmx15nbnxmKer:
+            - 'gmx::nbnxmKernelSimd<(KernelLayout)1, (gmx::KernelCoulombType)0, ('
+            - 'VdwCutoffCheck)0, (gmx::LJCombinationRule)2, (InteractionModifiers'
+            - ')1, (LJEwald)0, (EnergyOutput)2>'
+        000.011/_ZN3gmx16nbnxn_at:
+            - 'gmx::nbnxn_atomdata_t::reduceForces'
+        000.012/_ZN10gmx_pme_ppD2:
+            - 'gmx_pme_pp::~gmx_pme_pp'
+        000.013/_ZN3gmx8do_forceE:
+            - 'gmx::do_force'
+        000.014/_ZN3gmx15nbnxmKer:
+            - 'gmx::nbnxmKernelSimd<(KernelLayout)1, (gmx::KernelCoulombType)1, ('
+            - 'VdwCutoffCheck)0, (gmx::LJCombinationRule)2, (InteractionModifiers'
+            - ')1, (LJEwald)0, (EnergyOutput)0>'
+        000.015/_ZN3gmx6Update4Im:
+            - 'gmx::Update::Impl::update_coords'
+        000.016/_Z15compute_globa:
+            - 'compute_globals'
+        000.017/_ZL13comm_cost_es:
+            - 'comm_cost_est'
+        000.018/_ZN3gmxL27setupLo:
+            - 'gmx::setupLocalGpuForceReduction'
+        000.019/_ZN3gmx19dd_parti:
+            - 'gmx::dd_partition_system'
+        000.020/_ZN3gmx4Grid8fill:
+            - 'gmx::Grid::fillCell'
+        000.021/_Z7calc_muiiN3gmx:
+            - 'calc_mu'
+        000.022/_Z38pressureCoupl:
+            - 'pressureCouplingCalculateScalingMatrix<(PressureCoupling)5>'
+        000.023/_ZN3gmx15LegacySi:
+            - 'gmx::LegacySimulator::do_md'
+        000.024/_ZN3gmx18FreeEner:
+            - 'gmx::FreeEnergyDispatch::dispatchFreeEnergyKernels'
+        000.025/hidden:
+            - 'hidden'
+        000.026/_Z16dd_move_f_spe:
+            - 'dd_move_f_specat'
+        000.027/_ZL22setup_dd_com:
+            - 'setup_dd_communication'
+        000.028/_ZL24make_local_b:
+            - 'make_local_bondeds_excls'
+        000.029/_ZL8walk_outiiiii:
+            - 'walk_out'
+        000.030/_ZN3gmx4Grid22sor:
+            - 'gmx::Grid::sortColumnsGpuGeometry'
+        000.031/_ZNSt6vectorISt5a:
+            - 'std::vector<std::array<unsigned long, 2ul>, std::allocator<std::ar'
+            - 'ray<unsigned long, 2ul> > >::_M_fill_insert'
+        000.032/_Z16dd_move_x_spe:
+            - 'dd_move_x_specat'
+        000.033/_ZN3gmx11Constrai:
+            - 'gmx::Constraints::Impl::apply'
+        000.034/_ZN3gmxL12do_nb_v:
+            - 'gmx::do_nb_verlet'
+        000.035/_ZN3gmxL15combine:
+            - 'gmx::combine_nblists<(gmx::PairlistType)3>'
+        000.036/_ZNSt10filesystem:
+            - 'std::filesystem::__cxx11::path::path<char [4096], std::filesystem:'
+            - ':__cxx11::path>'
+        000.037/_Z18dd_redistribu:
+            - 'dd_redistribute_cg'
+        000.038/_Z8atoms2mdRK10gm:
+            - 'atoms2md'
+        000.039/_ZN24CpuPpLongRan:
+            - 'CpuPpLongRangeNonbondeds::calculate'
+        000.040/_ZN3gmx15constrai:
+            - 'gmx::constrain_lincs'
+        000.041/_ZL11energyDriftN:
+            - 'energyDrift'
+        000.042/_ZN3gmx11Pairlist:
+            - 'gmx::PairlistSet::constructPairlists'
+        000.043/_ZN3gmx12ResetHan:
+            - 'gmx::ResetHandler::ResetHandler'
+        000.044/_ZN3gmx15constrai:
+            - 'gmx::constrain_lincs'
+        000.045/_ZN3gmx16getVdwKe:
+            - 'gmx::getVdwKernelType'
+        000.046/_ZN3gmx18nonbonde:
+            - 'gmx::nonbonded_verlet_t::dispatchFreeEnergyKernels'
+        000.047/_ZN3gmx21generate:
+            - 'gmx::generateAndFill2DGrid'
+        000.048/_ZN3gmxL10sort_at:
+            - 'gmx::sort_atoms'
+        000.049/_ZNK3gmx18nonbond:
+            - 'gmx::nonbonded_verlet_t::dispatchPruneKernelCpu'
+        000.050/_ZNSt6vectorIiN3g:
+            - 'std::vector<int, gmx::DefaultInitializationAllocator<int, std::all'
+            - 'ocator<int> > >::_M_fill_insert'
+        000.051/_ZNSt6vectorIiSaI:
+            - 'std::vector<int, std::allocator<int> >::_M_range_insert<__gnu_cxx:'
+            - ':__normal_iterator<int const*, std::vector<int, std::allocator<int'
+            - '> > > >'
+        000.052/_Z11gen_sblocksP8:
+            - 'gen_sblocks'
+        000.053/_Z11global_statRK:
+            - 'global_stat'
+        000.054/_Z11gmx_pmeonlyPP:
+            - 'gmx_pmeonly'
+        000.055/_Z11pbc_dx_aiucPK:
+            - 'pbc_dx_aiuc'
+        000.056/_Z17ddRankFromDDC:
+            - 'ddRankFromDDCoord'
+        000.057/_Z17dd_make_local:
+            - 'dd_make_local_top'
+        000.058/_Z17dd_natoms_mda:
+            - 'dd_natoms_mdatoms'
+        000.059/_Z38putUpdateGrou:
+            - 'putUpdateGroupAtomsInSamePeriodicImage'
+        000.060/_ZL11turn_on_dlbR:
+            - 'turn_on_dlb'
+        000.061/_ZL12turn_off_dlb:
+            - 'turn_off_dlb'
+        000.062/_ZL13do_stopcm_gr:
+            - 'do_stopcm_grp'
+        000.063/_ZL20make_exclusi:
+            - 'make_exclusions_zone<true>'
+        000.064/_ZN12gmx_stochd_t:
+            - 'gmx_stochd_t::gmx_stochd_t'
+        000.065/_ZN24CpuPpLongRan:
+            - 'CpuPpLongRangeNonbondeds::CpuPpLongRangeNonbondeds'
+        000.066/_ZN3gmx11Pairlist:
+            - 'gmx::PairlistSet::dispatchPruneKernel'
+        000.067/_ZN3gmx14makeImdS:
+            - 'gmx::makeImdSession'
+        000.068/_ZN3gmx15constrai:
+            - 'gmx::constrain_shake'
+        000.069/_ZN3gmx15nbnxmKer:
+            - 'gmx::nbnxmKernelSimd<(KernelLayout)1, (gmx::KernelCoulombType)1, ('
+            - 'VdwCutoffCheck)0, (gmx::LJCombinationRule)2, (InteractionModifiers'
+            - ')3, (LJEwald)0, (EnergyOutput)2>'
+        000.070/_ZN3gmx16nbnxn_at:
+            - 'gmx::nbnxn_atomdata_t::nbnxn_atomdata_t'
+        000.071/_ZN3gmx21generate:
+            - 'gmx::generateAndFill2DGrid'
+        000.072/_ZN3gmx26reduce_e:
+            - 'gmx::reduce_energies_over_lists'
+        000.073/_ZN3gmx4Grid8Geom:
+            - 'gmx::Grid::Geometry::Geometry'
+        000.074/_ZN3gmx6Update4Im:
+            - 'gmx::Update::Impl::update_temperature_constants'
+        000.075/_ZN3gmx7GridSet9p:
+            - 'gmx::GridSet::putOnGrid'
+        000.076/_ZN3gmx7GridSetC1:
+            - 'gmx::GridSet::GridSet'
+        000.077/_ZN3gmxL19lincs_m:
+            - 'gmx::lincs_matrix_expand'
+        000.078/_ZN3gmxL19makeLin:
+            - 'gmx::makeLincsDeviations'
+        000.079/_ZN3gmxL23nbnxn_a:
+            - 'gmx::nbnxn_atomdata_mask_fep'
+        000.080/_ZN3gmxL27someInt:
+            - 'gmx::someInteractionsCanRunOnGpu'
+        000.081/_ZNSt6vectorIfN3g:
+            - 'std::vector<float, gmx::Allocator<float, gmx::AlignedAllocationPol'
+            - 'icy> >::_M_fill_insert'
+        000.082/_ZNSt6vectorIfN3g:
+            - 'std::vector<float, gmx::Allocator<float, gmx::AlignedAllocationPol'
+            - 'icy> >::reserve'
+    001/libuct.so.0.0.0:
+        001.000/hidden:
+            - 'hidden'
+        001.001/uct_mm_ep_am_bcop:
+            - 'uct_mm_ep_am_bcopy'
+        001.002/uct_mm_ep_am_shor:
+            - 'uct_mm_ep_am_short'
+    002/libmpi.so.40.40.7:
+        002.000/ompi_osc_sm_test:
+            - 'ompi_osc_sm_test'
+        002.001/mca_part_base_sel:
+            - 'mca_part_base_select'
+        002.002/mca_pml_base_pml_:
+            - 'mca_pml_base_pml_check_selected_impl'
+        002.003/mca_coll_self_com:
+            - 'mca_coll_self_comm_query'
+        002.004/libnbc_open:
+            - 'libnbc_open'
+        002.005/__muldc3:
+            - '__muldc3'
+        002.006/hidden:
+            - 'hidden'
+        002.007/mca_pml_ucx_init:
+            - 'mca_pml_ucx_init'
+        002.008/ompi_grequest_com:
+            - 'ompi_grequest_complete'
+        002.009/ompi_grequest_fre:
+            - 'ompi_grequest_free'
+        002.010/mca_pml_v_compone:
+            - 'mca_pml_v_component_close'
+        002.011/ompi_request_defa:
+            - 'ompi_request_default_test'
+        002.012/ompi_request_defa:
+            - 'ompi_request_default_test_all'
+        002.013/MPI_Type_dup:
+            - 'MPI_Type_dup'
+        002.014/mca_pml_base_sele:
+            - 'mca_pml_base_select'
+        002.015/mca_pml_v_compone:
+            - 'mca_pml_v_component_parasite_finalize'
+        002.016/ompi_errcode_get_:
+            - 'ompi_errcode_get_mpi_code'
+        002.017/ompi_request_cons:
+            - 'ompi_request_construct'
+    003/libc.so.6:
+        003.000/__memmove_avx512_:
+            - '__memmove_avx512_unaligned_erms'
+        003.001/pthread_mutex_loc:
+            - 'pthread_mutex_lock'
+        003.002/__GI___pthread_mu:
+            - '__GI___pthread_mutex_unlock_usercnt'
+        003.003/pthread_spin_lock:
+            - 'pthread_spin_lock'
+        003.004/openat64:
+            - 'openat64'
+        003.005/__clock_gettime:
+            - '__clock_gettime'
+        003.006/__memset_avx512_u:
+            - '__memset_avx512_unaligned_erms'
+        003.007/__sched_yield:
+            - '__sched_yield'
+        003.008/sched_setaffinity:
+            - 'sched_setaffinity'
+    004/libucp.so.0.0.0:
+        004.000/ucp_worker_progre:
+            - 'ucp_worker_progress'
+        004.001/ucp_request_test:
+            - 'ucp_request_test'
+        004.002/ucp_eager_middle_:
+            - 'ucp_eager_middle_handler'
+        004.003/ucp_eager_only_ha:
+            - 'ucp_eager_only_handler'
+        004.004/hidden:
+            - 'hidden'
+        004.005/ucp_eager_first_h:
+            - 'ucp_eager_first_handler'
+        004.006/ucp_tag_send_nbx:
+            - 'ucp_tag_send_nbx'
+        004.007/ucp_tag_recv_nbx:
+            - 'ucp_tag_recv_nbx'
+        004.008/ucp_proto_rndv_se:
+            - 'ucp_proto_rndv_send_reply'
+        004.009/ucp_ep_rkey_unpac:
+            - 'ucp_ep_rkey_unpack_internal'
+        004.010/ucp_proto_rndv_at:
+            - 'ucp_proto_rndv_ats_complete'
+        004.011/ucp_request_free:
+            - 'ucp_request_free'
+        004.012/ucp_tag_frag_list:
+            - 'ucp_tag_frag_list_process_queue'
+        004.013/ucp_tag_rndv_matc:
+            - 'ucp_tag_rndv_matched'
+        004.014/ucp_tag_rndv_rts_:
+            - 'ucp_tag_rndv_rts_progress'
+    005/libomp.so:
+        005.000/_ZL26__kmp_hyper_:
+            - '__kmp_hyper_barrier_gather'
+        005.001/__kmp_invoke_micr:
+            - '__kmp_invoke_microtask'
+        005.002/_ZL27__kmp_hyper_:
+            - '__kmp_hyper_barrier_release'
+        005.003/__kmp_fork_call:
+            - '__kmp_fork_call'
+        005.004/__kmp_hardware_ti:
+            - '__kmp_hardware_timestamp'
+        005.005/__kmp_release_tic:
+            - '__kmp_release_ticket_lock.localalias.29'
+        005.006/__kmp_join_call.l:
+            - '__kmp_join_call.localalias.38'
+        005.007/_Z22__kmp_barrier:
+            - '__kmp_barrier_template<false>'
+        005.008/__kmp_internal_fo:
+            - '__kmp_internal_fork.localalias.14'
+        005.009/__kmp_invoke_task:
+            - '__kmp_invoke_task_func'
+        005.010/_Z18__kmp_join_ba:
+            - '__kmp_join_barrier'
+        005.011/__kmp_acquire_tic:
+            - '__kmp_acquire_ticket_lock'
+        005.012/__kmp_task_team_s:
+            - '__kmp_task_team_setup.localalias.6'
+        005.013/__kmp_task_team_s:
+            - '__kmp_task_team_sync'
+        005.014/__kmp_allocate_te:
+            - '__kmp_allocate_team.localalias.29'
+        005.015/__kmp_finish_impl:
+            - '__kmp_finish_implicit_task'
+        005.016/__kmpc_for_static:
+            - '__kmpc_for_static_fini'
+        005.017/__kmp_get_global_:
+            - '__kmp_get_global_thread_id_reg.localalias.42'
+        005.018/__kmpc_for_static:
+            - '__kmpc_for_static_init_8'
+        005.019/__kmpc_fork_call:
+            - '__kmpc_fork_call'
+        005.020/_Z18__kmp_fork_ba:
+            - '__kmp_fork_barrier'
+        005.021/_ZN22OmptReturnAd:
+            - 'OmptReturnAddressGuard::OmptReturnAddressGuard'
+        005.022/__kmp_init_implic:
+            - '__kmp_init_implicit_task'
+        005.023/__kmp_internal_jo:
+            - '__kmp_internal_join.localalias.13'
+        005.024/__kmp_task_team_w:
+            - '__kmp_task_team_wait'
+        005.025/__kmp_yield:
+            - '__kmp_yield'
+        005.026/__kmpc_for_static:
+            - '__kmpc_for_static_init_4'
+        005.027/hidden:
+            - 'hidden'
+        005.028/omp_get_thread_nu:
+            - 'omp_get_thread_num'
+    006/libopen-pal.so.80.0.5:
+        006.000/hidden:
+            - 'hidden'
+        006.001/opal_tsd_tracked_:
+            - 'opal_tsd_tracked_key_constructor'
+    007/hmca_bcol_basesmuma.so:
+        007.000/hmca_bcol_basesmu:
+            - 'hmca_bcol_basesmuma_barrier_toplevel_progress_x86'
+        007.001/hmca_bcol_basesmu:
+            - 'hmca_bcol_basesmuma_allreduce_intra_fanin_fanout_progress'
+        007.002/hmca_bcol_basesmu:
+            - 'hmca_bcol_basesmuma_allreduce_intra_fanin_fanout'
+        007.003/hmca_bcol_basesmu:
+            - 'hmca_bcol_basesmuma_barrier_toplevel_x86'
+    008/unknown:
+    009/libmpitrace.so:
+        009.000/LMX_print_mmm_tim:
+            - 'LMX_print_mmm_times'
+        009.001/LMX_print_MPI_sum:
+            - 'LMX_print_MPI_summary'
+        009.002/MPI_Probe:
+            - 'MPI_Probe'
+        009.003/LMX_print_MPI_det:
+            - 'LMX_print_MPI_details'
+        009.004/MPI_Improbe:
+            - 'MPI_Improbe'
+    010/libhcoll.so.1.0.9:
+        010.000/hcoll_ml_progress:
+            - 'hcoll_ml_progress'
+        010.001/hcoll_ml_progress:
+            - 'hcoll_ml_progress_impl'
+        010.002/hmca_coll_ml_barr:
+            - 'hmca_coll_ml_barrier_task_setup'
+    011/ld-linux-x86-64.so.2:
+        011.000/__tls_get_addr:
+            - '__tls_get_addr'
+        011.001/memset:
+            - 'memset'
+    012/libm.so.6:
+        012.000/erfcf:
+            - 'erfcf'
+        012.001/hidden:
+            - 'hidden'
+        012.002/exp:
+            - 'exp'
+    013/libucs.so.0.0.0:
+        013.000/ucs_pgtable_looku:
+            - 'ucs_pgtable_lookup'
+    014/libuct_xpmem.so.0.0.0:
+        014.000/hidden:
+            - 'hidden'

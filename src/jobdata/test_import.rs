@@ -14,34 +14,27 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::jobdata::process_lmx_file;
-    use crate::jobdata::table_runs::find_file::project_mockup::{
-        setup_cliargs_with_project_file_name, setup_tmp_project_directory,
+    use crate::{
+        cmdline::CliArgs,
+        jobdata::table_runs::find_file::project_mockup::{
+            setup_cliargs_with_project_file_name, test_import_single_lmx_file,
+        },
     };
-    use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use anyhow::Result;
     use sqlx::MySql;
-    use std::fs::remove_dir_all;
 
     #[sqlx::test(fixtures(
         "../../tests/fixtures/lmxtest.sql",
         "../../tests/fixtures/minimal_data.sql"
     ))]
     pub async fn test_import_namd_jobdata(pool: sqlx::Pool<MySql>) -> Result<()> {
-        // Create a temporary project directory for testing
-        let temp_dir = setup_tmp_project_directory("tests/data/NAMD")?;
         // Create CliArgs with the specified project file that exists in the temp_dir
         let args = setup_cliargs_with_project_file_name("project.yml")?;
-        // Set the LMX_summary file path
-        let lmx_summary_pathbuf = temp_dir.join("run_0001/LMX_summary.225250.0.yml");
-        // Read SQL types
-        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool.clone()), &args).await?;
-
-        // Call the process_lmx_file function
-        let result = process_lmx_file(
-            lmx_summary_pathbuf.to_str().unwrap(),
-            &Some(pool.clone()),
-            &sqltypes,
+        // Call the test_import_single_lmx_file
+        let result = test_import_single_lmx_file(
+            &pool,
+            None,
+            "tests/data/NAMD/run_0001/LMX_summary.225250.0.yml",
             &args,
         )
         .await;
@@ -52,8 +45,87 @@ mod tests {
             result.err()
         );
 
-        // Clean up if necessary
-        remove_dir_all(temp_dir)?;
+        // Query the database
+        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
+            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
+        )
+        .fetch_all(&pool)
+        .await?;
+
+        // Assert exactly one row was returned
+        assert_eq!(
+            rows.len(),
+            1,
+            "Expected exactly 1 row, but got {}",
+            rows.len()
+        );
+
+        // Assert the values of the returned row
+        let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
+        assert_eq!(*rid, 1);
+        assert_eq!(*clid, 1);
+        assert_eq!(*pid, 3);
+        assert_eq!(*ccid, 1);
+        assert_eq!(*nodes, 1);
+        assert!(!*has_mpi_trace);
+        assert!(!*has_iprof);
+        assert_eq!(*mpi_ranks, 8);
+
+        Ok(())
+    }
+
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    pub async fn test_import_gromacs_jobdata(pool: sqlx::Pool<MySql>) -> Result<()> {
+        // Create CliArgs with project file and other configuration
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: false,
+            verbose: false,
+            ..Default::default()
+        };
+        // Call the test_import_single_lmx_file
+        let result = test_import_single_lmx_file(
+            &pool,
+            None,
+            "tests/data/GROMACS/run_64/LMX_summary.376231.0.yml",
+            &args,
+        )
+        .await;
+
+        assert!(
+            result.is_ok(),
+            "Processing LMX file failed: {:?}",
+            result.err()
+        );
+
+        // Query the database
+        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
+            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
+        )
+        .fetch_all(&pool)
+        .await?;
+
+        // Assert exactly one row was returned
+        assert_eq!(
+            rows.len(),
+            1,
+            "Expected exactly 1 row, but got {}",
+            rows.len()
+        );
+
+        // Assert the values of the returned row
+        let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
+        assert_eq!(*rid, 1);
+        assert_eq!(*clid, 1);
+        assert_eq!(*pid, 3);
+        assert_eq!(*ccid, 1);
+        assert_eq!(*nodes, 1);
+        assert!(*has_mpi_trace);
+        assert!(*has_iprof);
+        assert_eq!(*mpi_ranks, 64);
 
         Ok(())
     }
