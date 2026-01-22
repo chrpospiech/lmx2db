@@ -29,7 +29,7 @@ percent_PP_PME_imbalance: 4.2
 time_neighbor_search: "20.484"
 runtime_md_log: "1069.287"
 perf_unit: "ns/day"
-perf_value: "319.366"
+perf_value: 319.366
 hour_per_ns: "0.075"
 nstlist: "80"
 nsteps: "1976240"
