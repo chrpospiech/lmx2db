@@ -74,7 +74,7 @@ CREATE TABLE `people` (
   `middle` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT 'Middle name',
   `surname` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'surname',
   `affiliation` enum('Lenovo','IBM','retiree','Intel','BSC','NVIDIA') NOT NULL DEFAULT 'Lenovo' COMMENT 'employer',
-  `email` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `email` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'not@known' COMMENT 'email address',
   `phone` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `mobile` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -737,8 +737,9 @@ BEGIN
        AND first_name LIKE first_name(p_name)
        LIMIT 1;
     IF (p_id IS NULL AND do_insert) THEN
-       SELECT max(id)+1 INTO p_id FROM people;
-       INSERT INTO people (id, name) VALUES (p_id, p_name);
+       INSERT INTO people (first_name, surname)
+       VALUES (first_name(p_name), surname(p_name));
+       SET p_id = LAST_INSERT_ID();
     END IF;
     RETURN p_id;
 END;
