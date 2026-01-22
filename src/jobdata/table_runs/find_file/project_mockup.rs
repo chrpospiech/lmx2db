@@ -74,6 +74,8 @@ pub fn setup_cliargs_with_project_file_name(project_file: &str) -> Result<CliArg
     // Create CliArgs with the specified project file
     Ok(CliArgs {
         project_file: project_file.to_string(),
+        settings_file: "settings.yml".to_string(),
+        module_file: "modules.yml".to_string(),
         verbose: false,
         dry_run: false,
         ..Default::default()

@@ -79,6 +79,8 @@ mod tests {
         // Create CliArgs without specifying a project file
         let args = CliArgs {
             project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
             do_import: true,
             dry_run: false,
             verbose: false,
