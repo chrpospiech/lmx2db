@@ -76,7 +76,7 @@ mod tests {
 
     #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
     pub async fn test_import_gromacs_jobdata(pool: sqlx::Pool<MySql>) -> Result<()> {
-        // Create CliArgs without specifying a project file
+        // Create CliArgs with project file and other configuration
         let args = CliArgs {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
