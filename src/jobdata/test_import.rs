@@ -42,6 +42,32 @@ mod tests {
             result.err()
         );
 
+        // Query the database
+        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
+            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
+        )
+        .fetch_all(&pool)
+        .await?;
+
+        // Assert exactly one row was returned
+        assert_eq!(
+            rows.len(),
+            1,
+            "Expected exactly 1 row, but got {}",
+            rows.len()
+        );
+
+        // Assert the values of the returned row
+        let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
+        assert_eq!(*rid, 1);
+        assert_eq!(*clid, 3);
+        assert_eq!(*pid, 24);
+        assert_eq!(*ccid, 1);
+        assert_eq!(*nodes, 1);
+        assert!(!*has_mpi_trace);
+        assert!(!*has_iprof);
+        assert_eq!(*mpi_ranks, 8);
+
         Ok(())
     }
 }
