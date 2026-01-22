@@ -1,21 +1,25 @@
 #!/bin/bash
 
-# PATH settings
-BASE_DIR=/home/xcpospiech/bench/4paper
+# PATH settings (BASE_DIR can be overridden via environment; defaults relative to this script)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+: "${BASE_DIR:="${SCRIPT_DIR}/../.."}"
 INPUT_DIR=$BASE_DIR/input
 LMX_DIR=$BASE_DIR/lmxtrace_build_aocc/lmx_trace-2.0.0.rc3/install_aocc/lib
 GROMACS_DIR=$BASE_DIR/gromacs_aocc/install_aocc
 RUN_DIR=run_${SLURM_NTASKS}_maxh_${SLURM_JOB_ID}
 
-# Loading modules
-source ~/.bashrc
-module load \
-	amd-compilers \
-	aocc/5.0.0 \
-	aocl/aocc/5.0.0 \
-	openmpi/5.0.8 \
-	eb-env \
-	binutils
+# Loading modules (optional; only if 'module' command is available)
+if command -v module >/dev/null 2>&1; then
+	# Ignore failure if ~/.bashrc is absent or not readable
+	{ [ -f "${HOME}/.bashrc" ] && source "${HOME}/.bashrc"; } >/dev/null 2>&1 || true
+	module load \
+		amd-compilers \
+		aocc/5.0.0 \
+		aocl/aocc/5.0.0 \
+		openmpi/5.0.8 \
+		eb-env \
+		binutils || true
+fi
 
 # run directory
 rm -rf $RUN_DIR
