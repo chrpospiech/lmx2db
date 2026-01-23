@@ -125,8 +125,14 @@ pub async fn import_into_runs_table(
         println!("Generating rid for current run ");
     }
     query_list.push("SET @rid = LAST_INSERT_ID();".to_string());
-    // Create progress indicator
-    query_list.push("SELECT concat (\"       rid = \", @rid) as 'Processing run :';".to_string());
+    // Create progress indicator only for pool.is_none()
+    // i.e., when *not* connected to a real database
+    // This is useful when importing a file import.sql via
+    // the mariadb command line client.
+    if pool.is_none() {
+        query_list
+            .push("SELECT concat (\"       rid = \", @rid) as 'Processing run :';".to_string());
+    }
 
     // Compute and import timing information
     if args.verbose || args.dry_run {
