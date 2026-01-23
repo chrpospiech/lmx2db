@@ -129,4 +129,105 @@ mod tests {
 
         Ok(())
     }
+
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    pub async fn test_import_gromacs_jobdata_verbose(pool: sqlx::Pool<MySql>) -> Result<()> {
+        // Create CliArgs with verbose = true and dry_run = false
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: false,
+            verbose: true,
+            ..Default::default()
+        };
+        // Call the test_import_single_lmx_file
+        let result = test_import_single_lmx_file(
+            &pool,
+            None,
+            "tests/data/GROMACS/run_64/LMX_summary.376231.0.yml",
+            &args,
+        )
+        .await;
+
+        assert!(
+            result.is_ok(),
+            "Processing LMX file failed: {:?}",
+            result.err()
+        );
+
+        // Query the database
+        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
+            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
+        )
+        .fetch_all(&pool)
+        .await?;
+
+        // Assert exactly one row was returned
+        assert_eq!(
+            rows.len(),
+            1,
+            "Expected exactly 1 row, but got {}",
+            rows.len()
+        );
+
+        // Assert the values of the returned row
+        let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
+        assert_eq!(*rid, 1);
+        assert_eq!(*clid, 1);
+        assert_eq!(*pid, 3);
+        assert_eq!(*ccid, 1);
+        assert_eq!(*nodes, 1);
+        assert!(*has_mpi_trace);
+        assert!(*has_iprof);
+        assert_eq!(*mpi_ranks, 64);
+
+        Ok(())
+    }
+
+    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    pub async fn test_import_gromacs_jobdata_dry_run(pool: sqlx::Pool<MySql>) -> Result<()> {
+        // Create CliArgs with verbose = false and dry_run = true
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: true,
+            verbose: false,
+            ..Default::default()
+        };
+        // Call the test_import_single_lmx_file
+        let result = test_import_single_lmx_file(
+            &pool,
+            None,
+            "tests/data/GROMACS/run_64/LMX_summary.376231.0.yml",
+            &args,
+        )
+        .await;
+
+        assert!(
+            result.is_ok(),
+            "Processing LMX file failed: {:?}",
+            result.err()
+        );
+
+        // Query the database - in dry_run mode, no rows should be inserted
+        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
+            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
+        )
+        .fetch_all(&pool)
+        .await?;
+
+        // Assert no rows were inserted (dry_run mode)
+        assert_eq!(
+            rows.len(),
+            0,
+            "Expected 0 rows in dry_run mode, but got {}",
+            rows.len()
+        );
+
+        Ok(())
+    }
 }
