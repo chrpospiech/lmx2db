@@ -125,13 +125,9 @@ pub async fn process_sql_queries(
     pool: &Option<sqlx::Pool<MySql>>,
     args: &CliArgs,
 ) -> Result<()> {
-    // If neither verbose or dry_run, create a new transaction for this job.
-    let mut tx_per_job = if !args.verbose && !args.dry_run {
-        if let Some(p) = pool.as_ref() {
-            Some(p.begin().await?)
-        } else {
-            None
-        }
+    // Create a new transaction for this job if we have a database connection
+    let mut tx_per_job = if let Some(p) = pool.as_ref() {
+        Some(p.begin().await?)
     } else {
         None
     };
