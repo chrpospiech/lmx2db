@@ -125,9 +125,14 @@ pub async fn process_sql_queries(
     pool: &Option<sqlx::Pool<MySql>>,
     args: &CliArgs,
 ) -> Result<()> {
-    // Create a new transaction for this job if we have a database connection
+    // Create a new transaction for this job only if we have a database connection
+    // and we are not in dry-run mode.
     let mut tx_per_job = if let Some(p) = pool.as_ref() {
-        Some(p.begin().await?)
+        if !args.dry_run {
+            Some(p.begin().await?)
+        } else {
+            None
+        }
     } else {
         None
     };
