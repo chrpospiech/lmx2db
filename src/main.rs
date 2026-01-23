@@ -48,9 +48,7 @@ async fn main() -> Result<()> {
 
     // Main loop: process all LMX_SUMMARY files
     for file_name in find_lmx_summary_files(&args.directories)? {
-        if args.verbose {
-            println!("Processing file: {}", file_name);
-        }
+        println!("Processing file: {}", file_name);
         let return_code = jobdata::process_lmx_file(&file_name, &pool, &sqltypes, &args).await;
         match return_code {
             Ok(_) => {}
