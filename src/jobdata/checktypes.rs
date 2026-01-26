@@ -23,7 +23,8 @@ pub(crate) mod wrong_values;
 
 pub fn check_type(
     table_name: &str,
-    column: &[(String, serde_yaml::Value)],
+    keys: &Vec<String>,
+    values: &Vec<Vec<serde_yaml::Value>>,
     sqltypes: &SqlTypeHashMap,
 ) -> Result<()> {
     let table_map = sqltypes.get(table_name);
@@ -35,7 +36,9 @@ pub fn check_type(
     let id_pattern = Regex::new(r"@\w+id").unwrap();
     let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
     let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
-    for (key, value) in column {
+    for value_row in values {
+        for (i, key) in keys.iter().enumerate() {
+            let value = &value_row[i];
         let expected_type = table_map.get(key);
         if expected_type.is_none() {
             anyhow::bail!(
@@ -128,6 +131,7 @@ pub fn check_type(
                 );
             }
         }
+    }
     }
     Ok(())
 }

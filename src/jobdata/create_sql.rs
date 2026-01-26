@@ -24,44 +24,51 @@ pub(crate) mod test_update;
 
 pub fn create_import_statement(
     table_name: &str,
-    column: &[(String, serde_yaml::Value)],
+    keys: &Vec<String>,
+    values: &Vec<Vec<serde_yaml::Value>>,
     sqltypes: &SqlTypeHashMap,
 ) -> Result<String> {
     // First, check types
-    check_type(table_name, column, sqltypes)?;
+    check_type(table_name, keys, values, sqltypes)?;
 
     // The following regex will be used multiple times
     let id_pattern = Regex::new(r"@\w+id").unwrap();
 
-    let columns: Vec<String> = column.iter().map(|(k, _)| k.clone()).collect();
-    let values: Vec<String> = column
+    let columns: Vec<String> = keys.clone();
+    let value_rows: Vec<String> = values
         .iter()
-        .map(|(_, v)| match v {
-            serde_yaml::Value::String(s) => {
-                if id_pattern.is_match(s) {
-                    s.clone()
-                } else {
-                    format!("'{}'", s.replace("'", "''"))
-                }
-            }
-            serde_yaml::Value::Number(n) => n.to_string(),
-            serde_yaml::Value::Bool(b) => {
-                if *b {
-                    "1".to_string()
-                } else {
-                    "0".to_string()
-                }
-            }
-            serde_yaml::Value::Null => "NULL".to_string(),
-            _ => "'[UNSUPPORTED TYPE]'".to_string(),
+        .map(|value_row| {
+            let row_values: Vec<String> = value_row
+                .iter()
+                .map(|v| match v {
+                    serde_yaml::Value::String(s) => {
+                        if id_pattern.is_match(s) {
+                            s.clone()
+                        } else {
+                            format!("'{}'", s.replace("'", "''"))
+                        }
+                    }
+                    serde_yaml::Value::Number(n) => n.to_string(),
+                    serde_yaml::Value::Bool(b) => {
+                        if *b {
+                            "1".to_string()
+                        } else {
+                            "0".to_string()
+                        }
+                    }
+                    serde_yaml::Value::Null => "NULL".to_string(),
+                    _ => "'[UNSUPPORTED TYPE]'".to_string(),
+                })
+                .collect();
+            format!("({})", row_values.join(", "))
         })
         .collect();
 
     let sql = format!(
-        "INSERT INTO {} ({}) VALUES ({});",
+        "INSERT INTO {} ({}) VALUES\n{};",
         table_name,
         columns.join(", "),
-        values.join(", ")
+        value_rows.join(",\n")
     );
     Ok(sql)
 }
@@ -72,8 +79,10 @@ pub fn create_update_statement(
     where_clause: &str,
     sqltypes: &SqlTypeHashMap,
 ) -> Result<String> {
-    // First, check types
-    check_type(table_name, column, sqltypes)?;
+    // First, check types - convert to new API format
+    let keys: Vec<String> = column.iter().map(|(k, _)| k.clone()).collect();
+    let values: Vec<Vec<serde_yaml::Value>> = vec![column.iter().map(|(_, v)| v.clone()).collect()];
+    check_type(table_name, &keys, &values, sqltypes)?;
 
     // The following regex will be used multiple times
     let id_pattern = Regex::new(r"@\w+id").unwrap();
