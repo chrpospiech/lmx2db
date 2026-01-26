@@ -73,12 +73,14 @@ pub async fn import_into_settings_table(
                 serde_yaml::Value::String(value.to_string()),
             ]);
         }
-        query_list.push(create_import_statement(
-            "settings",
-            &key_list,
-            &value_list,
-            sqltypes,
-        )?);
+        if !value_list.is_empty() {
+            query_list.push(create_import_statement(
+                "settings",
+                &key_list,
+                &value_list,
+                sqltypes,
+            )?);
+        }
     }
     Ok(query_list)
 }
