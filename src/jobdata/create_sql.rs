@@ -24,8 +24,8 @@ pub(crate) mod test_update;
 
 pub fn create_import_statement(
     table_name: &str,
-    keys: &Vec<String>,
-    values: &Vec<Vec<serde_yaml::Value>>,
+    keys: &[String],
+    values: &[Vec<serde_yaml::Value>],
     sqltypes: &SqlTypeHashMap,
 ) -> Result<String> {
     // First, check types
@@ -34,7 +34,6 @@ pub fn create_import_statement(
     // The following regex will be used multiple times
     let id_pattern = Regex::new(r"@\w+id").unwrap();
 
-    let columns: Vec<String> = keys.clone();
     let value_rows: Vec<String> = values
         .iter()
         .map(|value_row| {
@@ -67,7 +66,7 @@ pub fn create_import_statement(
     let sql = format!(
         "INSERT INTO {} ({}) VALUES\n{};",
         table_name,
-        columns.join(", "),
+        keys.join(", "),
         value_rows.join(",\n")
     );
     Ok(sql)
