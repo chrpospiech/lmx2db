@@ -49,6 +49,11 @@ pub fn import_into_settings_table(
     let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
     let mut query_list: Vec<String> = Vec::new();
     
+    // Check early if 'settings' table exists in sqltypes to fail fast
+    if !sqltypes.contains_key("settings") {
+        return Ok(query_list);
+    }
+    
     let settings_yaml = match find_and_read_settings_file(file_name, args) {
         Ok(map) => map,
         Err(e) => {

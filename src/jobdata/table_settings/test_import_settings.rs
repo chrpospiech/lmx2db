@@ -22,6 +22,40 @@ mod tests {
     };
     use anyhow::Result;
     use sqlx::MySql;
+    use std::collections::HashMap;
+
+    /// Test early exit when 'settings' table is not in sqltypes
+    #[test]
+    fn test_import_settings_missing_table() -> Result<()> {
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: false,
+            verbose: false,
+            ..Default::default()
+        };
+
+        // Create an empty sqltypes map (no 'settings' table)
+        let sqltypes: HashMap<String, HashMap<String, String>> = HashMap::new();
+
+        let manifest_dir = env!("CARGO_MANIFEST_DIR");
+        let lmx_file = std::path::Path::new(manifest_dir)
+            .join("tests/data/GROMACS/run_64/LMX_summary.376231.0.yml");
+
+        // Call import_into_settings_table with no 'settings' table in sqltypes
+        let queries = import_into_settings_table(
+            lmx_file.to_str().unwrap(),
+            &sqltypes,
+            &args,
+        )?;
+
+        // Should return empty vector without reading the settings file
+        assert!(queries.is_empty(), "Expected empty query list when 'settings' table is not in sqltypes");
+
+        Ok(())
+    }
 
     /// Test successful import when settings file exists with valid data
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
