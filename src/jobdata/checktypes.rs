@@ -21,21 +21,16 @@ pub(crate) mod elementary;
 #[cfg(test)]
 pub(crate) mod wrong_values;
 
-pub fn check_type(
+pub fn get_types<'a>(
     table_name: &str,
     keys: &[String],
-    values: &[Vec<serde_yaml::Value>],
-    sqltypes: &SqlTypeHashMap,
-) -> Result<()> {
+    sqltypes: &'a SqlTypeHashMap,
+) -> Result<Vec<&'a String>> {
     let table_map = sqltypes.get(table_name);
     if table_map.is_none() {
         anyhow::bail!("Table {} not found in type check map", table_name);
     }
     let table_map = table_map.unwrap();
-    // The following regexes will be used multiple times
-    let id_pattern = Regex::new(r"@\w+id").unwrap();
-    let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
-    let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
 
     // Pre-compute expected types for all keys
     let mut expected_types: Vec<&String> = Vec::new();
@@ -50,6 +45,21 @@ pub fn check_type(
         }
         expected_types.push(expected_type.unwrap());
     }
+    Ok(expected_types)
+}
+
+pub fn check_type(
+    table_name: &str,
+    keys: &[String],
+    values: &[Vec<serde_yaml::Value>],
+    sqltypes: &SqlTypeHashMap,
+) -> Result<()> {
+    let expected_types = get_types(table_name, keys, sqltypes)?;
+
+    // The following regexes will be used multiple times
+    let id_pattern = Regex::new(r"@\w+id").unwrap();
+    let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
+    let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
 
     for value_row in values {
         if value_row.len() != keys.len() {
