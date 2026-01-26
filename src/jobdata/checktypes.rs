@@ -21,16 +21,161 @@ pub(crate) mod elementary;
 #[cfg(test)]
 pub(crate) mod wrong_values;
 
-pub fn get_types<'a>(
+#[allow(dead_code)]
+pub fn get_types(
     table_name: &str,
     keys: &[String],
-    sqltypes: &'a SqlTypeHashMap,
-) -> Result<Vec<&'a String>> {
+    sqltypes: &SqlTypeHashMap,
+) -> Result<Vec<String>> {
     let table_map = sqltypes.get(table_name);
     if table_map.is_none() {
         anyhow::bail!("Table {} not found in type check map", table_name);
     }
     let table_map = table_map.unwrap();
+
+    // Pre-compute expected types for all keys
+    let mut expected_types: Vec<String> = Vec::new();
+    for key in keys.iter() {
+        let expected_type = table_map.get(key);
+        if expected_type.is_none() {
+            anyhow::bail!(
+                "Column {} not found in type check map for table {}",
+                key,
+                table_name
+            );
+        }
+        expected_types.push(expected_type.unwrap().clone());
+    }
+    Ok(expected_types)
+}
+
+#[allow(dead_code)]
+pub fn check_types(
+    table_name: &str,
+    keys: &[String],
+    types: &[String],
+    values: &[Vec<serde_yaml::Value>],
+) -> Result<()> {
+    // The following regexes will be used multiple times
+    let id_pattern = Regex::new(r"@\w+id").unwrap();
+    let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
+    let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
+
+    for value_row in values {
+        if value_row.len() != keys.len() {
+            anyhow::bail!(
+                "Row length mismatch in table {}: expected {} columns, got {}",
+                table_name,
+                keys.len(),
+                value_row.len()
+            );
+        }
+        for (i, key) in keys.iter().enumerate() {
+            let value = &value_row[i];
+            let expected_type = &types[i];
+
+            // Check for int(11) type
+            if expected_type.contains("int(") {
+                // Check if value matches @\w+id pattern
+                let value_str = value.as_str().unwrap_or("");
+
+                if !id_pattern.is_match(value_str) {
+                    // Try to cast to i64
+                    if value.as_i64().is_none() {
+                        anyhow::bail!(
+                            "Column {} in table {} expects int(11), but value '{}' is neither a reference (@\\w+id) nor a valid integer",
+                            key,
+                            table_name,
+                            value_str
+                        );
+                    }
+                }
+            } else if expected_type.contains("float") {
+                if value.as_f64().is_none() {
+                    anyhow::bail!(
+                        "Column {} in table {} expects {}, but value cannot be cast to float",
+                        key,
+                        table_name,
+                        expected_type
+                    );
+                }
+            } else if let Some(caps) = varbinary_pattern.captures(expected_type) {
+                let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
+
+                if let Some(value_str) = value.as_str() {
+                    if !value_str.chars().all(|c| "0123456789abcdef".contains(c)) {
+                        anyhow::bail!(
+                            "Column {} in table {} expects {}, but string value '{}' contains invalid hex characters",
+                            key,
+                            table_name,
+                            expected_type,
+                            value_str
+                        );
+                    }
+                    if value_str.len() * 4 >= max_length {
+                        anyhow::bail!(
+                            "Column {} in table {} expects {}, but string value '{}' has length {} * 4 = {} >= {}",
+                            key,
+                            table_name,
+                            expected_type,
+                            value_str,
+                            value_str.len(),
+                            value_str.len() * 4,
+                            max_length
+                        );
+                    }
+                } else {
+                    anyhow::bail!(
+                        "Column {} in table {} expects {}, but value cannot be cast to str",
+                        key,
+                        table_name,
+                        expected_type
+                    );
+                }
+            } else if let Some(caps) = varchar_pattern.captures(expected_type) {
+                let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
+
+                if let Some(value_str) = value.as_str() {
+                    if value_str.len() >= max_length {
+                        anyhow::bail!(
+                            "Column {} in table {} expects {}, but string value '{}' has length {} >= {}",
+                            key,
+                            table_name,
+                            expected_type,
+                            value_str,
+                            value_str.len(),
+                            max_length
+                        );
+                    }
+                } else {
+                    anyhow::bail!(
+                        "Column {} in table {} expects {}, but value cannot be cast to str",
+                        key,
+                        table_name,
+                        expected_type
+                    );
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+pub fn check_type(
+    table_name: &str,
+    keys: &[String],
+    values: &[Vec<serde_yaml::Value>],
+    sqltypes: &SqlTypeHashMap,
+) -> Result<()> {
+    let table_map = sqltypes.get(table_name);
+    if table_map.is_none() {
+        anyhow::bail!("Table {} not found in type check map", table_name);
+    }
+    let table_map = table_map.unwrap();
+    // The following regexes will be used multiple times
+    let id_pattern = Regex::new(r"@\w+id").unwrap();
+    let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
+    let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
 
     // Pre-compute expected types for all keys
     let mut expected_types: Vec<&String> = Vec::new();
@@ -45,21 +190,6 @@ pub fn get_types<'a>(
         }
         expected_types.push(expected_type.unwrap());
     }
-    Ok(expected_types)
-}
-
-pub fn check_type(
-    table_name: &str,
-    keys: &[String],
-    values: &[Vec<serde_yaml::Value>],
-    sqltypes: &SqlTypeHashMap,
-) -> Result<()> {
-    let expected_types = get_types(table_name, keys, sqltypes)?;
-
-    // The following regexes will be used multiple times
-    let id_pattern = Regex::new(r"@\w+id").unwrap();
-    let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
-    let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
 
     for value_row in values {
         if value_row.len() != keys.len() {
