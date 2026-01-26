@@ -273,11 +273,11 @@ feature_flag: false
         assert!(query.contains("'label'"), "label (string) should be included");
         assert!(query.contains("'feature_flag'"), "feature_flag (boolean) should be included");
         
-        // Verify that numeric and boolean values are preserved (not converted to strings prematurely)
-        // The values should be in the query
-        assert!(query.contains("100") || query.contains("'100'"), "numeric value 100 should be present");
-        assert!(query.contains("true") || query.contains("'true'"), "boolean true should be present");
-        assert!(query.contains("3.14") || query.contains("'3.14'"), "float 3.14 should be present");
+        // Verify that numeric and boolean values are stored as string literals
+        // The settings table uses VARCHAR columns, so all values are stored as strings
+        assert!(query.contains("'100'"), "numeric value 100 should be present as string literal");
+        assert!(query.contains("'true'"), "boolean true should be present as string literal");
+        assert!(query.contains("'3.14'"), "float 3.14 should be present as string literal");
 
         // Clean up temporary project directory
         std::fs::remove_dir_all(&temp_dir)?;

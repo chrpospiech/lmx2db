@@ -8,5 +8,3 @@ lmx2db.code-workspace
 sqltypes.yml
 pyproject.toml
 uv.lock
-
-check_type
