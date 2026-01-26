@@ -95,9 +95,8 @@ mod tests {
 
         // Test for foreign key that is a valid integer
         let keys_int = vec!["clid".to_string()];
-        let values_int = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            12345,
-        ))]];
+        #[rustfmt::skip]
+        let values_int = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(12345))]];
         let result_int = check_type("runs", &keys_int, &values_int, &sqltypes);
         assert!(result_int.is_ok());
         Ok(())
