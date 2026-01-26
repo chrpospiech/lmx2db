@@ -14,10 +14,9 @@
 
 use crate::cmdline::CliArgs;
 use crate::jobdata::create_sql::create_import_statement;
-use crate::jobdata::table_runs::find_file::extract_directory_path;
+use crate::jobdata::table_runs::find_file::find_and_read_settings_file;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
-use std::collections::HashMap;
 
 /// Checks whether there is a file args.settings_file in the same directory
 /// as the LMX summary file, and if so, reads additional settings from it.
@@ -49,37 +48,35 @@ pub fn import_into_settings_table(
     let key_list: Vec<String> = vec!["rid".to_string(), "k".to_string(), "value".to_string()];
     let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
     let mut query_list: Vec<String> = Vec::new();
-    let directory_path = extract_directory_path(file_name)?;
-    let settings_path = directory_path.join(&args.settings_file);
-    if settings_path.exists() {
-        if args.verbose || args.dry_run {
-            println!(
-                "Reading additional settings from file: {}",
-                settings_path.display()
-            );
-        }
-        let settings_content = std::fs::read_to_string(&settings_path)?;
-        let settings_yaml: HashMap<String, String> = serde_yaml::from_str(&settings_content)?;
-
-        for (key, value) in settings_yaml.iter() {
-            // Skip keys that are part of the 'runs' table
-            if sqltypes.contains_key("runs") && sqltypes["runs"].contains_key(key) {
-                continue;
+    
+    let settings_yaml = match find_and_read_settings_file(file_name, args) {
+        Ok(map) => map,
+        Err(e) => {
+            if args.verbose || args.dry_run {
+                println!("Ignoring: {}", e);
             }
-            value_list.push(vec![
-                serde_yaml::Value::String("@rid".to_string()),
-                serde_yaml::Value::String(key.clone()),
-                serde_yaml::Value::String(value.clone()),
-            ]);
+            return Ok(query_list);
         }
-        if !value_list.is_empty() {
-            query_list.push(create_import_statement(
-                "settings",
-                &key_list,
-                &value_list,
-                sqltypes,
-            )?);
+    };
+
+    for (key, value) in settings_yaml.iter() {
+        // Skip keys that are part of the 'runs' table
+        if sqltypes.contains_key("runs") && sqltypes["runs"].contains_key(key) {
+            continue;
         }
+        value_list.push(vec![
+            serde_yaml::Value::String("@rid".to_string()),
+            serde_yaml::Value::String(key.to_string()),
+            value.clone(),
+        ]);
+    }
+    if !value_list.is_empty() {
+        query_list.push(create_import_statement(
+            "settings",
+            &key_list,
+            &value_list,
+            sqltypes,
+        )?);
     }
     Ok(query_list)
 }
