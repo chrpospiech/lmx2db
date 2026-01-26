@@ -119,7 +119,8 @@ pub async fn import_into_runs_table(
     column_data.extend(current_toolchain);
     // Convert to new API format
     let keys: Vec<String> = column_data.iter().map(|(k, _)| k.clone()).collect();
-    let values: Vec<Vec<serde_yaml::Value>> = vec![column_data.iter().map(|(_, v)| v.clone()).collect()];
+    let values: Vec<Vec<serde_yaml::Value>> =
+        vec![column_data.iter().map(|(_, v)| v.clone()).collect()];
     let import_sql = create_import_statement("runs", &keys, &values, sqltypes)?;
     query_list.push(import_sql);
 

@@ -57,7 +57,9 @@ mod tests {
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let keys = vec!["nodes".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(10000000))]];
+        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
+            10000000,
+        ))]];
         let result = check_type("runs", &keys, &values, &sqltypes);
         assert!(result.is_ok());
         Ok(())

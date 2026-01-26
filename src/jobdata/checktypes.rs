@@ -36,7 +36,7 @@ pub fn check_type(
     let id_pattern = Regex::new(r"@\w+id").unwrap();
     let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
     let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
-    
+
     // Pre-compute expected types for all keys
     let mut expected_types: Vec<&String> = Vec::new();
     for key in keys.iter() {
@@ -50,7 +50,7 @@ pub fn check_type(
         }
         expected_types.push(expected_type.unwrap());
     }
-    
+
     for value_row in values {
         if value_row.len() != keys.len() {
             anyhow::bail!(
