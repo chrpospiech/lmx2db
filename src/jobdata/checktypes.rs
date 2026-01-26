@@ -36,6 +36,21 @@ pub fn check_type(
     let id_pattern = Regex::new(r"@\w+id").unwrap();
     let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
     let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
+    
+    // Pre-compute expected types for all keys
+    let mut expected_types: Vec<&String> = Vec::new();
+    for key in keys.iter() {
+        let expected_type = table_map.get(key);
+        if expected_type.is_none() {
+            anyhow::bail!(
+                "Column {} not found in type check map for table {}",
+                key,
+                table_name
+            );
+        }
+        expected_types.push(expected_type.unwrap());
+    }
+    
     for value_row in values {
         if value_row.len() != keys.len() {
             anyhow::bail!(
@@ -47,15 +62,7 @@ pub fn check_type(
         }
         for (i, key) in keys.iter().enumerate() {
             let value = &value_row[i];
-            let expected_type = table_map.get(key);
-            if expected_type.is_none() {
-                anyhow::bail!(
-                    "Column {} not found in type check map for table {}",
-                    key,
-                    table_name
-                );
-            }
-            let expected_type = expected_type.unwrap();
+            let expected_type = expected_types[i];
 
             // Check for int(11) type
             if expected_type.contains("int(") {
