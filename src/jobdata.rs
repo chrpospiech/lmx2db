@@ -82,7 +82,7 @@ pub async fn process_lmx_file(
     );
 
     // Generate SQL queries for the 'settings' table
-    query_list.extend(table_settings::import_into_settings_table(file_name, sqltypes, args).await?);
+    query_list.extend(table_settings::import_into_settings_table(file_name, sqltypes, args)?);
 
     // Process the collected SQL queries
     process_sql_queries(query_list, pool, args).await?;

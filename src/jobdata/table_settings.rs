@@ -40,7 +40,7 @@ use anyhow::Result;
 /// # Errors
 /// - Returns silent without error if no settings file is found
 /// - Returns an error if the settings file cannot be read or parsed
-pub async fn import_into_settings_table(
+pub fn import_into_settings_table(
     file_name: &str,
     sqltypes: &SqlTypeHashMap,
     args: &CliArgs,
