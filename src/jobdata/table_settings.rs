@@ -41,7 +41,7 @@ use std::collections::HashMap;
 /// # Errors
 /// - Returns silent without error if no settings file is found
 /// - Returns an error if the settings file cannot be read or parsed
-pub async fn import_into_settings_table(
+pub fn import_into_settings_table(
     file_name: &str,
     sqltypes: &SqlTypeHashMap,
     args: &CliArgs,
@@ -84,3 +84,6 @@ pub async fn import_into_settings_table(
     }
     Ok(query_list)
 }
+
+#[cfg(test)]
+pub(crate) mod test_import_settings;
