@@ -69,8 +69,8 @@ pub async fn import_into_settings_table(
             }
             value_list.push(vec![
                 serde_yaml::Value::String("@rid".to_string()),
-                serde_yaml::Value::String(key.to_string()),
-                serde_yaml::Value::String(value.to_string()),
+                serde_yaml::Value::String(key.clone()),
+                serde_yaml::Value::String(value.clone()),
             ]);
         }
         if !value_list.is_empty() {
