@@ -39,9 +39,9 @@ use std::collections::HashMap;
 /// A vector of SQL insert statements for the 'settings' table
 ///
 /// # Errors
-/// - Returns an empty Vec if the settings file does not exist.
-/// - Returns an error if the settings file exists but cannot be read or contains invalid YAML.
-pub async fn import_into_settings_table(
+/// - Returns silent without error if no settings file is found
+/// - Returns an error if the settings file cannot be read or parsed
+pub fn import_into_settings_table(
     file_name: &str,
     sqltypes: &SqlTypeHashMap,
     args: &CliArgs,
