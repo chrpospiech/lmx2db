@@ -50,16 +50,15 @@ pub async fn import_into_settings_table(
     let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
     let mut query_list: Vec<String> = Vec::new();
     let directory_path = extract_directory_path(file_name)?;
-    let settings_file_path = format!("{}/{}", directory_path.display(), args.settings_file);
-    let settings_path = std::path::Path::new(&settings_file_path);
+    let settings_path = directory_path.join(&args.settings_file);
     if settings_path.exists() {
         if args.verbose || args.dry_run {
             println!(
                 "Reading additional settings from file: {}",
-                settings_file_path
+                settings_path.display()
             );
         }
-        let settings_content = std::fs::read_to_string(settings_path)?;
+        let settings_content = std::fs::read_to_string(&settings_path)?;
         let settings_yaml: HashMap<String, String> = serde_yaml::from_str(&settings_content)?;
 
         for (key, value) in settings_yaml.iter() {
