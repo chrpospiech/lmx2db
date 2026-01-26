@@ -9,3 +9,4 @@ sqltypes.yml
 pyproject.toml
 uv.lock
 
+check_type
