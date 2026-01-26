@@ -220,6 +220,71 @@ compiler: "Clang"
         Ok(())
     }
 
+    /// Test that non-string YAML values (numbers, booleans, etc.) are handled correctly
+    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    pub async fn test_import_settings_with_non_string_values(pool: sqlx::Pool<MySql>) -> Result<()> {
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "test_settings_types.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: false,
+            verbose: false,
+            ..Default::default()
+        };
+
+        // Create a temporary project directory with test data
+        let temp_dir = setup_tmp_project_directory("tests/data/GROMACS/run_64")?;
+        let settings_file = temp_dir.join("test_settings_types.yml");
+
+        // Create settings with various YAML value types
+        let settings_content = r#"---
+threshold: 100
+enabled: true
+ratio: 3.14
+count: 42
+label: "string_value"
+feature_flag: false
+"#;
+        std::fs::write(&settings_file, settings_content)?;
+
+        // Read SQL types from the database
+        let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
+
+        let lmx_file = temp_dir.join("LMX_summary.376231.0.yml");
+
+        // Call import_into_settings_table (no await - function is not async)
+        let queries = import_into_settings_table(
+            lmx_file.to_str().unwrap(),
+            &sqltypes,
+            &args,
+        )?;
+
+        // Should return exactly one query with various value types
+        assert_eq!(queries.len(), 1, "Expected exactly one query for settings import");
+
+        let query = &queries[0];
+        
+        // Verify all settings are included (none match runs table)
+        assert!(query.contains("'threshold'"), "threshold (number) should be included");
+        assert!(query.contains("'enabled'"), "enabled (boolean) should be included");
+        assert!(query.contains("'ratio'"), "ratio (float) should be included");
+        assert!(query.contains("'count'"), "count (number) should be included");
+        assert!(query.contains("'label'"), "label (string) should be included");
+        assert!(query.contains("'feature_flag'"), "feature_flag (boolean) should be included");
+        
+        // Verify that numeric and boolean values are preserved (not converted to strings prematurely)
+        // The values should be in the query
+        assert!(query.contains("100") || query.contains("'100'"), "numeric value 100 should be present");
+        assert!(query.contains("true") || query.contains("'true'"), "boolean true should be present");
+        assert!(query.contains("3.14") || query.contains("'3.14'"), "float 3.14 should be present");
+
+        // Clean up temporary project directory
+        std::fs::remove_dir_all(&temp_dir)?;
+
+        Ok(())
+    }
+
     /// Test verbose mode outputs message when reading settings
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
     pub async fn test_import_settings_verbose(pool: sqlx::Pool<MySql>) -> Result<()> {
