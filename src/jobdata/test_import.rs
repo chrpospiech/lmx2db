@@ -370,8 +370,8 @@ perf_value: 319.366
             // Should return empty vector since all keys are filtered
             assert!(queries.is_empty(), "Expected empty query list when all settings keys match runs table columns");
 
-            // Clean up
-            std::fs::remove_file(&settings_file).ok();
+            // Clean up temporary test file
+            let _ = std::fs::remove_file(&settings_file);
 
             Ok(())
         }
@@ -433,8 +433,8 @@ compiler: "Clang"
             assert!(query.contains("'custom_setting2'"), "custom_setting2 should be included");
             assert!(query.contains("'unique_config'"), "unique_config should be included");
 
-            // Clean up
-            std::fs::remove_file(&settings_file).ok();
+            // Clean up temporary test file
+            let _ = std::fs::remove_file(&settings_file);
 
             Ok(())
         }
