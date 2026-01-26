@@ -31,11 +31,9 @@ mod tests {
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let long_string = "a".repeat(40); // Assuming max length is less than 32
-        let tuple = [(
-            "compiler".to_string(),
-            serde_yaml::Value::String(long_string),
-        )];
-        let result = check_type("runs", &tuple, &sqltypes);
+        let keys = vec!["compiler".to_string()];
+        let values = vec![vec![serde_yaml::Value::String(long_string)]];
+        let result = check_type("runs", &keys, &values, &sqltypes);
         assert!(result.is_err());
         assert_eq!(
             result.unwrap_err().to_string(),
@@ -58,11 +56,9 @@ mod tests {
             ..Default::default()
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
-        let tuple = [(
-            "nodes".to_string(),
-            serde_yaml::Value::Number(serde_yaml::Number::from(10000000)),
-        )];
-        let result = check_type("runs", &tuple, &sqltypes);
+        let keys = vec!["nodes".to_string()];
+        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(10000000))]];
+        let result = check_type("runs", &keys, &values, &sqltypes);
         assert!(result.is_ok());
         Ok(())
     }
@@ -78,11 +74,9 @@ mod tests {
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let long_binary = "a".repeat(1030); // Assuming max length is less than 4096
-        let tuple = [(
-            "affinity".to_string(),
-            serde_yaml::Value::String(long_binary),
-        )];
-        let result = check_type("tasks", &tuple, &sqltypes);
+        let keys = vec!["affinity".to_string()];
+        let values = vec![vec![serde_yaml::Value::String(long_binary)]];
+        let result = check_type("tasks", &keys, &values, &sqltypes);
         assert!(result.is_err());
         assert_eq!(
             result.unwrap_err().to_string(),
@@ -106,8 +100,9 @@ mod tests {
             ..Default::default()
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
-        let tuple = [("elapsed".to_string(), serde_yaml::Value::Null)];
-        let result = check_type("runs", &tuple, &sqltypes);
+        let keys = vec!["elapsed".to_string()];
+        let values = vec![vec![serde_yaml::Value::Null]];
+        let result = check_type("runs", &keys, &values, &sqltypes);
         assert!(result.is_err());
         let expected_msg =
             "Column elapsed in table runs expects float, but value cannot be cast to float";

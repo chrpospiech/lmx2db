@@ -117,7 +117,10 @@ pub async fn import_into_runs_table(
     // So we need to provide explicit values, even if they are "n/a".
     let current_toolchain = import_toolchain_data(file_name, lmx_summary, args);
     column_data.extend(current_toolchain);
-    let import_sql = create_import_statement("runs", &column_data, sqltypes)?;
+    // Convert to new API format
+    let keys: Vec<String> = column_data.iter().map(|(k, _)| k.clone()).collect();
+    let values: Vec<Vec<serde_yaml::Value>> = vec![column_data.iter().map(|(_, v)| v.clone()).collect()];
+    let import_sql = create_import_statement("runs", &keys, &values, sqltypes)?;
     query_list.push(import_sql);
 
     // Set @rid for further use
