@@ -100,4 +100,36 @@ mod tests {
         assert!(result_int.is_ok());
         Ok(())
     }
+
+    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    pub async fn test_check_type_multi_row(pool: Pool<MySql>) -> Result<()> {
+        let args = CliArgs {
+            verbose: false,
+            dry_run: false,
+            create_sqltypes: false,
+            db_url: String::new(),
+            ..Default::default()
+        };
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
+
+        // Test for multiple rows with valid data
+        let keys = vec!["clid".to_string(), "compiler".to_string()];
+        let values = vec![
+            vec![
+                serde_yaml::Value::String("@clid".to_string()),
+                serde_yaml::Value::String("gcc".to_string()),
+            ],
+            vec![
+                serde_yaml::Value::Number(serde_yaml::Number::from(12345)),
+                serde_yaml::Value::String("icc".to_string()),
+            ],
+            vec![
+                serde_yaml::Value::String("@clid2".to_string()),
+                serde_yaml::Value::String("clang".to_string()),
+            ],
+        ];
+        let result = check_type("runs", &keys, &values, &sqltypes);
+        assert!(result.is_ok());
+        Ok(())
+    }
 }

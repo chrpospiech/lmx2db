@@ -51,4 +51,48 @@ mod tests {
         );
         Ok(())
     }
+
+    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    async fn test_create_import_statement_multi_row(pool: Pool<MySql>) -> Result<()> {
+        let args = CliArgs {
+            verbose: false,
+            dry_run: false,
+            create_sqltypes: false,
+            db_url: String::new(),
+            ..Default::default()
+        };
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args)
+            .await
+            .expect("Failed to read sqltypes");
+
+        let keys = vec![
+            "rid".to_string(),
+            "compiler".to_string(),
+            "nodes".to_string(),
+        ];
+        let values = vec![
+            vec![
+                serde_yaml::Value::String("@rid".to_string()),
+                serde_yaml::Value::String("gcc".to_string()),
+                serde_yaml::Value::Number(serde_yaml::Number::from(16)),
+            ],
+            vec![
+                serde_yaml::Value::String("@rid2".to_string()),
+                serde_yaml::Value::String("icc".to_string()),
+                serde_yaml::Value::Number(serde_yaml::Number::from(32)),
+            ],
+            vec![
+                serde_yaml::Value::String("@rid3".to_string()),
+                serde_yaml::Value::String("clang".to_string()),
+                serde_yaml::Value::Number(serde_yaml::Number::from(64)),
+            ],
+        ];
+
+        let sql = create_import_statement("runs", &keys, &values, &sqltypes)?;
+        assert_eq!(
+            sql,
+            "INSERT INTO runs (rid, compiler, nodes) VALUES\n(@rid, 'gcc', 16),\n(@rid2, 'icc', 32),\n(@rid3, 'clang', 64);"
+        );
+        Ok(())
+    }
 }
