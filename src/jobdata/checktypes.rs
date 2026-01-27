@@ -66,7 +66,7 @@ pub fn get_types(
 /// # Arguments
 /// * `table_name` - The name of the table to check against
 /// * `keys` - A slice of column names corresponding to the values
-/// * `types` - A slice of expected SQL types expected for each provided value row
+/// * `types` - A slice of expected SQL types for each provided value row
 /// * `values` - A slice of value rows to validate
 ///
 /// `table_name` and `keys` are only needed for error reporting.
