@@ -26,7 +26,7 @@ mod tests {
             dry_run: false,
             ..Default::default()
         };
-        let result = find_and_read_settings_file("some_file_name", &args);
+        let result = find_and_read_settings_file("some_file_name", &args, false);
         assert!(result.is_err());
         assert!(result
             .err()
@@ -54,6 +54,7 @@ mod tests {
         let result = find_and_read_settings_file(
             settings_file_path.to_str().unwrap().to_string().as_str(),
             &args,
+            false,
         );
         assert!(result.is_err());
         assert!(result
@@ -93,6 +94,7 @@ key3:
         let result = find_and_read_settings_file(
             settings_file_path.to_str().unwrap().to_string().as_str(),
             &args,
+            false,
         );
         assert!(result.is_ok());
         let settings_map = result.unwrap();

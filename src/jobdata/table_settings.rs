@@ -54,7 +54,7 @@ pub fn import_into_settings_table(
         return Ok(query_list);
     }
 
-    let settings_yaml = match find_and_read_settings_file(file_name, args) {
+    let settings_yaml = match find_and_read_settings_file(file_name, args, false) {
         Ok(map) => map,
         Err(e) => {
             if args.verbose || args.dry_run {
