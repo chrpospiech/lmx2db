@@ -21,7 +21,18 @@ pub(crate) mod elementary;
 #[cfg(test)]
 pub(crate) mod wrong_values;
 
-#[allow(dead_code)]
+/// Retrieves the expected SQL types for the specified keys in a given table.
+///
+/// # Arguments
+/// * `table_name` - The name of the table to look up
+/// * `keys` - A slice of column names for which to retrieve types
+/// * `sqltypes` - A reference to the SQL type mapping
+///
+/// Returns a vector of expected SQL types corresponding to the provided keys.
+///
+/// # Errors
+/// Returns an error if the table or any of the keys are not found in the type mapping
+///
 pub fn get_types(
     table_name: &str,
     keys: &[String],
@@ -49,7 +60,21 @@ pub fn get_types(
     Ok(expected_types)
 }
 
-#[allow(dead_code)]
+/// Checks whether the provided values conform to the expected SQL types
+/// for the specified keys in a given table.
+///
+/// # Arguments
+/// * `table_name` - The name of the table to check against
+/// * `keys` - A slice of column names corresponding to the values
+/// * `types` - A slice of expected SQL types for each provided value row
+/// * `values` - A slice of value rows to validate
+///
+/// `table_name` and `keys` are only needed for error reporting.
+/// They do not influence the type checking logic.
+///
+/// # Errors
+/// Returns an error if any value does not conform to its expected SQL type
+///
 pub fn check_types(
     table_name: &str,
     keys: &[String],
@@ -62,29 +87,28 @@ pub fn check_types(
     let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
 
     for value_row in values {
-        if value_row.len() != keys.len() {
+        if value_row.len() != types.len() {
             anyhow::bail!(
                 "Row length mismatch in table {}: expected {} columns, got {}",
                 table_name,
-                keys.len(),
+                types.len(),
                 value_row.len()
             );
         }
-        for (i, key) in keys.iter().enumerate() {
+        for (i, expected_type) in types.iter().enumerate() {
             let value = &value_row[i];
-            let expected_type = &types[i];
 
             // Check for int(11) type
             if expected_type.contains("int(") {
                 // Check if value matches @\w+id pattern
-                let value_str = value.as_str().unwrap_or("");
+                let value_str = try_cast_into_string(value).unwrap_or_default();
 
-                if !id_pattern.is_match(value_str) {
+                if !id_pattern.is_match(&value_str) {
                     // Try to cast to i64
                     if value.as_i64().is_none() {
                         anyhow::bail!(
                             "Column {} in table {} expects int(11), but value '{}' is neither a reference (@\\w+id) nor a valid integer",
-                            key,
+                            keys[i],
                             table_name,
                             value_str
                         );
@@ -94,7 +118,7 @@ pub fn check_types(
                 if value.as_f64().is_none() {
                     anyhow::bail!(
                         "Column {} in table {} expects {}, but value cannot be cast to float",
-                        key,
+                        keys[i],
                         table_name,
                         expected_type
                     );
@@ -102,11 +126,11 @@ pub fn check_types(
             } else if let Some(caps) = varbinary_pattern.captures(expected_type) {
                 let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
 
-                if let Some(value_str) = value.as_str() {
+                if let Ok(value_str) = try_cast_into_string(value) {
                     if !value_str.chars().all(|c| "0123456789abcdef".contains(c)) {
                         anyhow::bail!(
                             "Column {} in table {} expects {}, but string value '{}' contains invalid hex characters",
-                            key,
+                            keys[i],
                             table_name,
                             expected_type,
                             value_str
@@ -115,7 +139,7 @@ pub fn check_types(
                     if value_str.len() * 4 >= max_length {
                         anyhow::bail!(
                             "Column {} in table {} expects {}, but string value '{}' has length {} * 4 = {} >= {}",
-                            key,
+                            keys[i],
                             table_name,
                             expected_type,
                             value_str,
@@ -127,7 +151,7 @@ pub fn check_types(
                 } else {
                     anyhow::bail!(
                         "Column {} in table {} expects {}, but value cannot be cast to str",
-                        key,
+                        keys[i],
                         table_name,
                         expected_type
                     );
@@ -135,11 +159,11 @@ pub fn check_types(
             } else if let Some(caps) = varchar_pattern.captures(expected_type) {
                 let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
 
-                if let Some(value_str) = value.as_str() {
+                if let Ok(value_str) = try_cast_into_string(value) {
                     if value_str.len() >= max_length {
                         anyhow::bail!(
                             "Column {} in table {} expects {}, but string value '{}' has length {} >= {}",
-                            key,
+                            keys[i],
                             table_name,
                             expected_type,
                             value_str,
@@ -150,7 +174,7 @@ pub fn check_types(
                 } else {
                     anyhow::bail!(
                         "Column {} in table {} expects {}, but value cannot be cast to str",
-                        key,
+                        keys[i],
                         table_name,
                         expected_type
                     );
@@ -161,132 +185,24 @@ pub fn check_types(
     Ok(())
 }
 
-pub fn check_type(
-    table_name: &str,
-    keys: &[String],
-    values: &[Vec<serde_yaml::Value>],
-    sqltypes: &SqlTypeHashMap,
-) -> Result<()> {
-    let table_map = sqltypes.get(table_name);
-    if table_map.is_none() {
-        anyhow::bail!("Table {} not found in type check map", table_name);
+/// Attempts to convert a YAML value into a string representation.
+///
+/// # Arguments
+/// * `value` - The YAML value to cast into a string.
+///
+/// # Returns
+/// Returns the string representation of the input value if it is a supported
+/// scalar type (string, number, or boolean).
+///
+/// # Errors
+/// Returns an error if the value is `Null` or of an unsupported type that
+/// cannot be safely converted into a string.
+pub fn try_cast_into_string(value: &serde_yaml::Value) -> Result<String> {
+    match value {
+        serde_yaml::Value::String(s) => Ok(s.clone()),
+        serde_yaml::Value::Number(n) => Ok(n.to_string()),
+        serde_yaml::Value::Bool(b) => Ok(if *b { "1".to_string() } else { "0".to_string() }),
+        serde_yaml::Value::Null => anyhow::bail!("Cannot cast null value to string"),
+        _ => anyhow::bail!("Cannot cast value to string: unsupported type"),
     }
-    let table_map = table_map.unwrap();
-    // The following regexes will be used multiple times
-    let id_pattern = Regex::new(r"@\w+id").unwrap();
-    let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
-    let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
-
-    // Pre-compute expected types for all keys
-    let mut expected_types: Vec<&String> = Vec::new();
-    for key in keys.iter() {
-        let expected_type = table_map.get(key);
-        if expected_type.is_none() {
-            anyhow::bail!(
-                "Column {} not found in type check map for table {}",
-                key,
-                table_name
-            );
-        }
-        expected_types.push(expected_type.unwrap());
-    }
-
-    for value_row in values {
-        if value_row.len() != keys.len() {
-            anyhow::bail!(
-                "Row length mismatch in table {}: expected {} columns, got {}",
-                table_name,
-                keys.len(),
-                value_row.len()
-            );
-        }
-        for (i, key) in keys.iter().enumerate() {
-            let value = &value_row[i];
-            let expected_type = expected_types[i];
-
-            // Check for int(11) type
-            if expected_type.contains("int(") {
-                // Check if value matches @\w+id pattern
-                let value_str = value.as_str().unwrap_or("");
-
-                if !id_pattern.is_match(value_str) {
-                    // Try to cast to i64
-                    if value.as_i64().is_none() {
-                        anyhow::bail!(
-                            "Column {} in table {} expects int(11), but value '{}' is neither a reference (@\\w+id) nor a valid integer",
-                            key,
-                            table_name,
-                            value_str
-                        );
-                    }
-                }
-            } else if expected_type.contains("float") {
-                if value.as_f64().is_none() {
-                    anyhow::bail!(
-                        "Column {} in table {} expects {}, but value cannot be cast to float",
-                        key,
-                        table_name,
-                        expected_type
-                    );
-                }
-            } else if let Some(caps) = varbinary_pattern.captures(expected_type) {
-                let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
-
-                if let Some(value_str) = value.as_str() {
-                    if !value_str.chars().all(|c| "0123456789abcdef".contains(c)) {
-                        anyhow::bail!(
-                            "Column {} in table {} expects {}, but string value '{}' contains invalid hex characters",
-                            key,
-                            table_name,
-                            expected_type,
-                            value_str
-                        );
-                    }
-                    if value_str.len() * 4 >= max_length {
-                        anyhow::bail!(
-                            "Column {} in table {} expects {}, but string value '{}' has length {} * 4 = {} >= {}",
-                            key,
-                            table_name,
-                            expected_type,
-                            value_str,
-                            value_str.len(),
-                            value_str.len() * 4,
-                            max_length
-                        );
-                    }
-                } else {
-                    anyhow::bail!(
-                        "Column {} in table {} expects {}, but value cannot be cast to str",
-                        key,
-                        table_name,
-                        expected_type
-                    );
-                }
-            } else if let Some(caps) = varchar_pattern.captures(expected_type) {
-                let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
-
-                if let Some(value_str) = value.as_str() {
-                    if value_str.len() >= max_length {
-                        anyhow::bail!(
-                            "Column {} in table {} expects {}, but string value '{}' has length {} >= {}",
-                            key,
-                            table_name,
-                            expected_type,
-                            value_str,
-                            value_str.len(),
-                            max_length
-                        );
-                    }
-                } else {
-                    anyhow::bail!(
-                        "Column {} in table {} expects {}, but value cannot be cast to str",
-                        key,
-                        table_name,
-                        expected_type
-                    );
-                }
-            }
-        }
-    }
-    Ok(())
 }

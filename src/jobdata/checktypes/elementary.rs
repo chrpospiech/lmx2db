@@ -15,7 +15,7 @@
 #[cfg(test)]
 mod tests {
     use crate::cmdline::CliArgs;
-    use crate::jobdata::checktypes::check_type;
+    use crate::jobdata::checktypes::{check_types, get_types};
     use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use anyhow::Result;
     use sqlx::{MySql, Pool};
@@ -32,10 +32,9 @@ mod tests {
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
 
         let keys = vec!["non_existing_key".to_string()];
-        let values = vec![vec![serde_yaml::Value::Null]];
 
         // Test for non-existing table
-        let result = check_type("non_existing_table", &keys, &values, &sqltypes);
+        let result = get_types("non_existing_table", &keys, &sqltypes);
         assert!(result.is_err());
         assert_eq!(
             result.unwrap_err().to_string(),
@@ -43,7 +42,7 @@ mod tests {
         );
 
         // Test for non-existing key in existing table
-        let result = check_type("runs", &keys, &values, &sqltypes);
+        let result = get_types("runs", &keys, &sqltypes);
         assert!(result.is_err());
         assert_eq!(
             result.unwrap_err().to_string(),
@@ -67,7 +66,8 @@ mod tests {
         let values = vec![vec![serde_yaml::Value::String("not_an_id".to_string())]];
 
         // Test for foreign key that is not an @\w+id reference and not an integer
-        let result = check_type("runs", &keys, &values, &sqltypes);
+        let types = get_types("runs", &keys, &sqltypes)?;
+        let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_err());
         assert_eq!(
             result.unwrap_err().to_string(),
@@ -90,14 +90,17 @@ mod tests {
         // Test for foreign key that is a valid @\w+id reference
         let keys_ref = vec!["clid".to_string()];
         let values_ref = vec![vec![serde_yaml::Value::String("@clid".to_string())]];
-        let result_ref = check_type("runs", &keys_ref, &values_ref, &sqltypes);
+        let types_ref = get_types("runs", &keys_ref, &sqltypes)?;
+        let result_ref = check_types("runs", &keys_ref, &types_ref, &values_ref);
         assert!(result_ref.is_ok());
 
         // Test for foreign key that is a valid integer
         let keys_int = vec!["clid".to_string()];
-        #[rustfmt::skip]
-        let values_int = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(12345))]];
-        let result_int = check_type("runs", &keys_int, &values_int, &sqltypes);
+        let values_int = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
+            12345,
+        ))]];
+        let types_int = get_types("runs", &keys_int, &sqltypes)?;
+        let result_int = check_types("runs", &keys_int, &types_int, &values_int);
         assert!(result_int.is_ok());
         Ok(())
     }
@@ -129,7 +132,8 @@ mod tests {
                 serde_yaml::Value::String("clang".to_string()),
             ],
         ];
-        let result = check_type("runs", &keys, &values, &sqltypes);
+        let types = get_types("runs", &keys, &sqltypes)?;
+        let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_ok());
         Ok(())
     }

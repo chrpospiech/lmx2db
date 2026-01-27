@@ -358,7 +358,7 @@ feature_flag: false
             "numeric value 100 should be present as string literal"
         );
         assert!(
-            query.contains("'true'"),
+            query.contains("'1'"),
             "boolean true should be present as string literal"
         );
         assert!(
