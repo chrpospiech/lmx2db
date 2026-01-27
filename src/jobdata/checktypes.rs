@@ -185,6 +185,18 @@ pub fn check_types(
     Ok(())
 }
 
+/// Attempts to convert a YAML value into a string representation.
+///
+/// # Arguments
+/// * `value` - The YAML value to cast into a string.
+///
+/// # Returns
+/// Returns the string representation of the input value if it is a supported
+/// scalar type (string, number, or boolean).
+///
+/// # Errors
+/// Returns an error if the value is `Null` or of an unsupported type that
+/// cannot be safely converted into a string.
 pub fn try_cast_into_string(value: &serde_yaml::Value) -> Result<String> {
     match value {
         serde_yaml::Value::String(s) => Ok(s.clone()),
