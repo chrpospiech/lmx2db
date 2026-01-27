@@ -51,7 +51,7 @@ mod tests {
         let sql = create_update_statement("runs", &tuple, "rid = @rid", &sqltypes)?;
         assert_eq!(
             sql,
-            "UPDATE runs SET rid = @rid, compiler = 'gcc-10', nodes = 32 WHERE rid = @rid;"
+            "UPDATE runs SET rid = @rid,\ncompiler = 'gcc-10',\nnodes = 32 WHERE rid = @rid;"
         );
         Ok(())
     }

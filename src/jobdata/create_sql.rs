@@ -39,7 +39,9 @@ pub fn create_import_statement(
                 .enumerate()
                 .map(|(i, v)| {
                     let v_string = try_cast_into_string(v)?;
-                    let v_final = if types[i].contains("varbinary") || types[i].contains("varchar") || types[i].contains("binary")
+                    let v_final = if types[i].contains("varbinary")
+                        || types[i].contains("varchar")
+                        || types[i].contains("binary")
                     {
                         format!("'{}'", v_string.replace("'", "''"))
                     } else {
@@ -78,7 +80,10 @@ pub fn create_update_statement(
         .enumerate()
         .map(|(i, (k, v))| {
             let v_string = try_cast_into_string(v)?;
-            let v_final = if types[i].contains("varbinary") || types[i].contains("varchar") || types[i].contains("binary") {
+            let v_final = if types[i].contains("varbinary")
+                || types[i].contains("varchar")
+                || types[i].contains("binary")
+            {
                 format!("'{}'", v_string.replace("'", "''"))
             } else {
                 v_string
@@ -90,7 +95,7 @@ pub fn create_update_statement(
     let sql = format!(
         "UPDATE {} SET {} WHERE {};",
         table_name,
-        set_clauses.join(", "),
+        set_clauses.join(",\n"),
         where_clause
     );
     Ok(sql)
