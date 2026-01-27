@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::jobdata::checktypes::check_type;
+use crate::jobdata::checktypes::{check_types, get_types};
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
 use regex::Regex;
@@ -29,7 +29,8 @@ pub fn create_import_statement(
     sqltypes: &SqlTypeHashMap,
 ) -> Result<String> {
     // First, check types
-    check_type(table_name, keys, values, sqltypes)?;
+    let types: Vec<String> = get_types(table_name, keys, sqltypes)?;
+    check_types(table_name, keys, &types, values)?;
 
     // The following regex will be used multiple times
     let id_pattern = Regex::new(r"@\w+id").unwrap();
@@ -81,7 +82,8 @@ pub fn create_update_statement(
     // First, check types - convert to new API format
     let keys: Vec<String> = column.iter().map(|(k, _)| k.clone()).collect();
     let values: Vec<Vec<serde_yaml::Value>> = vec![column.iter().map(|(_, v)| v.clone()).collect()];
-    check_type(table_name, &keys, &values, sqltypes)?;
+    let types: Vec<String> = get_types(table_name, &keys, sqltypes)?;
+    check_types(table_name, &keys, &types, &values)?;
 
     // The following regex will be used multiple times
     let id_pattern = Regex::new(r"@\w+id").unwrap();

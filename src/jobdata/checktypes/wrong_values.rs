@@ -15,7 +15,7 @@
 #[cfg(test)]
 mod tests {
     use crate::cmdline::CliArgs;
-    use crate::jobdata::checktypes::check_type;
+    use crate::jobdata::checktypes::{check_types, get_types};
     use crate::sqltypes::{read_sqltypes, SqlTypeHashMap};
     use anyhow::Result;
     use sqlx::{MySql, Pool};
@@ -33,7 +33,8 @@ mod tests {
         let long_string = "a".repeat(40); // Assuming max length is less than 32
         let keys = vec!["compiler".to_string()];
         let values = vec![vec![serde_yaml::Value::String(long_string)]];
-        let result = check_type("runs", &keys, &values, &sqltypes);
+        let types = get_types("runs", &keys, &sqltypes)?;
+        let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_err());
         assert_eq!(
             result.unwrap_err().to_string(),
@@ -60,7 +61,8 @@ mod tests {
         let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
             10000000,
         ))]];
-        let result = check_type("runs", &keys, &values, &sqltypes);
+        let types = get_types("runs", &keys, &sqltypes)?;
+        let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_ok());
         Ok(())
     }
@@ -78,7 +80,8 @@ mod tests {
         let long_binary = "a".repeat(1030); // Assuming max length is less than 4096
         let keys = vec!["affinity".to_string()];
         let values = vec![vec![serde_yaml::Value::String(long_binary)]];
-        let result = check_type("tasks", &keys, &values, &sqltypes);
+        let types = get_types("tasks", &keys, &sqltypes)?;
+        let result = check_types("tasks", &keys, &types, &values);
         assert!(result.is_err());
         assert_eq!(
             result.unwrap_err().to_string(),
@@ -104,7 +107,8 @@ mod tests {
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let keys = vec!["elapsed".to_string()];
         let values = vec![vec![serde_yaml::Value::Null]];
-        let result = check_type("runs", &keys, &values, &sqltypes);
+        let types = get_types("runs", &keys, &sqltypes)?;
+        let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_err());
         let expected_msg =
             "Column elapsed in table runs expects float, but value cannot be cast to float";
