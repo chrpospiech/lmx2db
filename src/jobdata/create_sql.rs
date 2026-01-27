@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::jobdata::checktypes::{check_types, get_types};
+use crate::jobdata::checktypes::{check_types, get_types, try_cast_into_string};
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
-use regex::Regex;
 
 #[cfg(test)]
 pub(crate) mod test_import;
@@ -32,37 +31,26 @@ pub fn create_import_statement(
     let types: Vec<String> = get_types(table_name, keys, sqltypes)?;
     check_types(table_name, keys, &types, values)?;
 
-    // The following regex will be used multiple times
-    let id_pattern = Regex::new(r"@\w+id").unwrap();
-
     let value_rows: Vec<String> = values
         .iter()
         .map(|value_row| {
             let row_values: Vec<String> = value_row
                 .iter()
-                .map(|v| match v {
-                    serde_yaml::Value::String(s) => {
-                        if id_pattern.is_match(s) {
-                            s.clone()
-                        } else {
-                            format!("'{}'", s.replace("'", "''"))
-                        }
-                    }
-                    serde_yaml::Value::Number(n) => n.to_string(),
-                    serde_yaml::Value::Bool(b) => {
-                        if *b {
-                            "1".to_string()
-                        } else {
-                            "0".to_string()
-                        }
-                    }
-                    serde_yaml::Value::Null => "NULL".to_string(),
-                    _ => "'[UNSUPPORTED TYPE]'".to_string(),
+                .enumerate()
+                .map(|(i, v)| {
+                    let v_string = try_cast_into_string(v)?;
+                    let v_final = if types[i].contains("varbinary") || types[i].contains("varchar")
+                    {
+                        format!("'{}'", v_string.replace("'", "''"))
+                    } else {
+                        v_string
+                    };
+                    Ok(v_final)
                 })
-                .collect();
-            format!("({})", row_values.join(", "))
+                .collect::<Result<Vec<String>>>()?;
+            Ok(format!("({})", row_values.join(", ")))
         })
-        .collect();
+        .collect::<Result<Vec<String>>>()?;
 
     let sql = format!(
         "INSERT INTO {} ({}) VALUES\n{};",
@@ -85,34 +73,19 @@ pub fn create_update_statement(
     let types: Vec<String> = get_types(table_name, &keys, sqltypes)?;
     check_types(table_name, &keys, &types, &values)?;
 
-    // The following regex will be used multiple times
-    let id_pattern = Regex::new(r"@\w+id").unwrap();
-
     let set_clauses: Vec<String> = column
         .iter()
-        .map(|(k, v)| {
-            let value_str = match v {
-                serde_yaml::Value::String(s) => {
-                    if id_pattern.is_match(s) {
-                        s.clone()
-                    } else {
-                        format!("'{}'", s.replace("'", "''"))
-                    }
-                }
-                serde_yaml::Value::Number(n) => n.to_string(),
-                serde_yaml::Value::Bool(b) => {
-                    if *b {
-                        "1".to_string()
-                    } else {
-                        "0".to_string()
-                    }
-                }
-                serde_yaml::Value::Null => "NULL".to_string(),
-                _ => "'[UNSUPPORTED TYPE]'".to_string(),
+        .enumerate()
+        .map(|(i, (k, v))| {
+            let v_string = try_cast_into_string(v)?;
+            let v_final = if types[i].contains("varbinary") || types[i].contains("varchar") {
+                format!("'{}'", v_string.replace("'", "''"))
+            } else {
+                v_string
             };
-            format!("{} = {}", k, value_str)
+            Ok(format!("{} = {}", k, v_final))
         })
-        .collect();
+        .collect::<Result<Vec<String>>>()?;
 
     let sql = format!(
         "UPDATE {} SET {} WHERE {};",

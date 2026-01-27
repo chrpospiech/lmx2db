@@ -101,7 +101,7 @@ pub fn check_types(
             // Check for int(11) type
             if expected_type.contains("int(") {
                 // Check if value matches @\w+id pattern
-                let value_str = try_cast_into_string(value.clone()).unwrap_or_default();
+                let value_str = try_cast_into_string(value).unwrap_or_default();
 
                 if !id_pattern.is_match(&value_str) {
                     // Try to cast to i64
@@ -126,7 +126,7 @@ pub fn check_types(
             } else if let Some(caps) = varbinary_pattern.captures(expected_type) {
                 let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
 
-                if let Ok(value_str) = try_cast_into_string(value.clone()) {
+                if let Ok(value_str) = try_cast_into_string(value) {
                     if !value_str.chars().all(|c| "0123456789abcdef".contains(c)) {
                         anyhow::bail!(
                             "Column {} in table {} expects {}, but string value '{}' contains invalid hex characters",
@@ -159,7 +159,7 @@ pub fn check_types(
             } else if let Some(caps) = varchar_pattern.captures(expected_type) {
                 let max_length: usize = caps.get(1).unwrap().as_str().parse().unwrap();
 
-                if let Ok(value_str) = try_cast_into_string(value.clone()) {
+                if let Ok(value_str) = try_cast_into_string(value) {
                     if value_str.len() >= max_length {
                         anyhow::bail!(
                             "Column {} in table {} expects {}, but string value '{}' has length {} >= {}",
@@ -185,11 +185,11 @@ pub fn check_types(
     Ok(())
 }
 
-fn try_cast_into_string(value: serde_yaml::Value) -> Result<String> {
+pub fn try_cast_into_string(value: &serde_yaml::Value) -> Result<String> {
     match value {
-        serde_yaml::Value::String(s) => Ok(s),
+        serde_yaml::Value::String(s) => Ok(s.clone()),
         serde_yaml::Value::Number(n) => Ok(n.to_string()),
-        serde_yaml::Value::Bool(b) => Ok(b.to_string()),
+        serde_yaml::Value::Bool(b) => Ok(if *b { "1".to_string() } else { "0".to_string() }),
         serde_yaml::Value::Null => anyhow::bail!("Cannot cast null value to string"),
         _ => anyhow::bail!("Cannot cast value to string: unsupported type"),
     }
