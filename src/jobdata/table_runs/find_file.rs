@@ -125,12 +125,12 @@ pub fn find_module_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
 /// an appropriate io::Error is returned.
 /// The `silent` parameter can be used to suppress verbose output even when `--verbose` or `--dry-run` are enabled.
 ///
-/// #Arguments
+/// # Arguments
 /// * `file_name` - Path to the LMX summary file being processed
 /// * `args` - Command line arguments controlling processing behavior
 /// * `silent` - If true, suppresses verbose output
 ///
-/// #Returns
+/// # Returns
 /// A HashMap<String, serde_yaml::Value> representing the settings from the file
 ///
 /// # Errors
