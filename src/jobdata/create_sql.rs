@@ -39,7 +39,7 @@ pub fn create_import_statement(
                 .enumerate()
                 .map(|(i, v)| {
                     let v_string = try_cast_into_string(v)?;
-                    let v_final = if types[i].contains("varbinary") || types[i].contains("varchar")
+                    let v_final = if types[i].contains("varbinary") || types[i].contains("varchar") || types[i].contains("binary")
                     {
                         format!("'{}'", v_string.replace("'", "''"))
                     } else {
@@ -78,7 +78,7 @@ pub fn create_update_statement(
         .enumerate()
         .map(|(i, (k, v))| {
             let v_string = try_cast_into_string(v)?;
-            let v_final = if types[i].contains("varbinary") || types[i].contains("varchar") {
+            let v_final = if types[i].contains("varbinary") || types[i].contains("varchar") || types[i].contains("binary") {
                 format!("'{}'", v_string.replace("'", "''"))
             } else {
                 v_string
