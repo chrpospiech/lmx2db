@@ -54,7 +54,7 @@ pub fn import_into_settings_table(
         return Ok(query_list);
     }
 
-    let settings_yaml = match find_and_read_settings_file(file_name, args) {
+    let settings_yaml = match find_and_read_settings_file(file_name, args, false) {
         Ok(map) => map,
         Err(e) => {
             if args.verbose || args.dry_run {
@@ -76,6 +76,7 @@ pub fn import_into_settings_table(
         ]);
     }
     if !value_list.is_empty() {
+        query_list.push("-- Inserting into settings table;".to_string());
         query_list.push(create_import_statement(
             "settings",
             &key_list,

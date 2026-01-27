@@ -86,7 +86,7 @@ pub fn determine_settings_columns(
         );
     }
     let mut result: Vec<(String, serde_yaml::Value)> = Vec::new();
-    let settings_map = match find_and_read_settings_file(file_name, args) {
+    let settings_map = match find_and_read_settings_file(file_name, args, true) {
         Ok(map) => map,
         Err(e) => {
             println!("Ignoring: {}", e);

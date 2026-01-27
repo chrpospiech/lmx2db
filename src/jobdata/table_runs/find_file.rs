@@ -123,13 +123,26 @@ pub fn find_module_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
 /// returning a HashMap<String, serde_yaml::Value> representing the settings.
 /// If not found or if there are issues reading/parsing the file,
 /// an appropriate io::Error is returned.
+/// The `silent` parameter can be used to suppress verbose output even when `--verbose` or `--dry-run` are enabled.
+///
+/// # Arguments
+/// * `file_name` - Path to the LMX summary file being processed
+/// * `args` - Command line arguments controlling processing behavior
+/// * `silent` - If true, suppresses verbose output
+///
+/// # Returns
+/// A HashMap<String, serde_yaml::Value> representing the settings from the file
+///
+/// # Errors
+/// - Returns an error if the settings file cannot be found, read, or parsed
 pub fn find_and_read_settings_file(
     file_name: &str,
     args: &CliArgs,
+    silent: bool,
 ) -> Result<HashMap<String, serde_yaml::Value>> {
     let dir_path = extract_directory_path(file_name)?;
     let settings_file_path = dir_path.join(&args.settings_file);
-    if args.verbose || args.dry_run {
+    if (args.verbose || args.dry_run) && !silent {
         println!(
             "Looking for settings file at path: '{}'",
             settings_file_path.to_str().unwrap()
@@ -143,7 +156,7 @@ pub fn find_and_read_settings_file(
         ));
     }
     let file_contents = std::fs::read_to_string(&settings_file_path)?;
-    if args.verbose || args.dry_run {
+    if (args.verbose || args.dry_run) && !silent {
         println!("Contents of settings file:\n{}", file_contents);
     }
     let settings_map: HashMap<String, serde_yaml::Value> = serde_yaml::from_str(&file_contents)?;
