@@ -16,9 +16,8 @@
 mod tests {
     use crate::{
         cmdline::CliArgs,
-        jobdata::table_settings::import_into_settings_table,
         jobdata::table_runs::find_file::project_mockup::setup_tmp_project_directory,
-        sqltypes::read_sqltypes,
+        jobdata::table_settings::import_into_settings_table, sqltypes::read_sqltypes,
     };
     use anyhow::Result;
     use sqlx::MySql;
@@ -45,14 +44,13 @@ mod tests {
             .join("tests/data/GROMACS/run_64/LMX_summary.376231.0.yml");
 
         // Call import_into_settings_table with no 'settings' table in sqltypes
-        let queries = import_into_settings_table(
-            lmx_file.to_str().unwrap(),
-            &sqltypes,
-            &args,
-        )?;
+        let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
         // Should return empty vector without reading the settings file
-        assert!(queries.is_empty(), "Expected empty query list when 'settings' table is not in sqltypes");
+        assert!(
+            queries.is_empty(),
+            "Expected empty query list when 'settings' table is not in sqltypes"
+        );
 
         Ok(())
     }
@@ -79,30 +77,49 @@ mod tests {
             .join("tests/data/GROMACS/run_64/LMX_summary.376231.0.yml");
 
         // Call import_into_settings_table (no await - function is not async)
-        let queries = import_into_settings_table(
-            lmx_file.to_str().unwrap(),
-            &sqltypes,
-            &args,
-        )?;
+        let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
         // Should return at least one query since settings.yml exists
-        assert!(!queries.is_empty(), "Expected at least one query for settings import");
+        assert!(
+            !queries.is_empty(),
+            "Expected at least one query for settings import"
+        );
 
         // Verify the query contains expected settings keys that are not in runs table
         let query = &queries[0];
-        assert!(query.contains("INSERT"), "Query should be an INSERT statement");
-        assert!(query.contains("settings"), "Query should insert into settings table");
-        
+        assert!(
+            query.contains("INSERT"),
+            "Query should be an INSERT statement"
+        );
+        assert!(
+            query.contains("settings"),
+            "Query should insert into settings table"
+        );
+
         // Check that keys matching runs table columns are filtered out
         // These keys exist in settings.yml but should be filtered because they're in runs table
-        assert!(!query.contains("'nodes'"), "nodes should be filtered (exists in runs table)");
-        assert!(!query.contains("'mpilib'"), "mpilib should be filtered (exists in runs table)");
-        assert!(!query.contains("'compiler'"), "compiler should be filtered (exists in runs table)");
-        assert!(!query.contains("'MPI_ranks'"), "MPI_ranks should be filtered (exists in runs table)");
-        
+        assert!(
+            !query.contains("'nodes'"),
+            "nodes should be filtered (exists in runs table)"
+        );
+        assert!(
+            !query.contains("'mpilib'"),
+            "mpilib should be filtered (exists in runs table)"
+        );
+        assert!(
+            !query.contains("'compiler'"),
+            "compiler should be filtered (exists in runs table)"
+        );
+        assert!(
+            !query.contains("'MPI_ranks'"),
+            "MPI_ranks should be filtered (exists in runs table)"
+        );
+
         // These keys should be included (not in runs table)
-        assert!(query.contains("'maxh'") || query.contains("'Precision'"), 
-            "Settings not in runs table should be included");
+        assert!(
+            query.contains("'maxh'") || query.contains("'Precision'"),
+            "Settings not in runs table should be included"
+        );
 
         Ok(())
     }
@@ -129,14 +146,13 @@ mod tests {
             .join("tests/data/NAMD/run_0001/LMX_summary.225250.0.yml");
 
         // Call import_into_settings_table (no await - function is not async)
-        let queries = import_into_settings_table(
-            lmx_file.to_str().unwrap(),
-            &sqltypes,
-            &args,
-        )?;
+        let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
         // Should return empty vector since settings.yml doesn't exist
-        assert!(queries.is_empty(), "Expected empty query list when settings file doesn't exist");
+        assert!(
+            queries.is_empty(),
+            "Expected empty query list when settings file doesn't exist"
+        );
 
         Ok(())
     }
@@ -178,14 +194,13 @@ perf_value: 319.366
         let lmx_file = temp_dir.join("LMX_summary.376231.0.yml");
 
         // Call import_into_settings_table (no await - function is not async)
-        let queries = import_into_settings_table(
-            lmx_file.to_str().unwrap(),
-            &sqltypes,
-            &args,
-        )?;
+        let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
         // Should return empty vector since all keys are filtered
-        assert!(queries.is_empty(), "Expected empty query list when all settings keys match runs table columns");
+        assert!(
+            queries.is_empty(),
+            "Expected empty query list when all settings keys match runs table columns"
+        );
 
         // Clean up temporary project directory
         std::fs::remove_dir_all(&temp_dir)?;
@@ -227,26 +242,35 @@ compiler: "Clang"
         let lmx_file = temp_dir.join("LMX_summary.376231.0.yml");
 
         // Call import_into_settings_table (no await - function is not async)
-        let queries = import_into_settings_table(
-            lmx_file.to_str().unwrap(),
-            &sqltypes,
-            &args,
-        )?;
+        let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
         // Should return exactly one query with filtered keys
-        assert_eq!(queries.len(), 1, "Expected exactly one query for settings import");
+        assert_eq!(
+            queries.len(),
+            1,
+            "Expected exactly one query for settings import"
+        );
 
         let query = &queries[0];
-        
+
         // Verify runs table columns are filtered out
         assert!(!query.contains("'nodes'"), "nodes should be filtered");
         assert!(!query.contains("'mpilib'"), "mpilib should be filtered");
         assert!(!query.contains("'compiler'"), "compiler should be filtered");
-        
+
         // Verify custom settings are included
-        assert!(query.contains("'custom_setting1'"), "custom_setting1 should be included");
-        assert!(query.contains("'custom_setting2'"), "custom_setting2 should be included");
-        assert!(query.contains("'unique_config'"), "unique_config should be included");
+        assert!(
+            query.contains("'custom_setting1'"),
+            "custom_setting1 should be included"
+        );
+        assert!(
+            query.contains("'custom_setting2'"),
+            "custom_setting2 should be included"
+        );
+        assert!(
+            query.contains("'unique_config'"),
+            "unique_config should be included"
+        );
 
         // Clean up temporary project directory
         std::fs::remove_dir_all(&temp_dir)?;
@@ -256,7 +280,9 @@ compiler: "Clang"
 
     /// Test that non-string YAML values (numbers, booleans, etc.) are handled correctly
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_settings_with_non_string_values(pool: sqlx::Pool<MySql>) -> Result<()> {
+    pub async fn test_import_settings_with_non_string_values(
+        pool: sqlx::Pool<MySql>,
+    ) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
             settings_file: "test_settings_types.yml".to_string(),
@@ -288,30 +314,57 @@ feature_flag: false
         let lmx_file = temp_dir.join("LMX_summary.376231.0.yml");
 
         // Call import_into_settings_table (no await - function is not async)
-        let queries = import_into_settings_table(
-            lmx_file.to_str().unwrap(),
-            &sqltypes,
-            &args,
-        )?;
+        let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
         // Should return exactly one query with various value types
-        assert_eq!(queries.len(), 1, "Expected exactly one query for settings import");
+        assert_eq!(
+            queries.len(),
+            1,
+            "Expected exactly one query for settings import"
+        );
 
         let query = &queries[0];
-        
+
         // Verify all settings are included (none match runs table)
-        assert!(query.contains("'threshold'"), "threshold (number) should be included");
-        assert!(query.contains("'enabled'"), "enabled (boolean) should be included");
-        assert!(query.contains("'ratio'"), "ratio (float) should be included");
-        assert!(query.contains("'count'"), "count (number) should be included");
-        assert!(query.contains("'label'"), "label (string) should be included");
-        assert!(query.contains("'feature_flag'"), "feature_flag (boolean) should be included");
-        
+        assert!(
+            query.contains("'threshold'"),
+            "threshold (number) should be included"
+        );
+        assert!(
+            query.contains("'enabled'"),
+            "enabled (boolean) should be included"
+        );
+        assert!(
+            query.contains("'ratio'"),
+            "ratio (float) should be included"
+        );
+        assert!(
+            query.contains("'count'"),
+            "count (number) should be included"
+        );
+        assert!(
+            query.contains("'label'"),
+            "label (string) should be included"
+        );
+        assert!(
+            query.contains("'feature_flag'"),
+            "feature_flag (boolean) should be included"
+        );
+
         // Verify that numeric and boolean values are stored as string literals
         // The settings table uses VARCHAR columns, so all values are stored as strings
-        assert!(query.contains("'100'"), "numeric value 100 should be present as string literal");
-        assert!(query.contains("'true'"), "boolean true should be present as string literal");
-        assert!(query.contains("'3.14'"), "float 3.14 should be present as string literal");
+        assert!(
+            query.contains("'100'"),
+            "numeric value 100 should be present as string literal"
+        );
+        assert!(
+            query.contains("'true'"),
+            "boolean true should be present as string literal"
+        );
+        assert!(
+            query.contains("'3.14'"),
+            "float 3.14 should be present as string literal"
+        );
 
         // Clean up temporary project directory
         std::fs::remove_dir_all(&temp_dir)?;
@@ -341,14 +394,13 @@ feature_flag: false
             .join("tests/data/GROMACS/run_64/LMX_summary.376231.0.yml");
 
         // Call import_into_settings_table (no await - function is not async)
-        let queries = import_into_settings_table(
-            lmx_file.to_str().unwrap(),
-            &sqltypes,
-            &args,
-        )?;
+        let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
         // Should still return queries
-        assert!(!queries.is_empty(), "Expected at least one query for settings import in verbose mode");
+        assert!(
+            !queries.is_empty(),
+            "Expected at least one query for settings import in verbose mode"
+        );
 
         Ok(())
     }
