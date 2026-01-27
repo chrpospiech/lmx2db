@@ -79,14 +79,15 @@ mod tests {
         // Call import_into_settings_table (no await - function is not async)
         let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
-        // Should return at least one query since settings.yml exists
-        assert!(
-            !queries.is_empty(),
-            "Expected at least one query for settings import"
+        // Should return a comment line and exactly one query with filtered keys
+        assert_eq!(
+            queries.len(),
+            2,
+            "Expected a comment line and one query for settings import"
         );
 
         // Verify the query contains expected settings keys that are not in runs table
-        let query = &queries[0];
+        let query = &queries[1];
         assert!(
             query.contains("INSERT"),
             "Query should be an INSERT statement"
@@ -244,14 +245,14 @@ compiler: "Clang"
         // Call import_into_settings_table (no await - function is not async)
         let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
-        // Should return exactly one query with filtered keys
+        // Should return a comment line and exactly one query with filtered keys
         assert_eq!(
             queries.len(),
-            1,
-            "Expected exactly one query for settings import"
+            2,
+            "Expected a comment line and one query for settings import"
         );
 
-        let query = &queries[0];
+        let query = &queries[1];
 
         // Verify runs table columns are filtered out
         assert!(!query.contains("'nodes'"), "nodes should be filtered");
@@ -316,14 +317,14 @@ feature_flag: false
         // Call import_into_settings_table (no await - function is not async)
         let queries = import_into_settings_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
 
-        // Should return exactly one query with various value types
+        // Should return a comment line and exactly one query with various value types
         assert_eq!(
             queries.len(),
-            1,
-            "Expected exactly one query for settings import"
+            2,
+            "Expected a comment line and one query for settings import"
         );
 
-        let query = &queries[0];
+        let query = &queries[1];
 
         // Verify all settings are included (none match runs table)
         assert!(

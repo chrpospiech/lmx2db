@@ -76,6 +76,7 @@ pub fn import_into_settings_table(
         ]);
     }
     if !value_list.is_empty() {
+        query_list.push("-- Inserting into settings table;".to_string());
         query_list.push(create_import_statement(
             "settings",
             &key_list,
