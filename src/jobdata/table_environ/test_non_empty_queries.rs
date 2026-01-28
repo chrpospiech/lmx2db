@@ -15,8 +15,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        cmdline::CliArgs,
-        jobdata::table_environ::import_into_environ_table,
+        cmdline::CliArgs, jobdata::table_environ::import_into_environ_table,
         sqltypes::read_sqltypes,
     };
     use anyhow::Result;
@@ -97,13 +96,13 @@ mod tests {
         // Create an LMX summary with mixed environ values
         let mut lmx_summary: crate::jobdata::LmxSummary = HashMap::new();
         let mut environ_section = HashMap::new();
-        
+
         // Add string value
         environ_section.insert(
             "SIMPLE_VAR".to_string(),
             serde_yaml::Value::String("simple_value".to_string()),
         );
-        
+
         // Add sequence value
         environ_section.insert(
             "PATH_VAR".to_string(),
@@ -112,7 +111,7 @@ mod tests {
                 serde_yaml::Value::String("/usr/local/bin".to_string()),
             ]),
         );
-        
+
         lmx_summary.insert("environ".to_string(), environ_section);
 
         // Call import_into_environ_table
@@ -132,17 +131,14 @@ mod tests {
             query.contains("SIMPLE_VAR"),
             "Query should contain SIMPLE_VAR"
         );
-        assert!(
-            query.contains("PATH_VAR"),
-            "Query should contain PATH_VAR"
-        );
-        
+        assert!(query.contains("PATH_VAR"), "Query should contain PATH_VAR");
+
         // Verify simple string value is present
         assert!(
             query.contains("simple_value"),
             "Query should contain simple_value"
         );
-        
+
         // Verify sequence is joined correctly
         assert!(
             query.contains("/usr/bin:/usr/local/bin"),

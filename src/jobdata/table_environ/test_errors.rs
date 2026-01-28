@@ -15,8 +15,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        cmdline::CliArgs,
-        jobdata::table_environ::import_into_environ_table,
+        cmdline::CliArgs, jobdata::table_environ::import_into_environ_table,
         sqltypes::read_sqltypes,
     };
     use anyhow::Result;
@@ -42,12 +41,12 @@ mod tests {
         // Create an LMX summary with invalid environ value (number instead of string/sequence)
         let mut lmx_summary: crate::jobdata::LmxSummary = HashMap::new();
         let mut environ_section = HashMap::new();
-        
+
         environ_section.insert(
             "INVALID_VAR".to_string(),
             serde_yaml::Value::Number(42.into()),
         );
-        
+
         lmx_summary.insert("environ".to_string(), environ_section);
 
         // Call import_into_environ_table - should return an error
@@ -82,15 +81,15 @@ mod tests {
         // Create an LMX summary with sequence containing non-string values
         let mut lmx_summary: crate::jobdata::LmxSummary = HashMap::new();
         let mut environ_section = HashMap::new();
-        
+
         environ_section.insert(
             "BAD_SEQUENCE".to_string(),
             serde_yaml::Value::Sequence(vec![
                 serde_yaml::Value::String("valid".to_string()),
-                serde_yaml::Value::Number(123.into()),  // Invalid: number in sequence
+                serde_yaml::Value::Number(123.into()), // Invalid: number in sequence
             ]),
         );
-        
+
         lmx_summary.insert("environ".to_string(), environ_section);
 
         // Call import_into_environ_table - should return an error

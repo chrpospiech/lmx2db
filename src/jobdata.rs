@@ -156,16 +156,10 @@ pub async fn process_sql_queries(
         if args.verbose || args.dry_run {
             println!("Using database connection for executing queries.");
         }
-        // The queries might be scattered across multiple vector elements
-        // We have to join the elements into single queries if needed.
-        let concatenated = query_list.join(" ");
-        let re_arranged_queries: Vec<String> = concatenated
-            .split(';')
-            .map(|s| s.trim())
-            .filter(|s| !s.is_empty())
-            .map(|s| format!("{};", s))
-            .collect();
-        for query in re_arranged_queries {
+        // All import and update queries were created by a call to
+        // create_import_statement or create_update_statement, so they
+        // should all be complete statements ending with a semicolon.
+        for query in query_list {
             if args.verbose || args.dry_run {
                 println!("Executing query: {}", query);
             }

@@ -15,8 +15,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        cmdline::CliArgs,
-        jobdata::table_environ::import_into_environ_table,
+        cmdline::CliArgs, jobdata::table_environ::import_into_environ_table,
         sqltypes::read_sqltypes,
     };
     use anyhow::Result;
