@@ -69,14 +69,14 @@ pub fn import_into_environ_table(
 
                 let str_vec = str_vec?;
                 value_list.push(vec![
-                    serde_yaml::Value::String("${RID}".to_string()),
+                    serde_yaml::Value::String("@rid".to_string()),
                     serde_yaml::Value::String(key.to_string()),
                     serde_yaml::Value::String(str_vec.join("")),
                 ]);
             }
             serde_yaml::Value::String(s) => {
                 value_list.push(vec![
-                    serde_yaml::Value::String("${RID}".to_string()),
+                    serde_yaml::Value::String("@rid".to_string()),
                     serde_yaml::Value::String(key.to_string()),
                     serde_yaml::Value::String(s.clone()),
                 ]);
