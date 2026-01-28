@@ -105,4 +105,8 @@ pub fn import_into_environ_table(
 }
 
 #[cfg(test)]
-pub(crate) mod test_import_environ;
+pub(crate) mod test_empty_queries;
+#[cfg(test)]
+pub(crate) mod test_errors;
+#[cfg(test)]
+pub(crate) mod test_non_empty_queries;
