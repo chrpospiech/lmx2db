@@ -23,6 +23,7 @@ pub type LmxSummary = HashMap<String, HashMap<String, serde_yaml::Value>>;
 
 pub(crate) mod checktypes;
 pub(crate) mod create_sql;
+pub(crate) mod table_environ;
 pub(crate) mod table_runs;
 pub(crate) mod table_settings;
 #[cfg(test)]
@@ -84,6 +85,13 @@ pub async fn process_lmx_file(
     // Generate SQL queries for the 'settings' table
     query_list.extend(table_settings::import_into_settings_table(
         file_name, sqltypes, args,
+    )?);
+
+    // Generate SQL queries for the 'environ' table
+    query_list.extend(table_environ::import_into_environ_table(
+        &lmx_summary,
+        sqltypes,
+        args,
     )?);
 
     // Process the collected SQL queries
