@@ -28,10 +28,14 @@ use anyhow::Result;
 /// * `args` - Command line arguments controlling processing behavior
 ///
 /// # Returns
-/// A vector of SQL insert statements for the 'environ' table
+/// A vector of SQL insert statements for the 'environ' table. Returns silently with an
+/// empty vector if the 'environ' table is not present in `sqltypes` or if the LMX summary
+/// does not contain an 'environ' section.
 ///
 /// # Errors
-/// - Returns an error if the LMX summary file cannot be processed
+/// - Returns an error if a value in a sequence for a given key is not a string.
+/// - Returns an error if a value for a key is neither a string nor a sequence (unexpected type).
+/// - Propagates any error returned by `create_import_statement` when generating the SQL.
 ///
 pub fn import_into_environ_table(
     lmx_summary: &LmxSummary,
