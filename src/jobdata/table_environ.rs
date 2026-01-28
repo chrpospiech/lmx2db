@@ -107,3 +107,10 @@ pub fn import_into_environ_table(
 
     Ok(query_list)
 }
+
+#[cfg(test)]
+pub(crate) mod test_empty_queries;
+#[cfg(test)]
+pub(crate) mod test_errors;
+#[cfg(test)]
+pub(crate) mod test_non_empty_queries;
