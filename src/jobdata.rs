@@ -156,9 +156,9 @@ pub async fn process_sql_queries(
         if args.verbose || args.dry_run {
             println!("Using database connection for executing queries.");
         }
-        // All import and update queries were created by a call to
-        // create_import_statement or create_update_statement, so they
-        // should all be complete statements ending with a semicolon.
+        // Each element of `query_list` is expected to be a complete, single SQL
+        // statement or comment that can be executed or written as-is, without
+        // needing to be split further on semicolons.
         for query in query_list {
             if args.verbose || args.dry_run {
                 println!("Executing query: {}", query);
