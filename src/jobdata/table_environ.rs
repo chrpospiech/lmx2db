@@ -103,3 +103,6 @@ pub fn import_into_environ_table(
 
     Ok(query_list)
 }
+
+#[cfg(test)]
+pub(crate) mod test_import_environ;
