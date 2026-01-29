@@ -84,14 +84,25 @@ pub async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
 /// - `Result<()>`: Ok if all checks pass, Err otherwise
 ///
 async fn check_gromacs_settings_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
-    // Query the database
+    // Query the database for performance-related settings
+    // These should have been imported into table `runs`, so the count should be zero.
+    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM `settings` WHERE `k` LIKE 'perf_%';")
+        .fetch_one(pool)
+        .await?;
+    // Assert no performance-related settings are present
+    assert_eq!(
+        count.0, 0,
+        "Expected 0 performance-related settings, but got {}",
+        count.0
+    );
+    // Query the database again
     let rows = sqlx::query_as::<_, (i64, String, String)>(
         "SELECT `rid`, `k`, `value` FROM `settings` WHERE `k` LIKE 'PME%' ORDER BY `k`;",
     )
     .fetch_all(pool)
     .await?;
 
-    // Assert exactly four rows were returned
+    // Assert exactly two rows were returned
     assert_eq!(
         rows.len(),
         2,
@@ -133,7 +144,7 @@ async fn check_gromacs_environ_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     .fetch_all(pool)
     .await?;
 
-    // Assert exactly four rows were returned
+    // Assert exactly three rows were returned
     assert_eq!(
         rows.len(),
         3,
