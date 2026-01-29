@@ -19,7 +19,6 @@ use sqlx::MySql;
 /// by checking database contents after import.
 /// The check is done by calling corresponding
 /// functions for each table separately.
-/// after import.
 ///
 /// # Arguments
 /// - `pool`: reference to the database connection pool
