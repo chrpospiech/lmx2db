@@ -43,7 +43,7 @@ pub async fn check_gromacs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
 ///
 /// # Returns
 /// - `Result<()>`: Ok if all checks pass, Err otherwise
-pub async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
     let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
             "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
