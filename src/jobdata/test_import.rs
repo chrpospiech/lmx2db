@@ -149,18 +149,15 @@ mod tests {
         );
 
         // Query the database - in dry_run mode, no rows should be inserted
-        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
-            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
-        )
-        .fetch_all(&pool)
-        .await?;
+        let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM `runs`;")
+            .fetch_one(&pool)
+            .await?;
 
         // Assert no rows were inserted (dry_run mode)
         assert_eq!(
-            rows.len(),
-            0,
+            count.0, 0,
             "Expected 0 rows in dry_run mode, but got {}",
-            rows.len()
+            count.0
         );
 
         Ok(())
