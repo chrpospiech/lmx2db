@@ -13,11 +13,19 @@
 // limitations under the License.
 
 #[cfg(test)]
+pub(crate) mod check_gromacs_data;
+#[cfg(test)]
+pub(crate) mod check_namd_data;
+
+#[cfg(test)]
 mod tests {
     use crate::{
         cmdline::CliArgs,
         jobdata::table_runs::find_file::project_mockup::{
             setup_cliargs_with_project_file_name, test_import_single_lmx_file,
+        },
+        jobdata::test_import::{
+            check_gromacs_data::check_gromacs_data, check_namd_data::check_namd_data,
         },
     };
     use anyhow::Result;
@@ -45,32 +53,7 @@ mod tests {
             result.err()
         );
 
-        // Query the database
-        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
-            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
-        )
-        .fetch_all(&pool)
-        .await?;
-
-        // Assert exactly one row was returned
-        assert_eq!(
-            rows.len(),
-            1,
-            "Expected exactly 1 row, but got {}",
-            rows.len()
-        );
-
-        // Assert the values of the returned row
-        let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
-        assert_eq!(*rid, 1);
-        assert_eq!(*clid, 1);
-        assert_eq!(*pid, 3);
-        assert_eq!(*ccid, 1);
-        assert_eq!(*nodes, 1);
-        assert!(!*has_mpi_trace);
-        assert!(!*has_iprof);
-        assert_eq!(*mpi_ranks, 8);
-
+        check_namd_data(&pool).await?;
         Ok(())
     }
 
@@ -101,31 +84,7 @@ mod tests {
             result.err()
         );
 
-        // Query the database
-        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
-            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
-        )
-        .fetch_all(&pool)
-        .await?;
-
-        // Assert exactly one row was returned
-        assert_eq!(
-            rows.len(),
-            1,
-            "Expected exactly 1 row, but got {}",
-            rows.len()
-        );
-
-        // Assert the values of the returned row
-        let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
-        assert_eq!(*rid, 1);
-        assert_eq!(*clid, 1);
-        assert_eq!(*pid, 3);
-        assert_eq!(*ccid, 1);
-        assert_eq!(*nodes, 1);
-        assert!(*has_mpi_trace);
-        assert!(*has_iprof);
-        assert_eq!(*mpi_ranks, 64);
+        check_gromacs_data(&pool).await?;
 
         Ok(())
     }
@@ -157,31 +116,7 @@ mod tests {
             result.err()
         );
 
-        // Query the database
-        let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
-            "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
-        )
-        .fetch_all(&pool)
-        .await?;
-
-        // Assert exactly one row was returned
-        assert_eq!(
-            rows.len(),
-            1,
-            "Expected exactly 1 row, but got {}",
-            rows.len()
-        );
-
-        // Assert the values of the returned row
-        let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
-        assert_eq!(*rid, 1);
-        assert_eq!(*clid, 1);
-        assert_eq!(*pid, 3);
-        assert_eq!(*ccid, 1);
-        assert_eq!(*nodes, 1);
-        assert!(*has_mpi_trace);
-        assert!(*has_iprof);
-        assert_eq!(*mpi_ranks, 64);
+        check_gromacs_data(&pool).await?;
 
         Ok(())
     }
