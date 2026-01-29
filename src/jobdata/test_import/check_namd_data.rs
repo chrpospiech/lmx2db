@@ -29,6 +29,10 @@ use sqlx::MySql;
 pub async fn check_namd_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // check data in table runs.
     check_namd_runs_data(pool).await?;
+    // check data in table settings.
+    check_namd_settings_data(pool).await?;
+    // check data in table environ.
+    check_namd_environ_data(pool).await?;
     Ok(())
 }
 
@@ -40,7 +44,7 @@ pub async fn check_namd_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
 ///
 /// # Returns
 /// - `Result<()>`: Ok if all checks pass, Err otherwise
-pub async fn check_namd_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+async fn check_namd_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
     let rows = sqlx::query_as::<_, (i64, i64, i64, i64, i32, bool, bool, u32)>(
             "SELECT `rid`, `clid`, `pid`, `ccid`, `nodes`, `has_MPItrace`, `has_iprof`, `MPI_ranks` FROM `runs`;"
@@ -66,6 +70,81 @@ pub async fn check_namd_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     assert!(!*has_mpi_trace);
     assert!(!*has_iprof);
     assert_eq!(*mpi_ranks, 8);
+
+    Ok(())
+}
+
+/// function for testing import of NAMD data in table settings
+/// by checking database contents after import.
+/// Since NAMD has no settings.yaml file, this function
+/// only checks that no rows were inserted.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_namd_settings_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database - in NAMD case, no rows should be inserted
+    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM `settings`;")
+        .fetch_one(pool)
+        .await?;
+
+    // Assert no rows were inserted
+    assert_eq!(
+        count.0, 0,
+        "Expected 0 rows in settings table for NAMD, but got {}",
+        count.0
+    );
+
+    Ok(())
+}
+
+/// function for testing import of NAMD data in table environ
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_namd_environ_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i64, String, String)>(
+        "SELECT `rid`, `k`, `value` FROM `environ` WHERE `k` LIKE 'LMX_%' ORDER BY `k`;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly four rows were returned
+    assert_eq!(
+        rows.len(),
+        4,
+        "Expected exactly 4 rows, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned rows
+    let expected_vars = vec![
+        (
+            1,
+            "LMX_EVENTLIST".to_string(),
+            "PAPI_TOT_INS,PAPI_TOT_CYC".to_string(),
+        ),
+        (1, "LMX_IMBALANCE".to_string(), "1".to_string()),
+        (1, "LMX_INTERVAL".to_string(), "20".to_string()),
+        (1, "LMX_ITIMERPROF".to_string(), "1".to_string()),
+    ];
+
+    for expected in expected_vars {
+        assert!(
+            rows.contains(&expected),
+            "Expected row {:?} not found in database",
+            expected
+        );
+    }
 
     Ok(())
 }

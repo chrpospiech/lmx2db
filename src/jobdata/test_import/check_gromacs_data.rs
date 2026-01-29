@@ -29,6 +29,10 @@ use sqlx::MySql;
 pub async fn check_gromacs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // check data in table runs.
     check_gromacs_runs_data(pool).await?;
+    // check data in table settings.
+    check_gromacs_settings_data(pool).await?;
+    // check data in table environ.
+    check_gromacs_environ_data(pool).await?;
     Ok(())
 }
 
@@ -66,6 +70,95 @@ pub async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     assert!(*has_mpi_trace);
     assert!(*has_iprof);
     assert_eq!(*mpi_ranks, 64);
+
+    Ok(())
+}
+
+/// function for testing import of GROMACS data in table settings
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_gromacs_settings_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i64, String, String)>(
+        "SELECT `rid`, `k`, `value` FROM `settings` WHERE `k` LIKE 'PME%' ORDER BY `k`;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly four rows were returned
+    assert_eq!(
+        rows.len(),
+        2,
+        "Expected exactly 2 rows, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned rows
+    let expected_vars = vec![
+        (1, "PME".to_string(), "24".to_string()),
+        (1, "PME_DD".to_string(), "24x1x1".to_string()),
+    ];
+
+    for expected in expected_vars {
+        assert!(
+            rows.contains(&expected),
+            "Expected row {:?} not found in database",
+            expected
+        );
+    }
+
+    Ok(())
+}
+
+/// function for testing import of GROMACS data in table environ
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_gromacs_environ_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i64, String, String)>(
+        "SELECT `rid`, `k`, `value` FROM `environ` WHERE `k` LIKE 'LMX_%' ORDER BY `k`;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly four rows were returned
+    assert_eq!(
+        rows.len(),
+        3,
+        "Expected exactly 3 rows, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned rows
+    let expected_vars = vec![
+        (
+            1,
+            "LMX_EVENTLIST".to_string(),
+            "PAPI_TOT_INS,PAPI_TOT_CYC".to_string(),
+        ),
+        (1, "LMX_IMBALANCE".to_string(), "1".to_string()),
+        (1, "LMX_ITIMERPROF".to_string(), "1".to_string()),
+    ];
+
+    for expected in expected_vars {
+        assert!(
+            rows.contains(&expected),
+            "Expected row {:?} not found in database",
+            expected
+        );
+    }
 
     Ok(())
 }
