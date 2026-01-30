@@ -269,7 +269,7 @@ pub fn import_into_tasks_table(
         // Start building the values for this task
         let mut values: Vec<serde_yaml::Value> = vec![
             serde_yaml::Value::String("@rid".to_string()),
-            serde_yaml::Value::String(rank_str.clone()),
+            serde_yaml::Value::Number(serde_yaml::Number::from(i as i64)),
             // lid is processed by stored function location_id()
             serde_yaml::Value::String(format!(
                 "location_id({}, @cl_name, 'nodes')",
