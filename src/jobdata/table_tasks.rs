@@ -201,14 +201,19 @@ pub fn import_into_tasks_table(
         return Ok(queries);
     }
 
-    // We check for the existence of section 'affinity' and fail
+    // We check for the existence of the CPU affinity section and fail
     // if it is missing, as this section is mandatory.
-    if !lmx_summary.contains_key("affinity") {
+    let affinity_key = if lmx_summary.contains_key("CPU_affinity") {
+        "CPU_affinity"
+    } else if lmx_summary.contains_key("affinity") {
+        // Backward compatibility with older summaries that may use 'affinity'
+        "affinity"
+    } else {
         return Err(anyhow::anyhow!(
-            "Missing mandatory section 'affinity' in LMX summary file"
+            "Missing mandatory section 'CPU_affinity' in LMX summary file"
         ));
-    }
-    let aff_section = &lmx_summary["affinity"];
+    };
+    let aff_section = &lmx_summary[affinity_key];
 
     // Start building the vector of keys.
     let mut keys: Vec<String> = vec![
