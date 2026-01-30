@@ -252,7 +252,7 @@ pub fn import_into_tasks_table(
     // Now process each task (i.e. each key in aff_section)
     let num_tasks = aff_section.len();
     let mut value_vector: Vec<serde_yaml::Value> = Vec::new();
-    for i in 0..num_tasks {
+    for i in 0..num_tasks - 1 {
         let rank_str = i.to_string();
         // Extract affinity values
         let aff_values =
