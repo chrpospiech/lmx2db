@@ -147,7 +147,7 @@ fn parse_optional_string_array(
 
 /// Extracts values from several sections of the LMX_summary file
 /// and generates SQL queries to insert them into table tasks in the database.
-/// Different sections are of the LMX summary file are processed to fill
+/// Different sections of the LMX summary file are processed to fill
 /// different columns of the tasks table. The keys for these sections are
 /// integers [0, ..., n-1], where n is the number of tasks (i.e. MPI ranks).
 /// For each task, a single row is inserted into the tasks table.
