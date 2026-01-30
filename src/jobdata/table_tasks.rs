@@ -147,29 +147,31 @@ fn parse_optional_string_array(
 
 /// Extracts values from several sections of the LMX_summary file
 /// and generates SQL queries to insert them into table tasks in the database.
-/// Different sections are of the LMX summary file are processed to fill
+/// Different sections of the LMX summary file are processed to fill
 /// different columns of the tasks table. The keys for these sections are
 /// integers [0, ..., n-1], where n is the number of tasks (i.e. MPI ranks).
 /// For each task, a single row is inserted into the tasks table.
 ///
-/// The keys in in every section go to the column `tid` in the tasks table.
+/// The keys in every section go to the column `tid` in the tasks table.
 /// The values in section `CPU_affinity` are to be processed by the helper function
+/// The keys in every section go to the column `tid` in the tasks table.
+/// The values in section `affinity` are to be processed by the helper function
 /// `parse_optional_string_array()`. This function returns a `Vec<serde_yaml::Value>`
 /// containing two string elements: the first element of the sequence is processed by a
 /// stored function to provide the value for column `lid`. The second element of the
 /// sequence is used to provide the value for column `affinity`.
 ///
 /// The values in section `rank_summary` are to be processed by the helper function
-/// `parse_optional_float_array()`. This function returns a Vec<> to be inserted into
+/// `parse_optional_float_array()`. This function returns a Vec<serde_yaml::Value> to be inserted into
 /// columns `elapsed`, `usertime`, `systime`, `memory`, `vmemory` in this order.
 ///
 /// The values in section `communication_times` - if present - are to be processed
-/// by the helper function `parse_optional_float_sequence()`. This function returns
+/// by the helper function `parse_optional_float_array()`. This function returns
 /// a Vec<serde_yaml::Value>. The first element and third element of this sequence
 /// is to be inserted into columns `comm` and `mpiio`, respectively.
 ///
 /// The values in section `load_imbalance_times` - if present - are to be processed
-/// by the helper function `parse_optional_float_sequence()`. This function returns
+/// by the helper function `parse_optional_float_array()`. This function returns
 /// a Vec<serde_yaml::Value>. Only the first element of this sequence
 /// is to be inserted into column `loadimb`.
 ///
