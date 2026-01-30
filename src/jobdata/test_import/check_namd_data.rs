@@ -32,6 +32,8 @@ pub async fn check_namd_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     check_namd_settings_data(pool).await?;
     // check data in table environ.
     check_namd_environ_data(pool).await?;
+    // check data in table mmm.
+    check_namd_mmm_data(pool).await?;
     Ok(())
 }
 
@@ -144,6 +146,32 @@ async fn check_namd_environ_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
             expected
         );
     }
+
+    Ok(())
+}
+
+/// function for testing import of NAMD data in table mmm
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_namd_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i64,)>("SELECT count(*) FROM `mmm`;")
+        .fetch_one(pool)
+        .await?;
+
+    // "tests/data/NAMD/run_0001/LMX_summary.225250.0.yml" has no min_max_times section,
+    // so no rows should be inserted.
+    assert_eq!(
+        rows.0, 0,
+        "Expected 0 rows in mmm table for NAMD, but got {}",
+        rows.0
+    );
 
     Ok(())
 }
