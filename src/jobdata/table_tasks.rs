@@ -154,10 +154,10 @@ fn parse_optional_string_array(
 ///
 /// The keys in in every section go to the column `tid` in the tasks table.
 /// The values in section `affinity` are to be processed by the helper function
-/// `parse_optional_string_array()`. This function returns a Vec<String> containing
-/// two elements: the first element of the sequence is processed by a stored function
-/// to provide the value for column `lid`. The second element of the sequence
-/// is used to provide the value for column `affinity`.
+/// `parse_optional_string_array()`. This function returns a `Vec<serde_yaml::Value>`
+/// containing two string elements: the first element of the sequence is processed by a
+/// stored function to provide the value for column `lid`. The second element of the
+/// sequence is used to provide the value for column `affinity`.
 ///
 /// The values in section `rank_summary` are to be processed by the helper function
 /// `parse_optional_float_array()`. This function returns a Vec<> to be inserted into
