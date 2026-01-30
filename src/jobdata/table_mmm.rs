@@ -50,21 +50,27 @@ fn parse_optional_float_sequence(
                         }
                     } else {
                         return Err(anyhow::anyhow!(
-                            "Expected a float as the second element in the sequence"
+                            "Expected a float as the second element in the sequence, but got non-float number value: {:?}",
+                            seq[1]
                         ));
                     }
                 } else {
                     return Err(anyhow::anyhow!(
-                        "Expected a float as the second element in the sequence"
+                        "Expected a float as the second element in the sequence, but got value: {:?}",
+                        seq[1]
                     ));
                 }
             } else {
                 return Err(anyhow::anyhow!(
-                    "Expected at least two elements in the sequence"
+                    "Expected at least two elements in the sequence, but got: {:?}",
+                    seq
                 ));
             }
         } else {
-            return Err(anyhow::anyhow!("Expected a sequence (array)"));
+            return Err(anyhow::anyhow!(
+                "Expected a sequence (array) for optional float sequence, but got value: {:?}",
+                value
+            ));
         }
     }
     Ok(None)
