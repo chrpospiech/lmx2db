@@ -258,7 +258,7 @@ pub fn import_into_tasks_table(
 
     // Now process each task (i.e. each key in aff_section)
     let num_tasks = aff_section.len();
-    let mut value_vector: Vec<serde_yaml::Value> = Vec::new();
+    let mut value_vector: Vec<Vec<serde_yaml::Value>> = Vec::new();
     for i in 0..num_tasks - 1 {
         let rank_str = i.to_string();
         // Extract affinity values
@@ -316,7 +316,7 @@ pub fn import_into_tasks_table(
             // Append loadimb (first element)
             values.push(loadimb_values[0].clone());
         }
-        value_vector.push(serde_yaml::Value::Sequence(values));
+        value_vector.push(values);
     }
 
     queries.push("-- Inserting into tasks table;".to_string());
@@ -324,7 +324,7 @@ pub fn import_into_tasks_table(
     queries.push(create_import_statement(
         "tasks",
         &keys,
-        &[value_vector],
+        &value_vector,
         sqltypes,
     )?);
 
