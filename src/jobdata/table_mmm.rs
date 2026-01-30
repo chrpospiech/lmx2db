@@ -150,11 +150,10 @@ pub fn import_into_mmm_table(
     for (key, (col1, col2)) in mappings {
         let param = mmm_section.get(key);
         let parsed = parse_optional_float_sequence(&param.cloned())?;
-        if let Some(values_vec) = parsed {
+        if let Some(mut values_vec) = parsed {
             columns.push(col1.to_string());
             columns.push(col2.to_string());
-            values.push(values_vec[0].clone());
-            values.push(values_vec[1].clone());
+            values.append(&mut values_vec);
         }
     }
 
