@@ -152,7 +152,7 @@ fn parse_optional_string_array(
 /// integers [0, ..., n-1], where n is the number of tasks (i.e. MPI ranks).
 /// For each task, a single row is inserted into the tasks table.
 ///
-/// The keys in in every section go to the column `tid` in the tasks table.
+/// The keys in every section go to the column `tid` in the tasks table.
 /// The values in section `affinity` are to be processed by the helper function
 /// `parse_optional_string_array()`. This function returns a `Vec<serde_yaml::Value>`
 /// containing two string elements: the first element of the sequence is processed by a
