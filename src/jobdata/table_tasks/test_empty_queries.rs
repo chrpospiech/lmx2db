@@ -14,11 +14,8 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        cmdline::CliArgs, jobdata::table_tasks::import_into_tasks_table, sqltypes::read_sqltypes,
-    };
+    use crate::{cmdline::CliArgs, jobdata::table_tasks::import_into_tasks_table};
     use anyhow::Result;
-    use sqlx::MySql;
     use std::collections::HashMap;
 
     /// Test early exit when 'tasks' table is not in sqltypes
