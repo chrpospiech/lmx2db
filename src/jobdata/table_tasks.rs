@@ -160,16 +160,16 @@ fn parse_optional_string_array(
 /// sequence is used to provide the value for column `affinity`.
 ///
 /// The values in section `rank_summary` are to be processed by the helper function
-/// `parse_optional_float_array()`. This function returns a Vec<> to be inserted into
+/// `parse_optional_float_array()`. This function returns a Vec<serde_yaml::Value> to be inserted into
 /// columns `elapsed`, `usertime`, `systime`, `memory`, `vmemory` in this order.
 ///
 /// The values in section `communication_times` - if present - are to be processed
-/// by the helper function `parse_optional_float_sequence()`. This function returns
+/// by the helper function `parse_optional_float_array()`. This function returns
 /// a Vec<serde_yaml::Value>. The first element and third element of this sequence
 /// is to be inserted into columns `comm` and `mpiio`, respectively.
 ///
 /// The values in section `load_imbalance_times` - if present - are to be processed
-/// by the helper function `parse_optional_float_sequence()`. This function returns
+/// by the helper function `parse_optional_float_array()`. This function returns
 /// a Vec<serde_yaml::Value>. Only the first element of this sequence
 /// is to be inserted into column `loadimb`.
 ///
