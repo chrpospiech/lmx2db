@@ -32,6 +32,8 @@ pub async fn check_gromacs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     check_gromacs_settings_data(pool).await?;
     // check data in table environ.
     check_gromacs_environ_data(pool).await?;
+    // check data in table mmm.
+    check_gromacs_mmm_data(pool).await?;
     Ok(())
 }
 
@@ -169,6 +171,46 @@ async fn check_gromacs_environ_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
             expected
         );
     }
+
+    Ok(())
+}
+
+/// function for testing import of GROMACS data in table mmm
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_gromacs_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i64, i64, f64, Option<i64>, Option<f64>)>(
+        "SELECT `rid`, `mintask`, `mincomm`, `minmpiiotask`, `minmpiio` FROM `mmm`;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly one row was returned
+    assert_eq!(
+        rows.len(),
+        1,
+        "Expected exactly 1 row, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned row
+    let (rid, mintask, mincomm, minmpiiotask, minmpiio) = &rows[0];
+    assert_eq!(*rid, 1);
+    assert_eq!(*mintask, 30);
+    assert!(
+        (*mincomm - 216.5484).abs() < 1e-4,
+        "mincomm was {}, expected 216.5484",
+        mincomm
+    );
+    assert!(minmpiiotask.is_none());
+    assert!(minmpiio.is_none());
 
     Ok(())
 }
