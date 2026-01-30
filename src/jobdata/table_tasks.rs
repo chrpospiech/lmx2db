@@ -284,6 +284,13 @@ pub fn import_into_tasks_table(
                 &rank_str,
                 "communication_times",
             )?;
+            if comm_values.len() < 3 {
+                return Err(anyhow::anyhow!(
+                    "Expected at least 3 communication_times entries for rank {}, but got {}",
+                    rank_str,
+                    comm_values.len()
+                ));
+            }
             // Append comm (first element) and mpiio (third element)
             values.push(comm_values[0].clone());
             values.push(comm_values[2].clone());
