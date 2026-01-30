@@ -27,6 +27,7 @@ pub(crate) mod table_environ;
 pub(crate) mod table_mmm;
 pub(crate) mod table_runs;
 pub(crate) mod table_settings;
+pub(crate) mod table_tasks;
 #[cfg(test)]
 pub(crate) mod test_import;
 #[cfg(test)]
@@ -97,6 +98,13 @@ pub async fn process_lmx_file(
 
     // Generate SQL queries for the 'mmm' table
     query_list.extend(table_mmm::import_into_mmm_table(
+        &lmx_summary,
+        sqltypes,
+        args,
+    )?);
+
+    // Generate SQL queries for the 'tasks' table
+    query_list.extend(table_tasks::import_into_tasks_table(
         &lmx_summary,
         sqltypes,
         args,
