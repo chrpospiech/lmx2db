@@ -175,10 +175,12 @@ fn parse_optional_string_array(
 /// a Vec<serde_yaml::Value>. Only the first element of this sequence
 /// is to be inserted into column `loadimb`.
 ///
-/// The function returns a Vec<String> containing 3 SQL statements.
-/// The first statement is a comment "-- Inserting into tasks table;".to_string(),
-/// the second statement is a single call to a stored function, and
-/// the last statement inserts all task records into the tasks table.
+/// The function returns a Vec<String> containing SQL statements for the tasks table.
+/// If the tasks table doesn't exist in sqltypes, an empty Vec is returned.
+/// Otherwise, the Vec contains exactly 3 SQL statements:
+/// - The first statement is a comment "-- Inserting into tasks table;".to_string(),
+/// - The second statement is a single call to a stored function, and
+/// - The third statement inserts all task records into the tasks table.
 ///
 /// # Arguments
 /// * `lmx_summary` - Reference to the LMX summary data structure
