@@ -269,7 +269,11 @@ pub fn import_into_tasks_table(
             // lid is processed by stored function location_id()
             serde_yaml::Value::String(format!(
                 "location_id({}, @cl_name, 'nodes')",
-                aff_values[0].as_str().unwrap()
+                aff_values[0].as_str().ok_or_else(|| anyhow::anyhow!(
+                    "Expected string value for affinity[0] in rank {}, but got: {:?}",
+                    rank_str,
+                    aff_values[0]
+                ))?
             )),
             // affinity
             aff_values[1].clone(),
