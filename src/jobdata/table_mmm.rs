@@ -73,7 +73,7 @@ fn parse_optional_float_sequence(
 /// Extracts values from the `min_max_times` section of the LMX summary file
 /// and generates SQL insert statements for the 'mmm' table. The function returns
 /// a vector of SQL queries to be executed or written to a file.
-/// For each LMX_summary file, a single row is inserted into the 'mmm' table.
+/// For each LMX_summary file, at most a single row is inserted into the 'mmm' table.
 /// The keys in the `min_max_times` section have to be mapped to a pair of
 /// database column names as follows:
 /// - "min_comm" -> ("mintask", "mincomm")
@@ -93,7 +93,8 @@ fn parse_optional_float_sequence(
 /// `parse_optional_float_sequence()`. If the result is Some(Vec),
 /// the two values are extracted and added to the insert statement.
 /// If the result is None, the corresponding columns are omitted from the insert
-/// statement.
+/// statement. If the `min_max_times` section is absent or no valid
+/// entries are found, no insert statement is generated.
 ///
 /// # Arguments
 /// * `lmx_summary` - The parsed LMX summary data
