@@ -89,7 +89,7 @@ fn parse_optional_float_sequence(
 /// - "med_io" -> ("mediotask", "medio")
 /// - "max_io" -> ("maxiotask", "maxio")
 ///
-/// For each of these keys, min_max_times[key] is is parsed with
+/// For each of these keys, min_max_times[key] is parsed with
 /// `parse_optional_float_sequence()`. If the result is Some(Vec),
 /// the two values are extracted and added to the insert statement.
 /// If the result is None, the corresponding columns are omitted from the insert
