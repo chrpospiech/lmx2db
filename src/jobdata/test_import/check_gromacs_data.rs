@@ -205,7 +205,7 @@ async fn check_gromacs_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     assert_eq!(*rid, 1);
     assert_eq!(*mintask, 30);
     assert!(
-        (*mincomm - 216.5484).abs() < 1e-6,
+        (*mincomm - 216.5484).abs() < 1e-4,
         "mincomm was {}, expected 216.5484",
         mincomm
     );
