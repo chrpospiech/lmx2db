@@ -15,8 +15,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        cmdline::CliArgs, jobdata::table_tasks::import_into_tasks_table,
-        sqltypes::read_sqltypes,
+        cmdline::CliArgs, jobdata::table_tasks::import_into_tasks_table, sqltypes::read_sqltypes,
     };
     use anyhow::Result;
     use sqlx::MySql;
@@ -24,9 +23,7 @@ mod tests {
 
     /// Test error handling when CPU_affinity section is missing
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_tasks_missing_affinity_section(
-        pool: sqlx::Pool<MySql>,
-    ) -> Result<()> {
+    pub async fn test_import_tasks_missing_affinity_section(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),

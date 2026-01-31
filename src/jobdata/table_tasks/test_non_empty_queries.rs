@@ -15,17 +15,14 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        cmdline::CliArgs, jobdata::table_tasks::import_into_tasks_table,
-        sqltypes::read_sqltypes,
+        cmdline::CliArgs, jobdata::table_tasks::import_into_tasks_table, sqltypes::read_sqltypes,
     };
     use anyhow::Result;
     use sqlx::MySql;
 
     /// Test successful import with real GROMACS data
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_tasks_with_valid_gromacs_data(
-        pool: sqlx::Pool<MySql>,
-    ) -> Result<()> {
+    pub async fn test_import_tasks_with_valid_gromacs_data(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
@@ -110,10 +107,7 @@ mod tests {
 
         // Optional sections that should be present in GROMACS data
         assert!(query.contains("comm"), "Query should include comm column");
-        assert!(
-            query.contains("mpiio"),
-            "Query should include mpiio column"
-        );
+        assert!(query.contains("mpiio"), "Query should include mpiio column");
         assert!(
             query.contains("loadimb"),
             "Query should include loadimb column"
@@ -145,8 +139,10 @@ mod tests {
         let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
 
         // Create a minimal LMX summary with only required sections
-        let mut lmx_summary: std::collections::HashMap<String, std::collections::HashMap<String, serde_yaml::Value>> =
-            std::collections::HashMap::new();
+        let mut lmx_summary: std::collections::HashMap<
+            String,
+            std::collections::HashMap<String, serde_yaml::Value>,
+        > = std::collections::HashMap::new();
 
         let mut cpu_affinity = std::collections::HashMap::new();
         cpu_affinity.insert(
@@ -222,9 +218,7 @@ mod tests {
 
     /// Test verbose mode outputs message for missing optional sections
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_tasks_verbose_missing_optional(
-        pool: sqlx::Pool<MySql>,
-    ) -> Result<()> {
+    pub async fn test_import_tasks_verbose_missing_optional(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
@@ -239,8 +233,10 @@ mod tests {
         let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
 
         // Create a minimal LMX summary without optional sections
-        let mut lmx_summary: std::collections::HashMap<String, std::collections::HashMap<String, serde_yaml::Value>> =
-            std::collections::HashMap::new();
+        let mut lmx_summary: std::collections::HashMap<
+            String,
+            std::collections::HashMap<String, serde_yaml::Value>,
+        > = std::collections::HashMap::new();
 
         let mut cpu_affinity = std::collections::HashMap::new();
         cpu_affinity.insert(
@@ -287,9 +283,7 @@ mod tests {
 
     /// Test backward compatibility with 'affinity' section name
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_tasks_backward_compat_affinity(
-        pool: sqlx::Pool<MySql>,
-    ) -> Result<()> {
+    pub async fn test_import_tasks_backward_compat_affinity(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
@@ -304,8 +298,10 @@ mod tests {
         let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
 
         // Create LMX summary with 'affinity' instead of 'CPU_affinity'
-        let mut lmx_summary: std::collections::HashMap<String, std::collections::HashMap<String, serde_yaml::Value>> =
-            std::collections::HashMap::new();
+        let mut lmx_summary: std::collections::HashMap<
+            String,
+            std::collections::HashMap<String, serde_yaml::Value>,
+        > = std::collections::HashMap::new();
 
         let mut affinity = std::collections::HashMap::new();
         affinity.insert(
@@ -367,8 +363,10 @@ mod tests {
         let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
 
         // Create LMX summary with all sections
-        let mut lmx_summary: std::collections::HashMap<String, std::collections::HashMap<String, serde_yaml::Value>> =
-            std::collections::HashMap::new();
+        let mut lmx_summary: std::collections::HashMap<
+            String,
+            std::collections::HashMap<String, serde_yaml::Value>,
+        > = std::collections::HashMap::new();
 
         let mut cpu_affinity = std::collections::HashMap::new();
         cpu_affinity.insert(
@@ -437,10 +435,7 @@ mod tests {
 
         // Verify all columns are present
         assert!(query.contains("comm"), "Query should include comm column");
-        assert!(
-            query.contains("mpiio"),
-            "Query should include mpiio column"
-        );
+        assert!(query.contains("mpiio"), "Query should include mpiio column");
         assert!(
             query.contains("loadimb"),
             "Query should include loadimb column"
@@ -451,9 +446,7 @@ mod tests {
 
     /// Test dry_run mode outputs message for missing optional sections
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_tasks_dry_run_missing_optional(
-        pool: sqlx::Pool<MySql>,
-    ) -> Result<()> {
+    pub async fn test_import_tasks_dry_run_missing_optional(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
@@ -468,8 +461,10 @@ mod tests {
         let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
 
         // Create a minimal LMX summary without optional sections
-        let mut lmx_summary: std::collections::HashMap<String, std::collections::HashMap<String, serde_yaml::Value>> =
-            std::collections::HashMap::new();
+        let mut lmx_summary: std::collections::HashMap<
+            String,
+            std::collections::HashMap<String, serde_yaml::Value>,
+        > = std::collections::HashMap::new();
 
         let mut cpu_affinity = std::collections::HashMap::new();
         cpu_affinity.insert(
