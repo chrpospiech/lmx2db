@@ -389,7 +389,7 @@ mod tests {
     /// Remove the #[ignore] attribute once validation is added to the import_into_tasks_table function.
     #[ignore]
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_tasks_invalid_hexadecimal_in_affinity(
+    pub async fn test_import_tasks_invalid_hexadecimal_in_cpu_affinity(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {
         let args = CliArgs {
