@@ -267,9 +267,10 @@ pub fn import_into_tasks_table(
         let mut values: Vec<serde_yaml::Value> = vec![
             serde_yaml::Value::String("@rid".to_string()),
             serde_yaml::Value::Number(serde_yaml::Number::from(i as i64)),
-            // lid is processed by stored function location_id()
+            // lid is processed by stored function location_id().
+            // The node name must be a string literal in SQL.
             serde_yaml::Value::String(format!(
-                "location_id({}, @cl_name, 'nodes')",
+                "location_id('{}', @cl_name, 'nodes')",
                 aff_values[0].as_str().ok_or_else(|| anyhow::anyhow!(
                     "Expected string value for affinity[0] in rank {}, but got: {:?}",
                     rank_str,
