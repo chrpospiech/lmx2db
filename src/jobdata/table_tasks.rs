@@ -209,9 +209,6 @@ pub fn import_into_tasks_table(
     // if it is missing, as this section is mandatory.
     let affinity_key = if lmx_summary.contains_key("CPU_affinity") {
         "CPU_affinity"
-    } else if lmx_summary.contains_key("affinity") {
-        // Backward compatibility with older summaries that may use 'affinity'
-        "affinity"
     } else {
         return Err(anyhow::anyhow!(
             "Missing mandatory section 'CPU_affinity' in LMX summary file"
@@ -332,3 +329,10 @@ pub fn import_into_tasks_table(
 
     Ok(queries)
 }
+
+#[cfg(test)]
+pub(crate) mod test_empty_queries;
+#[cfg(test)]
+pub(crate) mod test_errors;
+#[cfg(test)]
+pub(crate) mod test_non_empty_queries;
