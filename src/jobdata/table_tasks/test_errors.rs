@@ -446,7 +446,7 @@ mod tests {
             result.is_err(),
             "Expected error when CPU_affinity contains non-hexadecimal characters"
         );
-        
+
         let error_msg = result.unwrap_err().to_string();
         assert!(
             error_msg.contains("hexadecimal") || error_msg.contains("invalid character"),
