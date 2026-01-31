@@ -37,7 +37,7 @@ mod tests {
         // Read SQL types from the database
         let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
 
-        // Create an LMX summary without CPU_affinity or affinity section
+        // Create an LMX summary without CPU_affinity section
         let mut lmx_summary: crate::jobdata::LmxSummary = HashMap::new();
         let mut rank_summary = HashMap::new();
         rank_summary.insert(
@@ -118,7 +118,7 @@ mod tests {
         Ok(())
     }
 
-    /// Test error handling when affinity value is not a sequence
+    /// Test error handling when CPU_affinity value is not a sequence
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
     pub async fn test_import_tasks_invalid_affinity_type(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
@@ -134,7 +134,7 @@ mod tests {
         // Read SQL types from the database
         let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
 
-        // Create an LMX summary with invalid affinity (not a sequence)
+        // Create an LMX summary with invalid CPU_affinity (not a sequence)
         let mut lmx_summary: crate::jobdata::LmxSummary = HashMap::new();
         let mut cpu_affinity = HashMap::new();
         cpu_affinity.insert(
@@ -380,6 +380,79 @@ mod tests {
                 .contains("Expected at least 3 communication_times entries"),
             "Error message should mention expected 3 entries"
         );
+
+        Ok(())
+    }
+
+    /// Test error handling when CPU_affinity contains non-hexadecimal characters
+    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    pub async fn test_import_tasks_invalid_hexadecimal_in_affinity(
+        pool: sqlx::Pool<MySql>,
+    ) -> Result<()> {
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: false,
+            verbose: false,
+            ..Default::default()
+        };
+
+        // Read SQL types from the database
+        let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
+
+        // Create an LMX summary with CPU_affinity containing invalid hex characters
+        let mut lmx_summary: crate::jobdata::LmxSummary = HashMap::new();
+        let mut cpu_affinity = HashMap::new();
+        cpu_affinity.insert(
+            "0".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::String("node0.example.com".to_string()),
+                // Invalid: contains 'k' which is not a hexadecimal digit
+                serde_yaml::Value::String("00010k".to_string()),
+            ]),
+        );
+        cpu_affinity.insert(
+            "1".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::String("node0.example.com".to_string()),
+                serde_yaml::Value::String("0002".to_string()),
+            ]),
+        );
+        lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
+
+        let mut rank_summary = HashMap::new();
+        rank_summary.insert(
+            "0".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::Number(100.0.into()),
+                serde_yaml::Value::Number(80.0.into()),
+                serde_yaml::Value::Number(10.0.into()),
+                serde_yaml::Value::Number(200.0.into()),
+                serde_yaml::Value::Number(300.0.into()),
+            ]),
+        );
+        lmx_summary.insert("rank_summary".to_string(), rank_summary);
+
+        // Call should fail due to non-hexadecimal characters in CPU_affinity
+        let result = import_into_tasks_table(&lmx_summary, &sqltypes, &args);
+
+        // Note: Currently the code does not validate hexadecimal characters,
+        // so this test documents the expected behavior when validation is added
+        if result.is_err() {
+            // If validation is implemented, check for appropriate error message
+            let error_msg = result.unwrap_err().to_string();
+            assert!(
+                error_msg.contains("hexadecimal") || error_msg.contains("invalid"),
+                "Error message should mention hexadecimal validation: {}",
+                error_msg
+            );
+        } else {
+            // Currently passes without validation - this test will fail once
+            // hexadecimal validation is implemented
+            panic!("Expected error when CPU_affinity contains non-hexadecimal characters, but function succeeded");
+        }
 
         Ok(())
     }
