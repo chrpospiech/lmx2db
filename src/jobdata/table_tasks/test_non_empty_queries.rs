@@ -307,10 +307,10 @@ mod tests {
 
         let query = &queries[2];
 
-        // Verify the node name is escaped (single quote becomes double quote)
+        // Verify the node name is escaped (single quote becomes two single quotes)
         assert!(
             query.contains("location_id('node''s.example.com'"),
-            "Single quote in node name should be escaped as double quote. Query: {}",
+            "Single quote in node name should be escaped as two single quotes. Query: {}",
             query
         );
 
