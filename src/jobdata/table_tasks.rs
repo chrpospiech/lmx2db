@@ -257,6 +257,11 @@ pub fn import_into_tasks_table(
 
     // Now process each task (i.e. each key in aff_section)
     let num_tasks = aff_section.len();
+    if num_tasks == 0 {
+        return Err(anyhow::anyhow!(
+            "CPU_affinity section is empty. At least one MPI rank configuration is required."
+        ));
+    }
     let mut value_vector: Vec<Vec<serde_yaml::Value>> = Vec::new();
     for i in 0..num_tasks - 1 {
         let rank_str = i.to_string();
@@ -266,16 +271,19 @@ pub fn import_into_tasks_table(
         // Start building the values for this task
         let mut values: Vec<serde_yaml::Value> = vec![
             serde_yaml::Value::String("@rid".to_string()),
-            serde_yaml::Value::String(rank_str.clone()),
-            // lid is processed by stored function location_id()
-            serde_yaml::Value::String(format!(
-                "location_id({}, @cl_name, 'nodes')",
-                aff_values[0].as_str().ok_or_else(|| anyhow::anyhow!(
+            serde_yaml::Value::Number(serde_yaml::Number::from(i as i64)),
+            // lid is processed by stored function location_id().
+            // The node name must be a string literal in SQL.
+            // Escape single quotes in the node name to prevent SQL injection.
+            serde_yaml::Value::String({
+                let node_name = aff_values[0].as_str().ok_or_else(|| anyhow::anyhow!(
                     "Expected string value for affinity[0] in rank {}, but got: {:?}",
                     rank_str,
                     aff_values[0]
-                ))?
-            )),
+                ))?;
+                let escaped_node_name = node_name.replace('\'', "''");
+                format!("location_id('{}', @cl_name, 'nodes')", escaped_node_name)
+            }),
             // affinity
             aff_values[1].clone(),
         ];

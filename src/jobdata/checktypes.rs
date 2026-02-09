@@ -82,7 +82,7 @@ pub fn check_types(
     values: &[Vec<serde_yaml::Value>],
 ) -> Result<()> {
     // The following regexes will be used multiple times
-    let id_pattern = Regex::new(r"@\w+id").unwrap();
+    let id_pattern = Regex::new(r"^@\w+id$|^[A-Za-z_]\w*_id\([^;]*\)$").unwrap();
     let varbinary_pattern = Regex::new(r"varbinary\((\d+)\)").unwrap();
     let varchar_pattern = Regex::new(r"varchar\((\d+)\)").unwrap();
 
