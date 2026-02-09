@@ -70,6 +70,16 @@ mod tests {
                 serde_yaml::Value::Number(300.0.into()),
             ]),
         );
+        rank_summary.insert(
+            "1".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::Number(110.0.into()),
+                serde_yaml::Value::Number(85.0.into()),
+                serde_yaml::Value::Number(12.0.into()),
+                serde_yaml::Value::Number(210.0.into()),
+                serde_yaml::Value::Number(310.0.into()),
+            ]),
+        );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
 
         // Call import_into_tasks_table in verbose mode
@@ -135,6 +145,16 @@ mod tests {
                 serde_yaml::Value::Number(300.0.into()),
             ]),
         );
+        rank_summary.insert(
+            "1".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::Number(110.0.into()),
+                serde_yaml::Value::Number(85.0.into()),
+                serde_yaml::Value::Number(12.0.into()),
+                serde_yaml::Value::Number(210.0.into()),
+                serde_yaml::Value::Number(310.0.into()),
+            ]),
+        );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
 
         let mut comm_times = std::collections::HashMap::new();
@@ -147,6 +167,15 @@ mod tests {
                 serde_yaml::Value::Number(1.0.into()),
             ]),
         );
+        comm_times.insert(
+            "1".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::Number(55.0.into()),
+                serde_yaml::Value::Number(6.0.into()),
+                serde_yaml::Value::Number(3.0.into()),
+                serde_yaml::Value::Number(2.0.into()),
+            ]),
+        );
         lmx_summary.insert("communication_times".to_string(), comm_times);
 
         let mut loadimb_times = std::collections::HashMap::new();
@@ -156,6 +185,14 @@ mod tests {
                 serde_yaml::Value::Number(3.5.into()),
                 serde_yaml::Value::Number(1.2.into()),
                 serde_yaml::Value::Number(0.8.into()),
+            ]),
+        );
+        loadimb_times.insert(
+            "1".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::Number(4.0.into()),
+                serde_yaml::Value::Number(1.5.into()),
+                serde_yaml::Value::Number(1.0.into()),
             ]),
         );
         lmx_summary.insert("load_imbalance_times".to_string(), loadimb_times);
@@ -231,6 +268,16 @@ mod tests {
                 serde_yaml::Value::Number(10.0.into()),
                 serde_yaml::Value::Number(200.0.into()),
                 serde_yaml::Value::Number(300.0.into()),
+            ]),
+        );
+        rank_summary.insert(
+            "1".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::Number(110.0.into()),
+                serde_yaml::Value::Number(85.0.into()),
+                serde_yaml::Value::Number(12.0.into()),
+                serde_yaml::Value::Number(210.0.into()),
+                serde_yaml::Value::Number(310.0.into()),
             ]),
         );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
