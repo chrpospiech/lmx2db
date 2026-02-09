@@ -274,14 +274,16 @@ pub fn import_into_tasks_table(
             serde_yaml::Value::Number(serde_yaml::Number::from(i as i64)),
             // lid is processed by stored function location_id().
             // The node name must be a string literal in SQL.
-            serde_yaml::Value::String(format!(
-                "location_id('{}', @cl_name, 'nodes')",
-                aff_values[0].as_str().ok_or_else(|| anyhow::anyhow!(
+            // Escape single quotes in the node name to prevent SQL injection.
+            serde_yaml::Value::String({
+                let node_name = aff_values[0].as_str().ok_or_else(|| anyhow::anyhow!(
                     "Expected string value for affinity[0] in rank {}, but got: {:?}",
                     rank_str,
                     aff_values[0]
-                ))?
-            )),
+                ))?;
+                let escaped_node_name = node_name.replace('\'', "''");
+                format!("location_id('{}', @cl_name, 'nodes')", escaped_node_name)
+            }),
             // affinity
             aff_values[1].clone(),
         ];
