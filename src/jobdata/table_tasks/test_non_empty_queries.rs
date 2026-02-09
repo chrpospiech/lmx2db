@@ -247,4 +247,73 @@ mod tests {
 
         Ok(())
     }
+
+    /// Test that single quotes in node names are properly escaped
+    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    pub async fn test_import_tasks_escapes_single_quotes_in_node_name(
+        pool: sqlx::Pool<MySql>,
+    ) -> Result<()> {
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: false,
+            verbose: false,
+            ..Default::default()
+        };
+
+        // Read SQL types from the database
+        let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
+
+        // Create a minimal LMX summary with a node name containing single quotes
+        let mut lmx_summary: std::collections::HashMap<
+            String,
+            std::collections::HashMap<String, serde_yaml::Value>,
+        > = std::collections::HashMap::new();
+
+        let mut cpu_affinity = std::collections::HashMap::new();
+        cpu_affinity.insert(
+            "0".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                // Node name with single quote to test escaping
+                serde_yaml::Value::String("node's.example.com".to_string()),
+                serde_yaml::Value::String("0001".to_string()),
+            ]),
+        );
+        lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
+
+        let mut rank_summary = std::collections::HashMap::new();
+        rank_summary.insert(
+            "0".to_string(),
+            serde_yaml::Value::Sequence(vec![
+                serde_yaml::Value::Number(100.0.into()),
+                serde_yaml::Value::Number(80.0.into()),
+                serde_yaml::Value::Number(10.0.into()),
+                serde_yaml::Value::Number(200.0.into()),
+                serde_yaml::Value::Number(300.0.into()),
+            ]),
+        );
+        lmx_summary.insert("rank_summary".to_string(), rank_summary);
+
+        // Call import_into_tasks_table
+        let queries = import_into_tasks_table(&lmx_summary, &sqltypes, &args)?;
+
+        // Verify that single quotes are properly escaped (doubled)
+        assert!(
+            !queries.is_empty(),
+            "Expected at least one query for tasks import"
+        );
+
+        let query = &queries[2];
+
+        // Verify the node name is escaped (single quote becomes double quote)
+        assert!(
+            query.contains("location_id('node''s.example.com'"),
+            "Single quote in node name should be escaped as double quote. Query: {}",
+            query
+        );
+
+        Ok(())
+    }
 }
