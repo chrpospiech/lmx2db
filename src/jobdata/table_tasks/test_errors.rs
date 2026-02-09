@@ -438,7 +438,7 @@ mod tests {
         // Call should fail due to non-hexadecimal characters in CPU_affinity
         let result = import_into_tasks_table(&lmx_summary, &sqltypes, &args);
 
-        // When hexadecimal validation is implemented, this should fail
+        // Hexadecimal validation is performed in check_types for varbinary
         assert!(
             result.is_err(),
             "Expected error when CPU_affinity contains non-hexadecimal characters"
