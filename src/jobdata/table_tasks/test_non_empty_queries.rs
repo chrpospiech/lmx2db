@@ -50,13 +50,6 @@ mod tests {
                 serde_yaml::Value::String("0001".to_string()),
             ]),
         );
-        cpu_affinity.insert(
-            "1".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0002".to_string()),
-            ]),
-        );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
 
         let mut rank_summary = std::collections::HashMap::new();
@@ -113,13 +106,6 @@ mod tests {
             serde_yaml::Value::Sequence(vec![
                 serde_yaml::Value::String("node0.example.com".to_string()),
                 serde_yaml::Value::String("0001".to_string()),
-            ]),
-        );
-        cpu_affinity.insert(
-            "1".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0002".to_string()),
             ]),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
@@ -211,13 +197,6 @@ mod tests {
             serde_yaml::Value::Sequence(vec![
                 serde_yaml::Value::String("node0.example.com".to_string()),
                 serde_yaml::Value::String("0001".to_string()),
-            ]),
-        );
-        cpu_affinity.insert(
-            "1".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0002".to_string()),
             ]),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
