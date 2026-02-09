@@ -263,7 +263,7 @@ pub fn import_into_tasks_table(
         ));
     }
     let mut value_vector: Vec<Vec<serde_yaml::Value>> = Vec::new();
-    for i in 0..num_tasks - 1 {
+    for i in 0..num_tasks {
         let rank_str = i.to_string();
         // Extract affinity values
         let aff_values =
@@ -276,11 +276,13 @@ pub fn import_into_tasks_table(
             // The node name must be a string literal in SQL.
             // Escape single quotes in the node name to prevent SQL injection.
             serde_yaml::Value::String({
-                let node_name = aff_values[0].as_str().ok_or_else(|| anyhow::anyhow!(
-                    "Expected string value for affinity[0] in rank {}, but got: {:?}",
-                    rank_str,
-                    aff_values[0]
-                ))?;
+                let node_name = aff_values[0].as_str().ok_or_else(|| {
+                    anyhow::anyhow!(
+                        "Expected string value for affinity[0] in rank {}, but got: {:?}",
+                        rank_str,
+                        aff_values[0]
+                    )
+                })?;
                 let escaped_node_name = node_name.replace('\'', "''");
                 format!("location_id('{}', @cl_name, 'nodes')", escaped_node_name)
             }),
