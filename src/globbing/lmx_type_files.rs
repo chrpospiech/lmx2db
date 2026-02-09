@@ -17,15 +17,28 @@ mod tests {
     use crate::globbing::find_lmx_type_files;
     use anyhow::Result;
 
-    #[tokio::test]
-    async fn test_missing_type_files() -> Result<()> {
+    #[test]
+    fn test_invalid_file_name() -> Result<()> {
+        // Call the find_lmx_type_files function with an invalid file name
+        let result = find_lmx_type_files("invalid_file_name.yml", "typeA");
+        // Assert that the result is an error
+        assert!(
+            result.is_err(),
+            "Expected an error for invalid file name, but got: {:?}",
+            result
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_missing_type_files() -> Result<()> {
         // Create a temporary directory for testing
         let temp_dir =
             std::env::temp_dir().join(format!("lmx_type_files_test_{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&temp_dir)?;
 
         // Create a mock LMX_summary file in the temporary directory
-        let lmx_summary_path = temp_dir.join("LMX_summary.0001.yml");
+        let lmx_summary_path = temp_dir.join("LMX_summary.1234.0.yml");
         std::fs::write(&lmx_summary_path, "mock content")?;
 
         // Call the find_lmx_type_files function with a type that does not exist
@@ -44,22 +57,24 @@ mod tests {
         Ok(())
     }
 
-    #[tokio::test]
-    async fn test_existing_type_files() -> Result<()> {
+    #[test]
+    fn test_existing_type_files() -> Result<()> {
         // Create a temporary directory for testing
         let temp_dir =
             std::env::temp_dir().join(format!("lmx_type_files_test_{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&temp_dir)?;
 
         // Create a mock LMX_summary file in the temporary directory
-        let lmx_summary_path = temp_dir.join("LMX_summary.0001.yml");
+        let lmx_summary_path = temp_dir.join("LMX_summary.1234.0.yml");
         std::fs::write(&lmx_summary_path, "mock content")?;
 
         // Create mock LMX_type files in the same directory
-        let type_file_1 = temp_dir.join("LMX_typeA_001.yml");
-        let type_file_2 = temp_dir.join("LMX_typeA_002.yml");
+        let type_file_1 = temp_dir.join("LMX_typeA_profile.1234.0.yml");
+        let type_file_2 = temp_dir.join("LMX_typeA_profile.1234.1.yml");
+        let type_file_3 = temp_dir.join("LMX_typeA_profile.5678.1.yml");
         std::fs::write(&type_file_1, "type A content 1")?;
         std::fs::write(&type_file_2, "type A content 2")?;
+        std::fs::write(&type_file_3, "type A content 3")?;
 
         // Call the find_lmx_type_files function with the existing type
         let files = find_lmx_type_files(lmx_summary_path.to_str().unwrap(), "typeA")?;
