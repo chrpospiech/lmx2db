@@ -72,17 +72,17 @@ mod tests {
         ];
         let values = vec![
             vec![
-                serde_yaml::Value::String("@rid".to_string()),
+                serde_yaml::Value::String("@ccid".to_string()),
                 serde_yaml::Value::String("gcc".to_string()),
                 serde_yaml::Value::Number(serde_yaml::Number::from(16)),
             ],
             vec![
-                serde_yaml::Value::String("@rid".to_string()),
+                serde_yaml::Value::String("@pid".to_string()),
                 serde_yaml::Value::String("icc".to_string()),
                 serde_yaml::Value::Number(serde_yaml::Number::from(32)),
             ],
             vec![
-                serde_yaml::Value::String("@rid".to_string()),
+                serde_yaml::Value::String("@clid".to_string()),
                 serde_yaml::Value::String("clang".to_string()),
                 serde_yaml::Value::Number(serde_yaml::Number::from(64)),
             ],
@@ -91,7 +91,7 @@ mod tests {
         let sql = create_import_statement("runs", &keys, &values, &sqltypes)?;
         assert_eq!(
             sql,
-            "INSERT INTO runs (rid, compiler, nodes) VALUES\n(@rid, 'gcc', 16),\n(@rid, 'icc', 32),\n(@rid, 'clang', 64);"
+            "INSERT INTO runs (rid, compiler, nodes) VALUES\n(@ccid, 'gcc', 16),\n(@pid, 'icc', 32),\n(@clid, 'clang', 64);"
         );
         Ok(())
     }
