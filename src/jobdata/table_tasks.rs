@@ -257,6 +257,11 @@ pub fn import_into_tasks_table(
 
     // Now process each task (i.e. each key in aff_section)
     let num_tasks = aff_section.len();
+    if num_tasks == 0 {
+        return Err(anyhow::anyhow!(
+            "CPU_affinity section is empty. At least one MPI rank configuration is required."
+        ));
+    }
     let mut value_vector: Vec<Vec<serde_yaml::Value>> = Vec::new();
     for i in 0..num_tasks - 1 {
         let rank_str = i.to_string();
