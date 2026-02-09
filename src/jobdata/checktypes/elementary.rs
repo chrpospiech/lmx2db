@@ -128,7 +128,7 @@ mod tests {
                 serde_yaml::Value::String("icc".to_string()),
             ],
             vec![
-                serde_yaml::Value::String("@clid".to_string()),
+                serde_yaml::Value::String("@pid".to_string()),
                 serde_yaml::Value::String("clang".to_string()),
             ],
         ];
