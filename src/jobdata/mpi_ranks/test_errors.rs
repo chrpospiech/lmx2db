@@ -35,7 +35,7 @@ mod tests {
         );
     }
 
-    /// Test error handling when MPI_ranks key is missing
+    /// Test error handling when my_MPI_rank key is missing
     #[test]
     fn test_extract_mpi_rank_missing_mpi_rank_key() {
         let mut lmx_summary: LmxSummary = HashMap::new();
@@ -46,18 +46,18 @@ mod tests {
 
         assert!(
             result.is_err(),
-            "Expected error when MPI_ranks key is missing"
+            "Expected error when my_MPI_rank key is missing"
         );
         assert!(
             result
                 .unwrap_err()
                 .to_string()
-                .contains("MPI_ranks key not found"),
-            "Error message should mention missing MPI_ranks key"
+                .contains("my_MPI_rank key not found"),
+            "Error message should mention missing my_MPI_rank key"
         );
     }
 
-    /// Test handling when MPI_ranks value is a positive number (should succeed)
+    /// Test handling when my_MPI_rank value is a positive number (should succeed)
     #[test]
     fn test_extract_mpi_rank_positive_number_value() {
         let mut lmx_summary: LmxSummary = HashMap::new();
@@ -65,7 +65,7 @@ mod tests {
 
         // Insert a number - this should now work
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Number(42.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -74,12 +74,12 @@ mod tests {
 
         assert!(
             result.is_ok(),
-            "Expected success when MPI_ranks is a positive number"
+            "Expected success when my_MPI_rank is a positive number"
         );
         assert_eq!(result.unwrap(), 42, "Expected MPI rank to be 42");
     }
 
-    /// Test error handling when MPI_ranks value cannot be parsed as u64
+    /// Test error handling when my_MPI_rank value cannot be parsed as u64
     #[test]
     fn test_extract_mpi_rank_invalid_parse() {
         let mut lmx_summary: LmxSummary = HashMap::new();
@@ -87,7 +87,7 @@ mod tests {
 
         // Insert a string that cannot be parsed as u64
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("not_a_number".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -96,18 +96,18 @@ mod tests {
 
         assert!(
             result.is_err(),
-            "Expected error when MPI_ranks cannot be parsed as u64"
+            "Expected error when my_MPI_rank cannot be parsed as u64"
         );
         assert!(
             result
                 .unwrap_err()
                 .to_string()
-                .contains("Failed to parse MPI_ranks"),
+                .contains("Failed to parse my_MPI_rank"),
             "Error message should mention parse failure"
         );
     }
 
-    /// Test error handling when MPI_ranks is a negative number
+    /// Test error handling when my_MPI_rank is a negative number
     #[test]
     fn test_extract_mpi_rank_negative_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
@@ -115,7 +115,7 @@ mod tests {
 
         // Insert a negative number (as i64)
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Number((-1).into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -124,7 +124,7 @@ mod tests {
 
         assert!(
             result.is_err(),
-            "Expected error when MPI_ranks is negative"
+            "Expected error when my_MPI_rank is negative"
         );
         assert!(
             result
@@ -135,14 +135,14 @@ mod tests {
         );
     }
 
-    /// Test error handling when MPI_ranks has invalid characters
+    /// Test error handling when my_MPI_rank has invalid characters
     #[test]
     fn test_extract_mpi_rank_invalid_characters() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("12abc".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -151,42 +151,42 @@ mod tests {
 
         assert!(
             result.is_err(),
-            "Expected error when MPI_ranks has invalid characters"
+            "Expected error when my_MPI_rank has invalid characters"
         );
         assert!(
             result
                 .unwrap_err()
                 .to_string()
-                .contains("Failed to parse MPI_ranks"),
+                .contains("Failed to parse my_MPI_rank"),
             "Error message should mention parse failure"
         );
     }
 
-    /// Test error handling when MPI_ranks is an empty string
+    /// Test error handling when my_MPI_rank is an empty string
     #[test]
     fn test_extract_mpi_rank_empty_string() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
         let result = extract_mpi_rank(&lmx_summary);
 
-        assert!(result.is_err(), "Expected error when MPI_ranks is empty");
+        assert!(result.is_err(), "Expected error when my_MPI_rank is empty");
         assert!(
             result
                 .unwrap_err()
                 .to_string()
-                .contains("Failed to parse MPI_ranks"),
+                .contains("Failed to parse my_MPI_rank"),
             "Error message should mention parse failure"
         );
     }
 
-    /// Test error handling when MPI_ranks is neither a number nor a string
+    /// Test error handling when my_MPI_rank is neither a number nor a string
     #[test]
     fn test_extract_mpi_rank_invalid_type() {
         let mut lmx_summary: LmxSummary = HashMap::new();
@@ -194,7 +194,7 @@ mod tests {
 
         // Insert a boolean (neither number nor string)
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Bool(true),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -203,7 +203,7 @@ mod tests {
 
         assert!(
             result.is_err(),
-            "Expected error when MPI_ranks is neither number nor string"
+            "Expected error when my_MPI_rank is neither number nor string"
         );
         assert!(
             result

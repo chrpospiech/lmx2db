@@ -25,7 +25,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("0".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -43,7 +43,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Number(0.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -61,7 +61,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("42".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -79,7 +79,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Number(42.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -97,7 +97,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("999999".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -115,7 +115,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Number(999999.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -134,7 +134,7 @@ mod tests {
 
         let max_u64 = u64::MAX.to_string();
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String(max_u64.clone()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -156,7 +156,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("00042".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -178,7 +178,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("127".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -196,7 +196,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Number(127.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -219,7 +219,7 @@ mod tests {
             serde_yaml::Value::String("other_value".to_string()),
         );
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::String("5".to_string()),
         );
         base_data.insert(
@@ -250,7 +250,7 @@ mod tests {
             serde_yaml::Value::String("other_value".to_string()),
         );
         base_data.insert(
-            "MPI_ranks".to_string(),
+            "my_MPI_rank".to_string(),
             serde_yaml::Value::Number(5.into()),
         );
         base_data.insert(
