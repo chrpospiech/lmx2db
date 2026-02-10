@@ -25,6 +25,9 @@ pub(crate) mod globbing;
 pub(crate) mod jobdata;
 pub(crate) mod sqltypes;
 
+#[cfg(test)]
+mod test_env;
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let args = cmdline::parse_args();

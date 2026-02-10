@@ -127,10 +127,7 @@ mod tests {
             "Expected error when my_MPI_rank is negative"
         );
         assert!(
-            result
-                .unwrap_err()
-                .to_string()
-                .contains("negative"),
+            result.unwrap_err().to_string().contains("negative"),
             "Error message should mention negative value"
         );
     }
@@ -193,10 +190,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         // Insert a boolean (neither number nor string)
-        base_data.insert(
-            "my_MPI_rank".to_string(),
-            serde_yaml::Value::Bool(true),
-        );
+        base_data.insert("my_MPI_rank".to_string(), serde_yaml::Value::Bool(true));
         lmx_summary.insert("base_data".to_string(), base_data);
 
         let result = extract_mpi_rank(&lmx_summary);
