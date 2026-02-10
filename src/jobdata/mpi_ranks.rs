@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::jobdata::LmxSummary;
-use anyhow::{anyhow, bail, Ok, Result};
+use anyhow::{anyhow, bail, Result};
 
 /// Extracts MPI rank information from an LMX summary type structure.
 ///
@@ -24,17 +24,30 @@ use anyhow::{anyhow, bail, Ok, Result};
 /// * `Result<u64>` - The extracted MPI rank as a u64 integer, or an error if extraction fails.
 pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
     if let Some(base_data) = lmx_summary.get("base_data") {
-        if let Some(mpi_rank_value) = base_data.get("my_MPI_rank") {
-            if let Some(mpi_rank_str) = mpi_rank_value.as_str() {
+        if let Some(mpi_rank_value) = base_data.get("MPI_ranks") {
+            // First, try to interpret the value as an unsigned integer directly.
+            if let Some(mpi_rank) = mpi_rank_value.as_u64() {
+                Ok(mpi_rank)
+            } else if let Some(mpi_rank_i) = mpi_rank_value.as_i64() {
+                if mpi_rank_i < 0 {
+                    bail!("MPI_ranks value in base_data is negative and cannot be converted to u64");
+                } else {
+                    Ok(mpi_rank_i as u64)
+                }
+            } else if let Some(mpi_rank_str) = mpi_rank_value.as_str() {
                 let mpi_rank = mpi_rank_str.parse::<u64>().map_err(|e| {
-                    anyhow!("Failed to parse mpi_rank '{}' as u64: {}", mpi_rank_str, e)
+                    anyhow!(
+                        "Failed to parse MPI_ranks value '{}' in base_data as u64: {}",
+                        mpi_rank_str,
+                        e
+                    )
                 })?;
                 Ok(mpi_rank)
             } else {
-                bail!("mpi_rank value is not a string in base_data");
+                bail!("MPI_ranks value in base_data is neither a number nor a string");
             }
         } else {
-            bail!("mpi_rank key not found in base_data");
+            bail!("MPI_ranks key not found in base_data");
         }
     } else {
         bail!("base_data key not found in LMX summary");

@@ -18,14 +18,14 @@ mod tests {
     use crate::jobdata::LmxSummary;
     use std::collections::HashMap;
 
-    /// Test successful extraction of MPI rank with value 0
+    /// Test successful extraction of MPI rank with value 0 (as string)
     #[test]
-    fn test_extract_mpi_rank_zero() {
+    fn test_extract_mpi_rank_zero_string() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "my_MPI_rank".to_string(),
+            "MPI_ranks".to_string(),
             serde_yaml::Value::String("0".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -36,14 +36,32 @@ mod tests {
         assert_eq!(result.unwrap(), 0, "Expected MPI rank to be 0");
     }
 
-    /// Test successful extraction of MPI rank with a small positive value
+    /// Test successful extraction of MPI rank with value 0 (as number)
     #[test]
-    fn test_extract_mpi_rank_small_number() {
+    fn test_extract_mpi_rank_zero_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "my_MPI_rank".to_string(),
+            "MPI_ranks".to_string(),
+            serde_yaml::Value::Number(0.into()),
+        );
+        lmx_summary.insert("base_data".to_string(), base_data);
+
+        let result = extract_mpi_rank(&lmx_summary);
+
+        assert!(result.is_ok(), "Expected successful extraction");
+        assert_eq!(result.unwrap(), 0, "Expected MPI rank to be 0");
+    }
+
+    /// Test successful extraction of MPI rank with a small positive value (as string)
+    #[test]
+    fn test_extract_mpi_rank_small_number_string() {
+        let mut lmx_summary: LmxSummary = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+
+        base_data.insert(
+            "MPI_ranks".to_string(),
             serde_yaml::Value::String("42".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -54,14 +72,32 @@ mod tests {
         assert_eq!(result.unwrap(), 42, "Expected MPI rank to be 42");
     }
 
-    /// Test successful extraction of MPI rank with a large value
+    /// Test successful extraction of MPI rank with a small positive value (as number)
     #[test]
-    fn test_extract_mpi_rank_large_number() {
+    fn test_extract_mpi_rank_small_number_u64() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "my_MPI_rank".to_string(),
+            "MPI_ranks".to_string(),
+            serde_yaml::Value::Number(42.into()),
+        );
+        lmx_summary.insert("base_data".to_string(), base_data);
+
+        let result = extract_mpi_rank(&lmx_summary);
+
+        assert!(result.is_ok(), "Expected successful extraction");
+        assert_eq!(result.unwrap(), 42, "Expected MPI rank to be 42");
+    }
+
+    /// Test successful extraction of MPI rank with a large value (as string)
+    #[test]
+    fn test_extract_mpi_rank_large_number_string() {
+        let mut lmx_summary: LmxSummary = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+
+        base_data.insert(
+            "MPI_ranks".to_string(),
             serde_yaml::Value::String("999999".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -72,15 +108,33 @@ mod tests {
         assert_eq!(result.unwrap(), 999999, "Expected MPI rank to be 999999");
     }
 
-    /// Test successful extraction of MPI rank with maximum u64 value
+    /// Test successful extraction of MPI rank with a large value (as number)
     #[test]
-    fn test_extract_mpi_rank_max_u64() {
+    fn test_extract_mpi_rank_large_number_u64() {
+        let mut lmx_summary: LmxSummary = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+
+        base_data.insert(
+            "MPI_ranks".to_string(),
+            serde_yaml::Value::Number(999999.into()),
+        );
+        lmx_summary.insert("base_data".to_string(), base_data);
+
+        let result = extract_mpi_rank(&lmx_summary);
+
+        assert!(result.is_ok(), "Expected successful extraction");
+        assert_eq!(result.unwrap(), 999999, "Expected MPI rank to be 999999");
+    }
+
+    /// Test successful extraction of MPI rank with maximum u64 value (as string)
+    #[test]
+    fn test_extract_mpi_rank_max_u64_string() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         let max_u64 = u64::MAX.to_string();
         base_data.insert(
-            "my_MPI_rank".to_string(),
+            "MPI_ranks".to_string(),
             serde_yaml::Value::String(max_u64.clone()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -102,7 +156,7 @@ mod tests {
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "my_MPI_rank".to_string(),
+            "MPI_ranks".to_string(),
             serde_yaml::Value::String("00042".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -117,14 +171,14 @@ mod tests {
         );
     }
 
-    /// Test successful extraction with typical MPI rank value
+    /// Test successful extraction with typical MPI rank value (as string)
     #[test]
-    fn test_extract_mpi_rank_typical_value() {
+    fn test_extract_mpi_rank_typical_value_string() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
         base_data.insert(
-            "my_MPI_rank".to_string(),
+            "MPI_ranks".to_string(),
             serde_yaml::Value::String("127".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
@@ -135,9 +189,27 @@ mod tests {
         assert_eq!(result.unwrap(), 127, "Expected MPI rank to be 127");
     }
 
-    /// Test that base_data can contain other keys
+    /// Test successful extraction with typical MPI rank value (as number)
     #[test]
-    fn test_extract_mpi_rank_with_other_keys() {
+    fn test_extract_mpi_rank_typical_value_number() {
+        let mut lmx_summary: LmxSummary = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+
+        base_data.insert(
+            "MPI_ranks".to_string(),
+            serde_yaml::Value::Number(127.into()),
+        );
+        lmx_summary.insert("base_data".to_string(), base_data);
+
+        let result = extract_mpi_rank(&lmx_summary);
+
+        assert!(result.is_ok(), "Expected successful extraction");
+        assert_eq!(result.unwrap(), 127, "Expected MPI rank to be 127");
+    }
+
+    /// Test that base_data can contain other keys (with string value)
+    #[test]
+    fn test_extract_mpi_rank_with_other_keys_string() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
@@ -147,7 +219,7 @@ mod tests {
             serde_yaml::Value::String("other_value".to_string()),
         );
         base_data.insert(
-            "my_MPI_rank".to_string(),
+            "MPI_ranks".to_string(),
             serde_yaml::Value::String("5".to_string()),
         );
         base_data.insert(
@@ -165,4 +237,36 @@ mod tests {
             "Expected MPI rank to be 5 regardless of other keys"
         );
     }
+
+    /// Test that base_data can contain other keys (with number value)
+    #[test]
+    fn test_extract_mpi_rank_with_other_keys_number() {
+        let mut lmx_summary: LmxSummary = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+
+        // Add other keys to base_data
+        base_data.insert(
+            "other_key".to_string(),
+            serde_yaml::Value::String("other_value".to_string()),
+        );
+        base_data.insert(
+            "MPI_ranks".to_string(),
+            serde_yaml::Value::Number(5.into()),
+        );
+        base_data.insert(
+            "another_key".to_string(),
+            serde_yaml::Value::Number(123.into()),
+        );
+        lmx_summary.insert("base_data".to_string(), base_data);
+
+        let result = extract_mpi_rank(&lmx_summary);
+
+        assert!(result.is_ok(), "Expected successful extraction");
+        assert_eq!(
+            result.unwrap(),
+            5,
+            "Expected MPI rank to be 5 regardless of other keys"
+        );
+    }
 }
+
