@@ -23,7 +23,7 @@ mod tests {
         // Assuming the test environment has no type files in the temp directory
         let temp_dir = std::env::temp_dir().join(format!("no_type_files_{}", Uuid::new_v4()));
         std::fs::create_dir_all(&temp_dir).unwrap();
-        let lmx_summary_file = temp_dir.join("LMX_summary.yml");
+        let lmx_summary_file = temp_dir.join("LMX_summary.1234.0.yml");
         std::fs::write(&lmx_summary_file, "dummy content").unwrap();
         let result = determine_misc_columns(lmx_summary_file.to_str().unwrap())?;
         let expected = vec![
@@ -50,11 +50,11 @@ mod tests {
         // Assuming the test environment has type files in the temp directory
         let temp_dir = std::env::temp_dir().join(format!("with_type_files_{}", Uuid::new_v4()));
         std::fs::create_dir_all(&temp_dir).unwrap();
-        let lmx_summary_file = temp_dir.join("LMX_summary.yml");
+        let lmx_summary_file = temp_dir.join("LMX_summary.1234.0.yml");
         std::fs::write(&lmx_summary_file, "dummy content")?;
         // Create dummy type files
-        let mpi_type_file = temp_dir.join("LMX_MPI_type_file.yml");
-        let iprof_type_file = temp_dir.join("LMX_itimer_type_file.yml");
+        let mpi_type_file = temp_dir.join("LMX_MPI_profile.1234.0.yml");
+        let iprof_type_file = temp_dir.join("LMX_itimer_profile.1234.0.yml");
         std::fs::write(&mpi_type_file, "dummy MPI content")?;
         std::fs::write(&iprof_type_file, "dummy itimer content")?;
         let result = determine_misc_columns(lmx_summary_file.to_str().unwrap())?;

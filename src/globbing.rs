@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use glob::glob;
+use regex::Regex;
 use std::path::Path;
 
 #[cfg(test)]
@@ -26,11 +27,11 @@ pub fn find_lmx_summary_files(paths: &Vec<String>) -> Result<Vec<String>> {
         let path = Path::new(&path_str);
 
         if !path.exists() {
-            anyhow::bail!("Path does not exist: {}", path_str);
+            bail!("Path does not exist: {}", path_str);
         }
 
         if !path.is_dir() {
-            anyhow::bail!("Path is not a directory: {}", path_str);
+            bail!("Path is not a directory: {}", path_str);
         }
 
         let pattern = format!("{}/**/LMX_summary*.yml", path_str.trim_end_matches('/'));
@@ -46,9 +47,12 @@ pub fn find_lmx_summary_files(paths: &Vec<String>) -> Result<Vec<String>> {
     Ok(result)
 }
 
-/// Function returning the list of files matching format!("LMX_{}*.yml", type_str)
+/// Function returning the list of files matching
+/// format!("LMX_{}_profile.{}*.yml", type_str, process_id)
 /// in the same directory as the provided file_name.
 /// The typical file_name is an LMX_summary file.
+/// The process_id is extracted from the file_name using a
+/// regex pattern matching "LMX_summary\.(\d+)\.\d+\.yml".
 ///
 /// # Arguments
 /// * `file_name` - The reference file name to determine the directory.
@@ -57,14 +61,29 @@ pub fn find_lmx_summary_files(paths: &Vec<String>) -> Result<Vec<String>> {
 /// # Returns
 /// A Result containing a vector of matching file names or an error.
 ///
-/// Errors if the parent directory cannot be determined or if globbing fails.
+/// Errors if the process ID cannot be extracted or if globbing fails.
 ///
 pub fn find_lmx_type_files(file_name: &str, type_str: &str) -> Result<Vec<String>> {
     let path = Path::new(file_name);
     let parent_dir = path
         .parent()
-        .ok_or_else(|| anyhow::anyhow!("Cannot determine parent directory of {}", file_name))?;
-    let pattern = format!("{}/LMX_{}*.yml", parent_dir.display(), type_str);
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
+    let re = Regex::new(r"LMX_summary\.(\d+)\.\d+\.yml").unwrap();
+    let process_id = if let Some(caps) = re.captures(file_name) {
+        caps.get(1).map_or("", |m| m.as_str())
+    } else {
+        ""
+    };
+    if process_id.is_empty() {
+        bail!("Cannot extract process ID from file name: {}", file_name);
+    }
+    let pattern = format!(
+        "{}/LMX_{}_profile.{}*.yml",
+        parent_dir.display(),
+        type_str,
+        process_id
+    );
     let mut result = Vec::new();
     for entry in glob(&pattern)? {
         let path = entry?;

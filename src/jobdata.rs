@@ -23,6 +23,7 @@ pub type LmxSummary = HashMap<String, HashMap<String, serde_yaml::Value>>;
 
 pub(crate) mod checktypes;
 pub(crate) mod create_sql;
+pub(crate) mod mpi_ranks;
 pub(crate) mod table_environ;
 pub(crate) mod table_mmm;
 pub(crate) mod table_runs;
