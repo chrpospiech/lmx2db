@@ -1,6 +1,6 @@
 # lmx2db
 
-Convert LMX (Location Message Exchange) summary files into SQL statements and
+Convert LMX summary files (produced by the LMX_trace profiling/tracing tool) into SQL statements and
 database entries.
 
 ## Features
