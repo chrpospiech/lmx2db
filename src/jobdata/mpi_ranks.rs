@@ -40,3 +40,8 @@ pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
         bail!("base_data key not found in LMX summary");
     }
 }
+
+#[cfg(test)]
+pub(crate) mod test_errors;
+#[cfg(test)]
+pub(crate) mod test_functionality;
