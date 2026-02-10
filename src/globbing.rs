@@ -52,7 +52,7 @@ pub fn find_lmx_summary_files(paths: &Vec<String>) -> Result<Vec<String>> {
 /// in the same directory as the provided file_name.
 /// The typical file_name is an LMX_summary file.
 /// The process_id is extracted from the file_name using a
-/// regex pattern matching "LMX_summary.*_(\d+)\.\d+\.yml".
+/// regex pattern matching "LMX_summary\.(\d+)\.\d+\.yml".
 ///
 /// # Arguments
 /// * `file_name` - The reference file name to determine the directory.
