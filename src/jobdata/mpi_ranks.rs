@@ -22,6 +22,7 @@ use anyhow::{anyhow, bail, Result};
 ///
 /// # Returns
 /// * `Result<u64>` - The extracted MPI rank as a u64 integer, or an error if extraction fails.
+#[allow(dead_code)]
 pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
     if let Some(base_data) = lmx_summary.get("base_data") {
         if let Some(mpi_rank_value) = base_data.get("MPI_ranks") {
@@ -30,7 +31,9 @@ pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
                 Ok(mpi_rank)
             } else if let Some(mpi_rank_i) = mpi_rank_value.as_i64() {
                 if mpi_rank_i < 0 {
-                    bail!("MPI_ranks value in base_data is negative and cannot be converted to u64");
+                    bail!(
+                        "MPI_ranks value in base_data is negative and cannot be converted to u64"
+                    );
                 } else {
                     Ok(mpi_rank_i as u64)
                 }
