@@ -105,16 +105,32 @@ mod tests {
 
     #[test]
     fn test_file_without_directory_component() -> Result<()> {
-        // Create a temporary directory and change to it
+        // Create a temporary directory
         let temp_dir =
             std::env::temp_dir().join(format!("lmx_type_files_test_{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&temp_dir)?;
         
-        // Save current directory
-        let original_dir = std::env::current_dir()?;
+        // Use a guard to ensure cleanup even on test failure
+        struct CleanupGuard(std::path::PathBuf);
+        impl Drop for CleanupGuard {
+            fn drop(&mut self) {
+                let _ = std::fs::remove_dir_all(&self.0);
+            }
+        }
+        let _guard = CleanupGuard(temp_dir.clone());
         
-        // Change to temp directory
+        // Save and change to temp directory to safely test the edge case
+        let original_dir = std::env::current_dir()?;
         std::env::set_current_dir(&temp_dir)?;
+        
+        // Use another guard to restore the directory even on panic
+        struct DirGuard(std::path::PathBuf);
+        impl Drop for DirGuard {
+            fn drop(&mut self) {
+                let _ = std::env::set_current_dir(&self.0);
+            }
+        }
+        let _dir_guard = DirGuard(original_dir);
         
         // Create files in the current directory
         let lmx_summary_name = "LMX_summary.1234.0.yml";
@@ -126,6 +142,7 @@ mod tests {
         std::fs::write(type_file_2, "type B content 2")?;
         
         // Call find_lmx_type_files with just the filename (no directory component)
+        // This tests the edge case where parent_dir would be empty
         let files = find_lmx_type_files(lmx_summary_name, "typeB")?;
         
         // Assert that the result contains the expected files
@@ -135,12 +152,6 @@ mod tests {
             "Expected 2 matching files, but found: {:?}",
             files
         );
-        
-        // Restore original directory
-        std::env::set_current_dir(original_dir)?;
-        
-        // Clean up the temporary directory
-        std::fs::remove_dir_all(&temp_dir)?;
         
         Ok(())
     }
