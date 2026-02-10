@@ -80,10 +80,6 @@ pub async fn process_lmx_file(
     // Read the LMX summary file into a hashmap
     let lmx_summary = read_lmx_summary(file_name)?;
 
-    // to be removed - dummy call to read the number of MPI ranks.
-    // Beware this will return an error for the current value of lmx_summary.
-    let _is_error = mpi_ranks::extract_mpi_rank(&lmx_summary);
-
     // Generate SQL queries for the 'runs' table
     query_list.extend(
         table_runs::import_into_runs_table(file_name, pool, &lmx_summary, sqltypes, args).await?,
