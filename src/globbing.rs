@@ -61,13 +61,14 @@ pub fn find_lmx_summary_files(paths: &Vec<String>) -> Result<Vec<String>> {
 /// # Returns
 /// A Result containing a vector of matching file names or an error.
 ///
-/// Errors if the parent directory cannot be determined or if globbing fails.
+/// Errors if the process ID cannot be extracted or if globbing fails.
 ///
 pub fn find_lmx_type_files(file_name: &str, type_str: &str) -> Result<Vec<String>> {
     let path = Path::new(file_name);
     let parent_dir = path
         .parent()
-        .ok_or_else(|| anyhow::anyhow!("Cannot determine parent directory of {}", file_name))?;
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
     let re = Regex::new(r"LMX_summary\.(\d+)\.\d+\.yml").unwrap();
     let process_id = if let Some(caps) = re.captures(file_name) {
         caps.get(1).map_or("", |m| m.as_str())
