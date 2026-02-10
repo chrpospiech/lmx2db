@@ -31,7 +31,9 @@ pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
                 Ok(mpi_rank)
             } else if let Some(mpi_rank_i) = mpi_rank_value.as_i64() {
                 if mpi_rank_i < 0 {
-                    bail!("my_MPI_rank value in base_data is negative and cannot be converted to u64");
+                    bail!(
+                        "my_MPI_rank value in base_data is negative and cannot be converted to u64"
+                    );
                 } else {
                     Ok(mpi_rank_i as u64)
                 }
