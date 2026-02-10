@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::jobdata::LmxSummary;
-use anyhow::{anyhow, bail, Ok, Result};
+use anyhow::{anyhow, bail, Result};
 
 /// Extracts MPI rank information from an LMX summary type structure.
 ///
