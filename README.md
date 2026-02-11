@@ -1,7 +1,7 @@
 # lmx2db
 
-Convert LMX summary files (produced by the LMX_trace profiling/tracing tool) into SQL statements and
-database entries.
+Convert LMX summary files (produced by the LMX_trace profiling/tracing tool)
+into SQL statements and database entries.
 
 ## Features
 
