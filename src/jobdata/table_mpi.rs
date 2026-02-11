@@ -20,6 +20,11 @@ use crate::jobdata::{read_lmx_summary, LmxSummary};
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::{bail, Result};
 
+// #[cfg(test)]
+// pub(crate) mod extract_profile;
+#[cfg(test)]
+pub(crate) mod vec_serde_yaml;
+
 /// Helper function to extract a vector of values from LMX summary type data.
 /// This function takes a reference to a single serde_yaml::Value that is
 /// expected to be a sequence (array) and returns a vector of serde_yaml::Value.
