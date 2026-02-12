@@ -137,7 +137,7 @@ mod tests {
 
     /// Test error handling when my_MPI_rank is an empty string (type mismatch)
     #[test]
-    fn test_extract_mpi_rank_empty_string() {
+    fn test_extract_mpi_rank_string_type_error() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
