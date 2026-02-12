@@ -109,7 +109,7 @@ mod tests {
         );
     }
 
-    /// Test error handling when my_MPI_rank has invalid characters
+    /// Test error handling when my_MPI_rank is a string (type mismatch)
     #[test]
     fn test_extract_mpi_rank_invalid_characters() {
         let mut lmx_summary: LmxSummary = HashMap::new();
@@ -125,17 +125,17 @@ mod tests {
 
         assert!(
             result.is_err(),
-            "Expected error when my_MPI_rank has invalid characters"
+            "Expected error when my_MPI_rank is a string type"
         );
         assert!(
             result.unwrap_err().to_string().contains(
                 "my_MPI_rank value in base_data is not a number that can be converted to u64"
             ),
-            "Error message should mention parse failure"
+            "Error message should indicate type mismatch"
         );
     }
 
-    /// Test error handling when my_MPI_rank has a string value (type error)
+    /// Test error handling when my_MPI_rank is an empty string (type mismatch)
     #[test]
     fn test_extract_mpi_rank_string_type_error() {
         let mut lmx_summary: LmxSummary = HashMap::new();
@@ -149,12 +149,12 @@ mod tests {
 
         let result = extract_mpi_rank(&lmx_summary);
 
-        assert!(result.is_err(), "Expected error when my_MPI_rank is a string");
+        assert!(result.is_err(), "Expected error when my_MPI_rank is an empty string");
         assert!(
             result.unwrap_err().to_string().contains(
                 "my_MPI_rank value in base_data is not a number that can be converted to u64"
             ),
-            "Error message should indicate type error (string value not allowed)"
+            "Error message should indicate type mismatch"
         );
     }
 }
