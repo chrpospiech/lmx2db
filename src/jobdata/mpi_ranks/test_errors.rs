@@ -135,7 +135,7 @@ mod tests {
         );
     }
 
-    /// Test error handling when my_MPI_rank is a string (type mismatch)
+    /// Test error handling when my_MPI_rank is an empty string (type mismatch)
     #[test]
     fn test_extract_mpi_rank_empty_string() {
         let mut lmx_summary: LmxSummary = HashMap::new();
