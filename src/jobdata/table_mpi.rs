@@ -21,7 +21,7 @@ use crate::sqltypes::SqlTypeHashMap;
 use anyhow::{bail, Result};
 
 // #[cfg(test)]
-// pub(crate) mod extract_profile;
+pub(crate) mod extract_profile;
 #[cfg(test)]
 pub(crate) mod vec_serde_yaml;
 
