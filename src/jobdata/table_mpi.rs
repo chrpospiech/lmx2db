@@ -20,7 +20,7 @@ use crate::jobdata::{read_lmx_summary, LmxSummary};
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::{bail, Result};
 
-// #[cfg(test)]
+#[cfg(test)]
 pub(crate) mod extract_profile;
 #[cfg(test)]
 pub(crate) mod vec_serde_yaml;
