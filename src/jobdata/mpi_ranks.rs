@@ -38,7 +38,9 @@ pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
                     Ok(mpi_rank_i as u64)
                 }
             } else {
-                bail!("my_MPI_rank value in base_data is neither a number nor a string");
+                bail!(
+                    "my_MPI_rank value in base_data is not a number that can be converted to u64"
+                );
             }
         } else {
             bail!("my_MPI_rank key not found in base_data");

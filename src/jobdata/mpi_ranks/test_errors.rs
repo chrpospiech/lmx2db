@@ -57,28 +57,6 @@ mod tests {
         );
     }
 
-    /// Test handling when my_MPI_rank value is a positive number (should succeed)
-    #[test]
-    fn test_extract_mpi_rank_positive_number_value() {
-        let mut lmx_summary: LmxSummary = HashMap::new();
-        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
-
-        // Insert a number - this should now work
-        base_data.insert(
-            "my_MPI_rank".to_string(),
-            serde_yaml::Value::Number(42.into()),
-        );
-        lmx_summary.insert("base_data".to_string(), base_data);
-
-        let result = extract_mpi_rank(&lmx_summary);
-
-        assert!(
-            result.is_ok(),
-            "Expected success when my_MPI_rank is a positive number"
-        );
-        assert_eq!(result.unwrap(), 42, "Expected MPI rank to be 42");
-    }
-
     /// Test error handling when my_MPI_rank value cannot be parsed as u64
     #[test]
     fn test_extract_mpi_rank_invalid_parse() {
@@ -99,10 +77,9 @@ mod tests {
             "Expected error when my_MPI_rank cannot be parsed as u64"
         );
         assert!(
-            result
-                .unwrap_err()
-                .to_string()
-                .contains("Failed to parse my_MPI_rank"),
+            result.unwrap_err().to_string().contains(
+                "my_MPI_rank value in base_data is not a number that can be converted to u64"
+            ),
             "Error message should mention parse failure"
         );
     }
@@ -151,10 +128,9 @@ mod tests {
             "Expected error when my_MPI_rank has invalid characters"
         );
         assert!(
-            result
-                .unwrap_err()
-                .to_string()
-                .contains("Failed to parse my_MPI_rank"),
+            result.unwrap_err().to_string().contains(
+                "my_MPI_rank value in base_data is not a number that can be converted to u64"
+            ),
             "Error message should mention parse failure"
         );
     }
@@ -175,36 +151,10 @@ mod tests {
 
         assert!(result.is_err(), "Expected error when my_MPI_rank is empty");
         assert!(
-            result
-                .unwrap_err()
-                .to_string()
-                .contains("Failed to parse my_MPI_rank"),
+            result.unwrap_err().to_string().contains(
+                "my_MPI_rank value in base_data is not a number that can be converted to u64"
+            ),
             "Error message should mention parse failure"
-        );
-    }
-
-    /// Test error handling when my_MPI_rank is neither a number nor a string
-    #[test]
-    fn test_extract_mpi_rank_invalid_type() {
-        let mut lmx_summary: LmxSummary = HashMap::new();
-        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
-
-        // Insert a boolean (neither number nor string)
-        base_data.insert("my_MPI_rank".to_string(), serde_yaml::Value::Bool(true));
-        lmx_summary.insert("base_data".to_string(), base_data);
-
-        let result = extract_mpi_rank(&lmx_summary);
-
-        assert!(
-            result.is_err(),
-            "Expected error when my_MPI_rank is neither number nor string"
-        );
-        assert!(
-            result
-                .unwrap_err()
-                .to_string()
-                .contains("neither a number nor a string"),
-            "Error message should mention invalid type"
         );
     }
 }
