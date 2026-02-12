@@ -233,7 +233,7 @@ pub async fn process_sql_queries(
     Ok(())
 }
 
-pub fn read_lmx_summary(file_name: &str) -> Result<LmxSummary> {
+pub(crate) fn read_lmx_summary(file_name: &str) -> Result<LmxSummary> {
     let file_content = std::fs::read_to_string(file_name)?;
     let lmx_summary: LmxSummary = serde_yaml::from_str(&file_content)?;
     Ok(lmx_summary)
