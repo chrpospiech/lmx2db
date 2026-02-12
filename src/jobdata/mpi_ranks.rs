@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::jobdata::LmxSummary;
-use anyhow::{anyhow, bail, Result};
+use anyhow::{bail, Result};
 
 /// Extracts MPI rank information from an LMX summary type structure.
 ///
@@ -36,17 +36,10 @@ pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
                 } else {
                     Ok(mpi_rank_i as u64)
                 }
-            } else if let Some(mpi_rank_str) = mpi_rank_value.as_str() {
-                let mpi_rank = mpi_rank_str.parse::<u64>().map_err(|e| {
-                    anyhow!(
-                        "Failed to parse my_MPI_rank value '{}' in base_data as u64: {}",
-                        mpi_rank_str,
-                        e
-                    )
-                })?;
-                Ok(mpi_rank)
             } else {
-                bail!("my_MPI_rank value in base_data is neither a number nor a string");
+                bail!(
+                    "my_MPI_rank value in base_data is not a number that can be converted to u64"
+                );
             }
         } else {
             bail!("my_MPI_rank key not found in base_data");
