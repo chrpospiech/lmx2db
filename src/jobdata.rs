@@ -26,6 +26,7 @@ pub(crate) mod create_sql;
 pub(crate) mod mpi_ranks;
 pub(crate) mod table_environ;
 pub(crate) mod table_mmm;
+pub(crate) mod table_mpi;
 pub(crate) mod table_runs;
 pub(crate) mod table_settings;
 pub(crate) mod table_tasks;
@@ -110,6 +111,9 @@ pub async fn process_lmx_file(
         sqltypes,
         args,
     )?);
+
+    // Generate SQL queries for the 'mpi' and 'mpi_details' tables
+    query_list.extend(table_mpi::import_into_mpi_table(file_name, sqltypes, args)?);
 
     // Process the collected SQL queries
     process_sql_queries(query_list, pool, args).await?;
@@ -229,7 +233,7 @@ pub async fn process_sql_queries(
     Ok(())
 }
 
-fn read_lmx_summary(file_name: &str) -> Result<LmxSummary> {
+pub(crate) fn read_lmx_summary(file_name: &str) -> Result<LmxSummary> {
     let file_content = std::fs::read_to_string(file_name)?;
     let lmx_summary: LmxSummary = serde_yaml::from_str(&file_content)?;
     Ok(lmx_summary)
