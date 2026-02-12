@@ -135,9 +135,9 @@ mod tests {
         );
     }
 
-    /// Test error handling when my_MPI_rank is an empty string
+    /// Test error handling when my_MPI_rank has a string value (type error)
     #[test]
-    fn test_extract_mpi_rank_empty_string() {
+    fn test_extract_mpi_rank_string_type_error() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
@@ -149,12 +149,12 @@ mod tests {
 
         let result = extract_mpi_rank(&lmx_summary);
 
-        assert!(result.is_err(), "Expected error when my_MPI_rank is empty");
+        assert!(result.is_err(), "Expected error when my_MPI_rank is a string");
         assert!(
             result.unwrap_err().to_string().contains(
                 "my_MPI_rank value in base_data is not a number that can be converted to u64"
             ),
-            "Error message should mention parse failure"
+            "Error message should indicate type error (string value not allowed)"
         );
     }
 }
