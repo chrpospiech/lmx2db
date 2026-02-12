@@ -149,7 +149,7 @@ mod tests {
 
         let result = extract_mpi_rank(&lmx_summary);
 
-        assert!(result.is_err(), "Expected error when my_MPI_rank is a string type");
+        assert!(result.is_err(), "Expected error when my_MPI_rank is an empty string");
         assert!(
             result.unwrap_err().to_string().contains(
                 "my_MPI_rank value in base_data is not a number that can be converted to u64"
