@@ -35,6 +35,14 @@ pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<i32> {
     if let Some(seq) = value.as_sequence() {
         if let Some(first_value) = seq.first() {
             if let Some(ticks) = first_value.as_i64() {
+                if ticks < i32::MIN as i64 || ticks > i32::MAX as i64 {
+                    anyhow::bail!(
+                        "Interval timer profiler ticks value {} is out of i32 range ({}..={})",
+                        ticks,
+                        i32::MIN,
+                        i32::MAX
+                    );
+                }
                 return Ok(ticks as i32);
             }
         }
