@@ -57,4 +57,17 @@ mod tests {
         assert!(msg.contains("Expected a sequence with an integer"));
         Ok(())
     }
+
+    #[test]
+    fn uses_only_first_element_from_multiple() -> Result<()> {
+        let input = serde_yaml::from_str(
+            r#"- 100
+- 200
+- 300
+"#,
+        )?;
+        let ticks = extract_iprof_ticks(&input)?;
+        assert_eq!(ticks, 100);
+        Ok(())
+    }
 }
