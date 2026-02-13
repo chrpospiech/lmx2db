@@ -14,13 +14,13 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::jobdata::mpi_ranks::extract_mpi_rank;
+    use crate::jobdata::base_data::extract_base_data_key;
     use crate::jobdata::LmxSummary;
     use std::collections::HashMap;
 
     /// Test successful extraction of MPI rank with value 0 (as number)
     #[test]
-    fn test_extract_mpi_rank_zero_number() {
+    fn test_extract_base_data_key_zero_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
@@ -30,7 +30,7 @@ mod tests {
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
-        let result = extract_mpi_rank(&lmx_summary);
+        let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
 
         assert!(result.is_ok(), "Expected successful extraction");
         assert_eq!(result.unwrap(), 0, "Expected MPI rank to be 0");
@@ -38,7 +38,7 @@ mod tests {
 
     /// Test successful extraction of MPI rank with a small positive value (as number)
     #[test]
-    fn test_extract_mpi_rank_small_number_u64() {
+    fn test_extract_base_data_key_small_number_u64() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
@@ -48,7 +48,7 @@ mod tests {
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
-        let result = extract_mpi_rank(&lmx_summary);
+        let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
 
         assert!(result.is_ok(), "Expected successful extraction");
         assert_eq!(result.unwrap(), 42, "Expected MPI rank to be 42");
@@ -56,7 +56,7 @@ mod tests {
 
     /// Test that base_data can contain other keys (with number value)
     #[test]
-    fn test_extract_mpi_rank_with_other_keys_number() {
+    fn test_extract_base_data_key_with_other_keys_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
@@ -75,7 +75,7 @@ mod tests {
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
-        let result = extract_mpi_rank(&lmx_summary);
+        let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
 
         assert!(result.is_ok(), "Expected successful extraction");
         assert_eq!(

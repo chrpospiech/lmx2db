@@ -22,27 +22,29 @@ use anyhow::{bail, Result};
 ///
 /// # Returns
 /// * `Result<u64>` - The extracted MPI rank as a u64 integer, or an error if extraction fails.
-pub fn extract_mpi_rank(lmx_summary: &LmxSummary) -> Result<u64> {
+pub fn extract_base_data_key(lmx_summary: &LmxSummary, key: &str) -> Result<u64> {
     if let Some(base_data) = lmx_summary.get("base_data") {
-        if let Some(mpi_rank_value) = base_data.get("my_MPI_rank") {
+        if let Some(mpi_rank_value) = base_data.get(key) {
             // First, try to interpret the value as an unsigned integer directly.
             if let Some(mpi_rank) = mpi_rank_value.as_u64() {
                 Ok(mpi_rank)
             } else if let Some(mpi_rank_i) = mpi_rank_value.as_i64() {
                 if mpi_rank_i < 0 {
                     bail!(
-                        "my_MPI_rank value in base_data is negative and cannot be converted to u64"
+                        "{} value in base_data is negative and cannot be converted to u64",
+                        key
                     );
                 } else {
                     Ok(mpi_rank_i as u64)
                 }
             } else {
                 bail!(
-                    "my_MPI_rank value in base_data is not a number that can be converted to u64"
+                    "{} value in base_data is not a number that can be converted to u64",
+                    key
                 );
             }
         } else {
-            bail!("my_MPI_rank key not found in base_data");
+            bail!("{} key not found in base_data", key);
         }
     } else {
         bail!("base_data key not found in LMX summary");

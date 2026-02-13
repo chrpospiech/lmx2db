@@ -14,8 +14,8 @@
 
 use crate::cmdline::CliArgs;
 use crate::globbing::find_lmx_type_files;
+use crate::jobdata::base_data::extract_base_data_key;
 use crate::jobdata::create_sql::create_import_statement;
-use crate::jobdata::mpi_ranks::extract_mpi_rank;
 use crate::jobdata::{read_lmx_summary, LmxSummary};
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::{bail, Result};
@@ -47,7 +47,7 @@ pub fn extract_vector_from_serde_yaml(value: &serde_yaml::Value) -> Result<Vec<s
 
 /// Helper function to extract MPI data from an LMX summary type structure.
 /// This function takes a reference to an LMX summary data structure,
-/// extracts the MPI rank using the `extract_mpi_rank` function, and then
+/// extracts the MPI rank using the `extract_base_data_key` function, and then
 /// parses the section denoted by the provided `section_key` to extract
 /// the relevant data for that MPI rank. It returns these data as
 /// Vec<Vec<serde_yaml::Value>>.
@@ -63,7 +63,7 @@ pub fn extract_mpi_data_from_mpi_profile(
     mpi_profile: &LmxSummary,
     section_key: &str,
 ) -> Result<Vec<Vec<serde_yaml::Value>>> {
-    let mpi_rank = extract_mpi_rank(mpi_profile)?;
+    let mpi_rank = extract_base_data_key(mpi_profile, "my_MPI_rank")?;
     let mut result: Vec<Vec<serde_yaml::Value>> = Vec::new();
     let is_detail = section_key.contains("detail");
 

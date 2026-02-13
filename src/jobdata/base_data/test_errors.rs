@@ -14,16 +14,16 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::jobdata::mpi_ranks::extract_mpi_rank;
+    use crate::jobdata::base_data::extract_base_data_key;
     use crate::jobdata::LmxSummary;
     use std::collections::HashMap;
 
     /// Test error handling when base_data key is missing
     #[test]
-    fn test_extract_mpi_rank_missing_base_data() {
+    fn test_extract_base_data_key_missing_base_data() {
         let lmx_summary: LmxSummary = HashMap::new();
 
-        let result = extract_mpi_rank(&lmx_summary);
+        let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
 
         assert!(result.is_err(), "Expected error when base_data is missing");
         assert!(
@@ -37,12 +37,12 @@ mod tests {
 
     /// Test error handling when my_MPI_rank key is missing
     #[test]
-    fn test_extract_mpi_rank_missing_mpi_rank_key() {
+    fn test_extract_base_data_key_missing_mpi_rank_key() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
         lmx_summary.insert("base_data".to_string(), base_data);
 
-        let result = extract_mpi_rank(&lmx_summary);
+        let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
 
         assert!(
             result.is_err(),
@@ -59,7 +59,7 @@ mod tests {
 
     /// Test error handling when my_MPI_rank value is not a numeric type
     #[test]
-    fn test_extract_mpi_rank_non_numeric_type() {
+    fn test_extract_base_data_key_non_numeric_type() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
@@ -70,7 +70,7 @@ mod tests {
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
-        let result = extract_mpi_rank(&lmx_summary);
+        let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
 
         assert!(
             result.is_err(),
@@ -86,7 +86,7 @@ mod tests {
 
     /// Test error handling when my_MPI_rank is a negative number
     #[test]
-    fn test_extract_mpi_rank_negative_number() {
+    fn test_extract_base_data_key_negative_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
         let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
 
@@ -97,7 +97,7 @@ mod tests {
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
-        let result = extract_mpi_rank(&lmx_summary);
+        let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
 
         assert!(
             result.is_err(),
@@ -108,6 +108,4 @@ mod tests {
             "Error message should mention negative value"
         );
     }
-
-
 }
