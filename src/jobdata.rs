@@ -25,6 +25,7 @@ pub(crate) mod base_data;
 pub(crate) mod checktypes;
 pub(crate) mod create_sql;
 pub(crate) mod table_environ;
+pub(crate) mod table_iprof;
 pub(crate) mod table_mmm;
 pub(crate) mod table_mpi;
 pub(crate) mod table_runs;
