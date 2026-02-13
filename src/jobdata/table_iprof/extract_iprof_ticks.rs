@@ -57,4 +57,30 @@ mod tests {
         assert!(msg.contains("Expected a sequence with an integer"));
         Ok(())
     }
+
+    #[test]
+    fn rejects_i64_value_above_i32_max() -> Result<()> {
+        // Test that values above i32::MAX are rejected
+        let input = serde_yaml::from_str(
+            r#"- 3000000000
+"#,
+        )?;
+        let err = extract_iprof_ticks(&input).unwrap_err();
+        let msg = format!("{err}");
+        assert!(msg.contains("out of i32 range"));
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_i64_value_below_i32_min() -> Result<()> {
+        // Test that values below i32::MIN are rejected
+        let input = serde_yaml::from_str(
+            r#"- -3000000000
+"#,
+        )?;
+        let err = extract_iprof_ticks(&input).unwrap_err();
+        let msg = format!("{err}");
+        assert!(msg.contains("out of i32 range"));
+        Ok(())
+    }
 }
