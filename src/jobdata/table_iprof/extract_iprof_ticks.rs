@@ -59,6 +59,19 @@ mod tests {
     }
 
     #[test]
+    fn uses_only_first_element_from_multiple() -> Result<()> {
+        let input = serde_yaml::from_str(
+            r#"- 100
+- 200
+- 300
+"#,
+        )?;
+        let ticks = extract_iprof_ticks(&input)?;
+        assert_eq!(ticks, 100);
+        Ok(())
+    }
+}
+
     fn rejects_i64_value_above_i32_max() -> Result<()> {
         // Test that values above i32::MAX are rejected
         let input = serde_yaml::from_str(
