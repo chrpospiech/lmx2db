@@ -70,10 +70,20 @@ mod tests {
         assert_eq!(ticks, 100);
         Ok(())
     }
-}
 
+    #[test]
+    fn accepts_negative_tick_value() -> Result<()> {
+        let input = serde_yaml::from_str(
+            r#"- -100
+"#,
+        )?;
+        let ticks = extract_iprof_ticks(&input)?;
+        assert_eq!(ticks, -100);
+        Ok(())
+    }
+
+    #[test]
     fn rejects_i64_value_above_i32_max() -> Result<()> {
-        // Test that values above i32::MAX are rejected
         let input = serde_yaml::from_str(
             r#"- 3000000000
 "#,
@@ -88,7 +98,6 @@ mod tests {
 
     #[test]
     fn rejects_i64_value_below_i32_min() -> Result<()> {
-        // Test that values below i32::MIN are rejected
         let input = serde_yaml::from_str(
             r#"- -3000000000
 "#,
