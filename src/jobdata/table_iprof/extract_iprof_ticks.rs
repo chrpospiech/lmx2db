@@ -57,4 +57,47 @@ mod tests {
         assert!(msg.contains("Expected a sequence with an integer"));
         Ok(())
     }
+
+    #[test]
+    fn uses_only_first_element_from_multiple() -> Result<()> {
+        let input = serde_yaml::from_str(
+            r#"- 100
+- 200
+- 300
+"#,
+        )?;
+        let ticks = extract_iprof_ticks(&input)?;
+        assert_eq!(ticks, 100);
+        Ok(())
+    }
+}
+
+    fn rejects_i64_value_above_i32_max() -> Result<()> {
+        // Test that values above i32::MAX are rejected
+        let input = serde_yaml::from_str(
+            r#"- 3000000000
+"#,
+        )?;
+        let err = extract_iprof_ticks(&input).unwrap_err();
+        let msg = format!("{err}");
+        assert!(msg.contains("Interval timer profiler ticks value"));
+        assert!(msg.contains("is out of i32 range"));
+        assert!(msg.contains("3000000000"));
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_i64_value_below_i32_min() -> Result<()> {
+        // Test that values below i32::MIN are rejected
+        let input = serde_yaml::from_str(
+            r#"- -3000000000
+"#,
+        )?;
+        let err = extract_iprof_ticks(&input).unwrap_err();
+        let msg = format!("{err}");
+        assert!(msg.contains("Interval timer profiler ticks value"));
+        assert!(msg.contains("is out of i32 range"));
+        assert!(msg.contains("-3000000000"));
+        Ok(())
+    }
 }
