@@ -67,7 +67,9 @@ mod tests {
         )?;
         let err = extract_iprof_ticks(&input).unwrap_err();
         let msg = format!("{err}");
-        assert!(msg.contains("out of i32 range"));
+        assert!(msg.contains("Interval timer profiler ticks value"));
+        assert!(msg.contains("is out of i32 range"));
+        assert!(msg.contains("3000000000"));
         Ok(())
     }
 
@@ -80,7 +82,9 @@ mod tests {
         )?;
         let err = extract_iprof_ticks(&input).unwrap_err();
         let msg = format!("{err}");
-        assert!(msg.contains("out of i32 range"));
+        assert!(msg.contains("Interval timer profiler ticks value"));
+        assert!(msg.contains("is out of i32 range"));
+        assert!(msg.contains("-3000000000"));
         Ok(())
     }
 }
