@@ -57,7 +57,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/mpi_names.sql"
+    ))]
     pub async fn test_import_gromacs_jobdata(pool: sqlx::Pool<MySql>) -> Result<()> {
         // Create CliArgs with project file and other configuration
         let args = CliArgs {
@@ -89,7 +92,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/mpi_names.sql"
+    ))]
     pub async fn test_import_gromacs_jobdata_verbose(pool: sqlx::Pool<MySql>) -> Result<()> {
         // Create CliArgs with verbose = true and dry_run = false
         let args = CliArgs {
@@ -121,7 +127,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/mpi_names.sql"
+    ))]
     pub async fn test_import_gromacs_jobdata_dry_run(pool: sqlx::Pool<MySql>) -> Result<()> {
         // Create CliArgs with verbose = false and dry_run = true
         let args = CliArgs {

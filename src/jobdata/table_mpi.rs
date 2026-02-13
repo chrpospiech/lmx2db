@@ -76,7 +76,7 @@ pub fn extract_mpi_data_from_mpi_profile(
             let mut row: Vec<serde_yaml::Value> = vec![
                 serde_yaml::Value::String("@rid".to_string()),
                 serde_yaml::Value::Number(serde_yaml::Number::from(mpi_rank as u64)),
-                serde_yaml::Value::String(format!("mpi_call_id({})", key)),
+                serde_yaml::Value::String(format!("mpi_call_id('{}')", key)),
             ];
 
             if !is_detail {
@@ -165,9 +165,9 @@ pub fn import_into_mpi_table(
                     "rid".to_string(),
                     "tid".to_string(),
                     "mid".to_string(),
-                    "avgbytes".to_string(),
                     "calls".to_string(),
-                    "bytes".to_string(),
+                    "avgbytes".to_string(),
+                    "time".to_string(),
                 ],
                 &mpi_data,
                 sqltypes,
@@ -186,9 +186,9 @@ pub fn import_into_mpi_table(
                     "rid".to_string(),
                     "tid".to_string(),
                     "mid".to_string(),
-                    "avgbytes".to_string(),
                     "calls".to_string(),
-                    "bytes".to_string(),
+                    "avgbytes".to_string(),
+                    "time".to_string(),
                 ],
                 &mpi_detail_data,
                 sqltypes,
