@@ -71,3 +71,33 @@ mod tests {
         Ok(())
     }
 }
+
+    fn rejects_i64_value_above_i32_max() -> Result<()> {
+        // Test that values above i32::MAX are rejected
+        let input = serde_yaml::from_str(
+            r#"- 3000000000
+"#,
+        )?;
+        let err = extract_iprof_ticks(&input).unwrap_err();
+        let msg = format!("{err}");
+        assert!(msg.contains("Interval timer profiler ticks value"));
+        assert!(msg.contains("is out of i32 range"));
+        assert!(msg.contains("3000000000"));
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_i64_value_below_i32_min() -> Result<()> {
+        // Test that values below i32::MIN are rejected
+        let input = serde_yaml::from_str(
+            r#"- -3000000000
+"#,
+        )?;
+        let err = extract_iprof_ticks(&input).unwrap_err();
+        let msg = format!("{err}");
+        assert!(msg.contains("Interval timer profiler ticks value"));
+        assert!(msg.contains("is out of i32 range"));
+        assert!(msg.contains("-3000000000"));
+        Ok(())
+    }
+}

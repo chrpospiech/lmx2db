@@ -20,16 +20,17 @@ pub(crate) mod extract_full_name;
 pub(crate) mod extract_iprof_ticks;
 
 /// Helper function to extract the number of interval timer profiler ticks.
-/// This function takes a reference to a single serde_yaml::Value that is
-/// expected to be a sequence (array), checks that the first value is
-/// an integer (i32), and returns that integer as the number of ticks.
 ///
-/// Arguments:
+/// # Arguments
 /// * `value` - A reference to a serde_yaml::Value that should be a sequence
 ///
-/// Returns the number of interval timer profiler ticks as an i32.
-/// If the input value is not a sequence or if the first value
-/// is not an integer, an error is returned.
+/// # Returns
+/// * `Result<i32>` - The number of interval timer profiler ticks as an i32.
+///
+/// # Errors
+/// * Returns an error if the input value is not a sequence.
+/// * Returns an error if the first value is not an integer.
+/// * Returns an error if the integer value is out of i32 range.
 #[allow(dead_code)]
 pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<i32> {
     if let Some(seq) = value.as_sequence() {
@@ -54,16 +55,17 @@ pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<i32> {
 }
 
 /// Helper function to extract a full library or function name.
-/// This function takes a reference to a single serde_yaml::Value that is
-/// expected to be a sequence (array), checks that all members are strings,
-/// and returns the joined string as the full name.
 ///
-/// Arguments:
+/// # Arguments
 /// * `value` - A reference to a serde_yaml::Value that should be a sequence
 ///
-/// Returns the full library or function name as a String.
-/// If the input value is not a sequence or if any member is not a string,
-/// an error is returned.
+/// # Returns
+/// * `Result<String>` - The full library or function name as a joined string.
+///
+/// # Errors
+/// * Returns an error if the input value is not a sequence.
+/// * Returns an error if any member is not a string.
+/// * Returns an error if the sequence is empty.
 #[allow(dead_code)]
 pub fn extract_full_name(value: &serde_yaml::Value) -> Result<String> {
     if let Some(seq) = value.as_sequence() {
