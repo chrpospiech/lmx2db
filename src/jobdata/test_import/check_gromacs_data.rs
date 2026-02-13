@@ -15,7 +15,7 @@
 use anyhow::Result;
 use sqlx::MySql;
 
-/// function for testing import of GROMACS test data
+/// Function for testing import of GROMACS test data
 /// by checking database contents after import.
 /// The check is done by calling corresponding
 /// functions for each table separately.
@@ -26,18 +26,22 @@ use sqlx::MySql;
 /// # Returns
 /// - `Result<()>`: Ok if all checks pass, Err otherwise
 pub async fn check_gromacs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
-    // check data in table runs.
+    // Check data in table runs.
     check_gromacs_runs_data(pool).await?;
-    // check data in table settings.
+    // Check data in table settings.
     check_gromacs_settings_data(pool).await?;
-    // check data in table environ.
+    // Check data in table environ.
     check_gromacs_environ_data(pool).await?;
-    // check data in table mmm.
+    // Check data in table mmm.
     check_gromacs_mmm_data(pool).await?;
+    // Check data in table mpi.
+    check_gromacs_mpi_data(pool).await?;
+    // Check data in table mpi_details.
+    check_gromacs_mpi_details_data(pool).await?;
     Ok(())
 }
 
-/// function for testing import of GROMACS data in table runs
+/// Function for testing import of GROMACS data in table runs
 /// by checking database contents after import.
 ///
 /// # Arguments
@@ -75,7 +79,7 @@ async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     Ok(())
 }
 
-/// function for testing import of GROMACS data in table settings
+/// Function for testing import of GROMACS data in table settings
 /// by checking database contents after import.
 ///
 /// # Arguments
@@ -128,7 +132,7 @@ async fn check_gromacs_settings_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     Ok(())
 }
 
-/// function for testing import of GROMACS data in table environ
+/// Function for testing import of GROMACS data in table environ
 /// by checking database contents after import.
 ///
 /// # Arguments
@@ -175,7 +179,7 @@ async fn check_gromacs_environ_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     Ok(())
 }
 
-/// function for testing import of GROMACS data in table mmm
+/// Function for testing import of GROMACS data in table mmm
 /// by checking database contents after import.
 ///
 /// # Arguments
@@ -212,5 +216,88 @@ async fn check_gromacs_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     assert!(minmpiiotask.is_none());
     assert!(minmpiio.is_none());
 
+    Ok(())
+}
+
+/// Function for testing import of GROMACS data in table mpi
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_gromacs_mpi_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i32, f32, f32)>(
+        "SELECT `calls`, `avgbytes`, `time` FROM `mpi` WHERE `tid` = 0 AND mid = 1;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly one row was returned
+    assert_eq!(
+        rows.len(),
+        1,
+        "Expected exactly 1 row, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned row
+    let (calls, avgbytes, time) = &rows[0];
+    assert_eq!(*calls, 2);
+    assert!(
+        (*avgbytes - 66.0000).abs() < 1e-4,
+        "avgbytes was {}, expected 66.0000",
+        avgbytes
+    );
+    assert!(
+        (*time - 5.00679e-06).abs() < 1e-4,
+        "time was {}, expected 5.00679e-06",
+        time
+    );
+
+    Ok(())
+}
+
+/// Function for testing import of GROMACS data in table mpi_details
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_gromacs_mpi_details_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i32, f32, f32)>(
+        "SELECT `calls`, `avgbytes`, `time` FROM `mpi_details` WHERE `tid` = 30 AND mid = 1;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly one row was returned
+    assert_eq!(
+        rows.len(),
+        1,
+        "Expected exactly 1 row, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned row
+    let (calls, avgbytes, time) = &rows[0];
+    assert_eq!(*calls, 8);
+    assert!(
+        (*avgbytes - 96.0000).abs() < 1e-4,
+        "avgbytes was {}, expected 96.0000",
+        avgbytes
+    );
+    assert!(
+        (*time - 2.193451e-05).abs() < 1e-4,
+        "time was {}, expected 2.193451e-05",
+        time
+    );
     Ok(())
 }
