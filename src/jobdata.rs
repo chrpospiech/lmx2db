@@ -116,6 +116,11 @@ pub async fn process_lmx_file(
     // Generate SQL queries for the 'mpi' and 'mpi_details' tables
     query_list.extend(table_mpi::import_into_mpi_table(file_name, sqltypes, args)?);
 
+    // Generate SQL queries for the 'iprof' table
+    query_list.extend(table_iprof::import_into_iprof_table(
+        file_name, sqltypes, args,
+    )?);
+
     // Process the collected SQL queries
     process_sql_queries(query_list, pool, args).await?;
 
