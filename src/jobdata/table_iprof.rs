@@ -203,6 +203,12 @@ pub fn import_into_iprof_table(
     args: &CliArgs,
 ) -> Result<Vec<String>> {
     let mut query_list: Vec<String> = Vec::new();
+    
+    // Check early if 'iprof' table exists in sqltypes to fail fast
+    if !sqltypes.contains_key("iprof") {
+        return Ok(query_list);
+    }
+    
     let iprof_files = find_lmx_type_files(file_name, "itimer")?;
     if iprof_files.is_empty() {
         // No interval timer profile files found, return empty query list without error
