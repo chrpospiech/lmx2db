@@ -135,7 +135,7 @@ pub fn extract_full_library_name(iprof: &LmxSummary, short_name: &String) -> Res
 }
 
 /// Helper function to extract a full function name from LmxSummary type data
-/// a given lib_name and a given short name.
+/// for a given lib_name and a given short name.
 ///
 /// # Arguments
 /// * `iprof` - A reference to a LmxSummary struct containing the profiling data.
