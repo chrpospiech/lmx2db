@@ -21,6 +21,10 @@ use crate::sqltypes::SqlTypeHashMap;
 use anyhow::{anyhow, bail, Result};
 
 #[cfg(test)]
+pub(crate) mod extract_full_function_name;
+#[cfg(test)]
+pub(crate) mod extract_full_library_name;
+#[cfg(test)]
 pub(crate) mod extract_full_name;
 #[cfg(test)]
 pub(crate) mod extract_iprof_ticks;
