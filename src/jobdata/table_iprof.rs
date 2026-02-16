@@ -28,6 +28,8 @@ pub(crate) mod extract_full_library_name;
 pub(crate) mod extract_full_name;
 #[cfg(test)]
 pub(crate) mod extract_iprof_ticks;
+#[cfg(test)]
+pub(crate) mod import_into_iprof;
 
 /// Helper function to extract the number of interval timer profiler ticks.
 ///
