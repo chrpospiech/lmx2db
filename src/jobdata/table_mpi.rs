@@ -23,6 +23,8 @@ use anyhow::{bail, Result};
 #[cfg(test)]
 pub(crate) mod extract_profile;
 #[cfg(test)]
+pub(crate) mod import_into_mpi_table;
+#[cfg(test)]
 pub(crate) mod vec_serde_yaml;
 
 /// Helper function to extract a vector of values from LMX summary type data.
