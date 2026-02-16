@@ -277,7 +277,10 @@ pub fn import_into_iprof_table(
             value_list.push(vec![
                 serde_yaml::Value::String("@rid".to_string()),
                 serde_yaml::Value::Number(my_mpi_rank.into()),
-                serde_yaml::Value::String(format!("routine_id('{}','{}')", lib_full_name_escaped, total_escaped)),
+                serde_yaml::Value::String(format!(
+                    "routine_id('{}','{}')",
+                    lib_full_name_escaped, total_escaped
+                )),
                 serde_yaml::Value::Number(lib_ticks.into()),
             ]);
         }

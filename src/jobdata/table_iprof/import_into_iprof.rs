@@ -15,9 +15,7 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        cmdline::CliArgs,
-        jobdata::table_iprof::import_into_iprof_table,
-        sqltypes::read_sqltypes,
+        cmdline::CliArgs, jobdata::table_iprof::import_into_iprof_table, sqltypes::read_sqltypes,
     };
     use anyhow::Result;
     use sqlx::MySql;
@@ -41,7 +39,7 @@ mod tests {
         // Create a temporary directory without any itimer profile files
         let temp_dir = TempDir::new()?;
         let temp_file = temp_dir.path().join("LMX_summary.123456.0.yml");
-        
+
         // Create a minimal LMX summary file
         fs::write(&temp_file, "base_data:\n  my_MPI_rank: 0\n")?;
 
