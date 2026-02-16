@@ -268,11 +268,14 @@ pub fn import_into_iprof_table(
         let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
         for (lib_short_name, lib_data) in histogram {
             let lib_full_name = extract_full_library_name(&iprof_data, lib_short_name)?;
+            // Escape single quotes in names before embedding into SQL string literals
+            let lib_full_name_escaped = lib_full_name.replace('\'', "''");
+            let total_escaped = total.replace('\'', "''");
             let lib_ticks = extract_iprof_ticks(lib_data)?;
             value_list.push(vec![
                 serde_yaml::Value::String("@rid".to_string()),
                 serde_yaml::Value::Number(my_mpi_rank.into()),
-                serde_yaml::Value::String(format!("routine_id('{}','{}')", lib_full_name, total)),
+                serde_yaml::Value::String(format!("routine_id('{}','{}')", lib_full_name_escaped, total_escaped)),
                 serde_yaml::Value::Number(lib_ticks.into()),
             ]);
         }
