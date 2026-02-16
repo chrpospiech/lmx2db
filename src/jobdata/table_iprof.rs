@@ -339,7 +339,8 @@ pub fn import_into_iprof_table(
                     serde_yaml::Value::Number(my_mpi_rank.into()),
                     serde_yaml::Value::String(format!(
                         "routine_id('{}','{}')",
-                        lib_full_name, func_full_name
+                        lib_full_name.replace('\'', "''"),
+                        func_full_name.replace('\'', "''"),
                     )),
                     serde_yaml::Value::Number(func_ticks.into()),
                 ]);
