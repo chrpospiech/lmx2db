@@ -120,14 +120,14 @@ pub fn extract_mpi_data_from_mpi_profile(
 
 /// Extracts MPI profile data from YAML files found by `find_lmx_type_files`
 /// and processes it to generate SQL queries for database insertion.
-/// This function reads the MPI profile files, extracts relevant data using
-/// `extract_mpi_data_from_mpi_profile`, and then generates SQL insert statements
-/// based on the provided `sqltypes` schema mapping. The generated SQL queries
-/// are returned as a vector of strings.
 /// The MPI profile files are expected to be in YAML format and can be parsed
-/// into the LMX summary data structure. The function handles both regular and
-/// detail sections of the MPI profile data, generating appropriate SQL queries
-/// for each case.
+/// into the LMX summary data structure. This function reads this data structure,
+/// extracts relevant data using `extract_mpi_data_from_mpi_profile`, and then
+/// generates SQL insert statements based on the provided `sqltypes` schema mapping.
+/// The generated SQL queries are returned as a vector of strings.
+/// The function handles both regular and detail sections of the MPI profile data,
+/// generating appropriate SQL queries for each case. If no MPI profile data is
+/// found by `find_lmx_type_files`, the function returns an empty `Vec<String>`.
 ///
 /// # Arguments
 /// * `file_name` - The reference LMX summary file name to find MPI profile files.
@@ -135,9 +135,11 @@ pub fn extract_mpi_data_from_mpi_profile(
 /// * `args` - Command line arguments including verbosity and dry-run
 ///
 /// # Returns
-/// A Result containing a vector of SQL insert statements for the MPI profile data or an error.
-/// Errors if the MPI profile files cannot be found, read, parsed,
-/// or if the data cannot be extracted properly.
+/// `Result<Vec<String>>` - A Result containing a vector of SQL insert statements.
+///
+/// # Errors
+/// * Returns an error if any of the found MPI profile files cannot be read or parsed.
+/// * Returns an error if the relevant MPI data cannot be extracted properly.
 pub fn import_into_mpi_table(
     file_name: &str,
     sqltypes: &SqlTypeHashMap,
