@@ -28,6 +28,8 @@ pub(crate) mod extract_full_library_name;
 pub(crate) mod extract_full_name;
 #[cfg(test)]
 pub(crate) mod extract_iprof_ticks;
+#[cfg(test)]
+pub(crate) mod import_into_iprof;
 
 /// Helper function to extract the number of interval timer profiler ticks.
 ///
@@ -281,7 +283,10 @@ pub fn import_into_iprof_table(
             value_list.push(vec![
                 serde_yaml::Value::String("@rid".to_string()),
                 serde_yaml::Value::Number(my_mpi_rank.into()),
-                serde_yaml::Value::String(format!("routine_id('{}','{}')", lib_full_name_escaped, total_escaped)),
+                serde_yaml::Value::String(format!(
+                    "routine_id('{}','{}')",
+                    lib_full_name_escaped, total_escaped
+                )),
                 serde_yaml::Value::Number(lib_ticks.into()),
             ]);
         }
