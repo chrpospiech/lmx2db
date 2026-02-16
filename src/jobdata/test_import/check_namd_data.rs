@@ -34,6 +34,8 @@ pub async fn check_namd_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     check_namd_environ_data(pool).await?;
     // check data in table mmm.
     check_namd_mmm_data(pool).await?;
+    // check data in table tasks.
+    check_namd_tasks_data(pool).await?;
     Ok(())
 }
 
@@ -172,6 +174,54 @@ async fn check_namd_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
         "Expected 0 rows in mmm table for NAMD, but got {}",
         rows.0
     );
+
+    Ok(())
+}
+
+/// function for testing import of NAMD data in table tasks
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_namd_tasks_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i32, i32)>(
+        "SELECT `tid`, CONVERT(`systime`, SIGNED) FROM `tasks` ORDER BY `tid`;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly 8 rows were returned
+    assert_eq!(
+        rows.len(),
+        8,
+        "Expected exactly 8 rows, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned rows
+    let expected_tasks = vec![
+        (0, 14),
+        (1, 17),
+        (2, 18),
+        (3, 19),
+        (4, 13),
+        (5, 13),
+        (6, 15),
+        (7, 17),
+    ];
+
+    for expected in expected_tasks {
+        assert!(
+            rows.contains(&expected),
+            "Expected row {:?} not found in database",
+            expected
+        );
+    }
 
     Ok(())
 }
