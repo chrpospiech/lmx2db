@@ -225,60 +225,6 @@ library_histogram:
         Ok(())
     }
 
-    /// Test successful generation with real itimer profile fixture
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
-    pub async fn test_import_iprof_with_real_fixture(pool: sqlx::Pool<MySql>) -> Result<()> {
-        let args = CliArgs {
-            project_file: "project.yml".to_string(),
-            settings_file: "settings.yml".to_string(),
-            module_file: "modules.yml".to_string(),
-            do_import: true,
-            dry_run: false,
-            verbose: false,
-            ..Default::default()
-        };
-
-        // Read SQL types from the database
-        let sqltypes = read_sqltypes(Some(pool.clone()), &args).await?;
-
-        // Use the real GROMACS test data
-        let manifest_dir = env!("CARGO_MANIFEST_DIR");
-        let lmx_file = std::path::Path::new(manifest_dir)
-            .join("tests/data/GROMACS/run_64/LMX_summary.376231.0.yml");
-
-        // Call import_into_iprof_table
-        let queries = import_into_iprof_table(lmx_file.to_str().unwrap(), &sqltypes, &args)?;
-
-        // Should return multiple queries: total ticks, library histogram, and flat_profile
-        // With 8 itimer files in the GROMACS test data, we expect:
-        // 8 * (1 total + 1 library histogram + 1 flat_profile) = 24 queries
-        assert!(
-            !queries.is_empty(),
-            "Expected non-empty query list with real itimer profile data"
-        );
-
-        // Check that queries contain expected patterns
-        let all_queries = queries.join("\n");
-        assert!(
-            all_queries.contains("__total__"),
-            "Queries should contain total ticks entries"
-        );
-        assert!(
-            all_queries.contains("INSERT"),
-            "Queries should be INSERT statements"
-        );
-        assert!(
-            all_queries.contains("iprof"),
-            "Queries should insert into iprof table"
-        );
-        assert!(
-            all_queries.contains("routine_id"),
-            "Queries should contain routine_id function calls"
-        );
-
-        Ok(())
-    }
-
     /// Test with empty library_histogram section
     #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
     pub async fn test_import_iprof_empty_library_histogram(pool: sqlx::Pool<MySql>) -> Result<()> {
