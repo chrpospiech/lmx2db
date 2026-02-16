@@ -121,7 +121,7 @@ pub fn extract_mpi_data_from_mpi_profile(
 /// Extracts MPI profile data from YAML files found by `find_lmx_type_files`
 /// and processes it to generate SQL queries for database insertion.
 /// The MPI profile files are expected to be in YAML format and can be parsed
-/// into the LMX summary data structure. This function reads reads this data structure,
+/// into the LMX summary data structure. This function reads this data structure,
 /// extracts relevant data using `extract_mpi_data_from_mpi_profile`, and then
 /// generates SQL insert statements based on the provided `sqltypes` schema mapping.
 /// The generated SQL queries are returned as a vector of strings.
