@@ -44,3 +44,9 @@ INSERT INTO `userids` (
 
 -- project data
 SELECT customer_case_id('4paper_2025', 'NAMD', '3.0.2', 'STMV', 1);
+SELECT customer_case_id('4paper_2025', 'GROMACS', '2025.3', 'benchMEM', 1);
+
+-- itimer routine data
+SELECT routine_id('__total__', '__total__');
+SELECT routine_id('/usr/lib64/libc.so.6', '__total__');
+SELECT routine_id('/usr/lib64/libc.so.6', '__memmove_avx512_unaligned_erms');

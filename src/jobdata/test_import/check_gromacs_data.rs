@@ -40,6 +40,8 @@ pub async fn check_gromacs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     check_gromacs_mpi_data(pool).await?;
     // Check data in table mpi_details.
     check_gromacs_mpi_details_data(pool).await?;
+    // Check data in table iprof.
+    check_gromacs_iprof_data(pool).await?;
     Ok(())
 }
 
@@ -72,7 +74,7 @@ async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     assert_eq!(*rid, 1);
     assert_eq!(*clid, 1);
     assert_eq!(*pid, 3);
-    assert_eq!(*ccid, 1);
+    assert_eq!(*ccid, 2);
     assert_eq!(*nodes, 1);
     assert!(*has_mpi_trace);
     assert!(*has_iprof);
@@ -349,5 +351,44 @@ async fn check_gromacs_mpi_details_data(pool: &sqlx::Pool<MySql>) -> Result<()> 
         "time was {}, expected 2.193451e-05",
         time
     );
+    Ok(())
+}
+
+/// Function for testing import of GROMACS data in table iprof
+/// by checking database contents after import.
+///
+/// # Arguments
+/// - `pool`: reference to the database connection pool
+///
+/// # Returns
+/// - `Result<()>`: Ok if all checks pass, Err otherwise
+///
+async fn check_gromacs_iprof_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
+    // Query the database
+    let rows = sqlx::query_as::<_, (i32, i32)>(
+        "SELECT `routine_id`, `ticks` FROM `iprof` WHERE `tid` = 0 AND routine_id < 4;",
+    )
+    .fetch_all(pool)
+    .await?;
+
+    // Assert exactly one row was returned
+    assert_eq!(
+        rows.len(),
+        3,
+        "Expected exactly 3 rows, but got {}",
+        rows.len()
+    );
+
+    // Assert the values of the returned rows
+    let expected_rows = vec![(1, 10725), (2, 568), (3, 489)];
+
+    for expected in expected_rows {
+        assert!(
+            rows.contains(&expected),
+            "Expected row {:?} not found in database",
+            expected
+        );
+    }
+
     Ok(())
 }
