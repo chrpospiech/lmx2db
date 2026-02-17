@@ -122,8 +122,8 @@ pub fn check_types(
                 } else {
                     // signed bigint: i64::MIN to i64::MAX
                     let value_str = try_cast_into_string(value).unwrap_or_default();
-                    if !id_pattern.is_match(&value_str) {
-                        if value.as_i64().is_none() {
+                    if !id_pattern.is_match(&value_str)
+                        && value.as_i64().is_none() {
                             bail!(
                                 "Column {} in table {} expects bigint, but value '{}' is neither a reference (@\\w+id) nor a valid integer",
                                 keys[i],
@@ -132,7 +132,6 @@ pub fn check_types(
                             );
                         }
                         // No range check needed - i64 is the max range for signed bigint
-                    }
                 }
             } else if expected_type_lower.contains("tinyint") {
                 // TINYINT types: tinyint(4) or tinyint(4) unsigned
