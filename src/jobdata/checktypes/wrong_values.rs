@@ -155,7 +155,7 @@ mod tests {
         assert_eq!(
             result.unwrap_err().to_string(),
             format!(
-                "Interval timer profiler ticks value {} is out of u32 range ({}..={})",
+                "Column tid in table tasks expects int(11) unsigned, but value {} is out of u32 range ({}..={})",
                 too_large,
                 0,
                 u32::MAX
@@ -188,7 +188,7 @@ mod tests {
         assert_eq!(
             result.unwrap_err().to_string(),
             format!(
-                "Interval timer profiler ticks value {} is out of i32 range ({}..={})",
+                "Column calls in table mpi expects int(11), but value {} is out of i32 range ({}..={})",
                 too_large,
                 i32::MIN,
                 i32::MAX
