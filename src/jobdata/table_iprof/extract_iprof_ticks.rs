@@ -82,32 +82,4 @@ mod tests {
         assert!(msg.contains("Expected a sequence with an integer"));
         Ok(())
     }
-
-    #[test]
-    fn rejects_i64_value_above_i32_max() -> Result<()> {
-        let input = serde_yaml::from_str(
-            r#"- 3000000000
-"#,
-        )?;
-        let err = extract_iprof_ticks(&input).unwrap_err();
-        let msg = format!("{err}");
-        assert!(msg.contains("Interval timer profiler ticks value"));
-        assert!(msg.contains("is out of u64 range"));
-        assert!(msg.contains("3000000000"));
-        Ok(())
-    }
-
-    #[test]
-    fn rejects_i64_value_below_i32_min() -> Result<()> {
-        let input = serde_yaml::from_str(
-            r#"- -3000000000
-"#,
-        )?;
-        let err = extract_iprof_ticks(&input).unwrap_err();
-        let msg = format!("{err}");
-        assert!(msg.contains("Interval timer profiler ticks value"));
-        assert!(msg.contains("is out of i32 range"));
-        assert!(msg.contains("-3000000000"));
-        Ok(())
-    }
 }

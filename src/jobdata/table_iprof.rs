@@ -37,13 +37,13 @@ pub(crate) mod import_into_iprof;
 /// * `value` - A reference to a serde_yaml::Value that should be a sequence
 ///
 /// # Returns
-/// * `Result<i32>` - The number of interval timer profiler ticks as an i32.
+/// * `Result<u64>` - The number of interval timer profiler ticks as a u64.
 ///
 /// # Errors
 /// * Returns an error if the input value is not a sequence.
 /// * Returns an error if the first value is not an integer.
-/// * Returns an error if the integer value is out of i32 range.
-pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<i32> {
+/// * Returns an error if the integer value is out of u64 range.
+pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<u64> {
     let seq = value.as_sequence().ok_or_else(|| {
         anyhow!(
             "Expected a sequence with an integer for interval timer profiler ticks, but got: {:?}",
@@ -56,21 +56,13 @@ pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<i32> {
             value
         )
     })?;
-    let ticks = first_value.as_i64().ok_or_else(|| {
+    let ticks = first_value.as_u64().ok_or_else(|| {
         anyhow!(
             "Expected a sequence with an integer for interval timer profiler ticks, but got: {:?}",
             value
         )
     })?;
-    if ticks < i32::MIN as i64 || ticks > i32::MAX as i64 {
-        bail!(
-            "Interval timer profiler ticks value {} is out of i32 range ({}..={})",
-            ticks,
-            i32::MIN,
-            i32::MAX
-        );
-    }
-    Ok(ticks as i32)
+    Ok(ticks)
 }
 
 /// Helper function to extract a full library or function name.
@@ -205,12 +197,12 @@ pub fn import_into_iprof_table(
     args: &CliArgs,
 ) -> Result<Vec<String>> {
     let mut query_list: Vec<String> = Vec::new();
-    
+
     // Check early if 'iprof' table exists in sqltypes to fail fast
     if !sqltypes.contains_key("iprof") {
         return Ok(query_list);
     }
-    
+
     let iprof_files = find_lmx_type_files(file_name, "itimer")?;
     if iprof_files.is_empty() {
         // No interval timer profile files found, return empty query list without error
