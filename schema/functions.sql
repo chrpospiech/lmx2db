@@ -282,6 +282,8 @@ END;
 --
 DELIMITER //
 CREATE DEFINER=`cpospiech`@`%` FUNCTION `lid_from_rid_tid`(`runid` INT(11), `taskid` INT(11)) RETURNS int(11)
+    READS SQL DATA
+    SQL SECURITY INVOKER
 BEGIN
 	DECLARE res int(11);
     SELECT lid INTO res FROM tasks
