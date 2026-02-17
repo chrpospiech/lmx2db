@@ -1,0 +1,1 @@
+../tests/fixtures/mpi_names.sql

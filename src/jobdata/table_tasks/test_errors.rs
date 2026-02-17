@@ -22,7 +22,10 @@ mod tests {
     use std::collections::HashMap;
 
     /// Test error handling when CPU_affinity section is missing
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_tasks_missing_affinity_section(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -71,7 +74,10 @@ mod tests {
     }
 
     /// Test error handling when rank_summary section is missing
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_tasks_missing_rank_summary_section(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {
@@ -119,7 +125,10 @@ mod tests {
     }
 
     /// Test error handling when CPU_affinity value is not a sequence
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_tasks_invalid_affinity_type(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -179,7 +188,10 @@ mod tests {
     }
 
     /// Test error handling when rank_summary value is not a sequence
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_tasks_invalid_rank_summary_type(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {
@@ -241,7 +253,10 @@ mod tests {
     }
 
     /// Test error handling when rank_summary contains non-float values
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_tasks_invalid_rank_summary_elements(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {
@@ -306,7 +321,10 @@ mod tests {
     }
 
     /// Test error handling when communication_times has insufficient elements
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_tasks_insufficient_communication_times(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {
@@ -385,7 +403,10 @@ mod tests {
     }
 
     /// Test error handling when CPU_affinity contains non-hexadecimal characters
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_tasks_invalid_hexadecimal_in_cpu_affinity(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {

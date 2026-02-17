@@ -20,7 +20,10 @@ mod tests {
     use anyhow::Result;
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_wrong_string_length(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
@@ -47,7 +50,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_int_value(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
@@ -67,7 +73,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_varbinary_length(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
@@ -95,7 +104,103 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
+    async fn test_negative_tid_in_tasks(pool: Pool<MySql>) -> Result<()> {
+        let args = CliArgs {
+            verbose: false,
+            dry_run: false,
+            create_sqltypes: false,
+            db_url: String::new(),
+            ..Default::default()
+        };
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
+        let keys = vec!["tid".to_string()];
+        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
+            -1,
+        ))]];
+        let types = get_types("tasks", &keys, &sqltypes)?;
+        let result = check_types("tasks", &keys, &types, &values);
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err().to_string(),
+            "Column tid in table tasks expects unsigned type int(11) unsigned, but value cannot be cast to unsigned integer"
+        );
+        Ok(())
+    }
+
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
+    async fn test_tid_exceeds_u32_max_in_tasks(pool: Pool<MySql>) -> Result<()> {
+        let args = CliArgs {
+            verbose: false,
+            dry_run: false,
+            create_sqltypes: false,
+            db_url: String::new(),
+            ..Default::default()
+        };
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
+        let keys = vec!["tid".to_string()];
+        let too_large: u64 = u32::MAX as u64 + 1;
+        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
+            too_large,
+        ))]];
+        let types = get_types("tasks", &keys, &sqltypes)?;
+        let result = check_types("tasks", &keys, &types, &values);
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err().to_string(),
+            format!(
+                "Column tid in table tasks expects int(11) unsigned, but value {} is out of u32 range ({}..={})",
+                too_large,
+                0,
+                u32::MAX
+            )
+        );
+        Ok(())
+    }
+
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
+    async fn test_calls_exceeds_i32_max_in_mpi(pool: Pool<MySql>) -> Result<()> {
+        let args = CliArgs {
+            verbose: false,
+            dry_run: false,
+            create_sqltypes: false,
+            db_url: String::new(),
+            ..Default::default()
+        };
+        let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
+        let keys = vec!["calls".to_string()];
+        let too_large: i64 = i32::MAX as i64 + 1;
+        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
+            too_large,
+        ))]];
+        let types = get_types("mpi", &keys, &sqltypes)?;
+        let result = check_types("mpi", &keys, &types, &values);
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err().to_string(),
+            format!(
+                "Column calls in table mpi expects int(11), but value {} is out of i32 range ({}..={})",
+                too_large,
+                i32::MIN,
+                i32::MAX
+            )
+        );
+        Ok(())
+    }
+
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_null_value(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,

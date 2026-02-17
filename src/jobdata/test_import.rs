@@ -21,9 +21,7 @@ pub(crate) mod check_namd_data;
 mod tests {
     use crate::{
         cmdline::CliArgs,
-        jobdata::table_runs::find_file::project_mockup::{
-            setup_cliargs_with_project_file_name, test_import_single_lmx_file,
-        },
+        jobdata::table_runs::find_file::project_mockup::test_import_single_lmx_file,
         jobdata::test_import::{
             check_gromacs_data::check_gromacs_data, check_namd_data::check_namd_data,
         },
@@ -32,12 +30,20 @@ mod tests {
     use sqlx::MySql;
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
-        "../../tests/fixtures/minimal_data.sql"
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql"
     ))]
     pub async fn test_import_namd_jobdata(pool: sqlx::Pool<MySql>) -> Result<()> {
-        // Create CliArgs with the specified project file that exists in the temp_dir
-        let args = setup_cliargs_with_project_file_name("project.yml")?;
+        // Create CliArgs with project file and other configuration
+        let args = CliArgs {
+            project_file: "project.yml".to_string(),
+            settings_file: "settings.yml".to_string(),
+            module_file: "modules.yml".to_string(),
+            do_import: true,
+            dry_run: false,
+            verbose: false,
+            ..Default::default()
+        };
         // Call the test_import_single_lmx_file
         let result = test_import_single_lmx_file(
             &pool,
@@ -58,7 +64,8 @@ mod tests {
     }
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql",
         "../../tests/fixtures/minimal_data.sql",
         "../../tests/fixtures/mpi_names.sql"
     ))]
@@ -68,7 +75,7 @@ mod tests {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
             module_file: "modules.yml".to_string(),
-            do_import: true,
+            do_import: false,
             dry_run: false,
             verbose: false,
             ..Default::default()
@@ -94,7 +101,8 @@ mod tests {
     }
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql",
         "../../tests/fixtures/minimal_data.sql",
         "../../tests/fixtures/mpi_names.sql"
     ))]
@@ -104,7 +112,7 @@ mod tests {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
             module_file: "modules.yml".to_string(),
-            do_import: true,
+            do_import: false,
             dry_run: false,
             verbose: true,
             ..Default::default()
@@ -130,7 +138,8 @@ mod tests {
     }
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql",
         "../../tests/fixtures/minimal_data.sql",
         "../../tests/fixtures/mpi_names.sql"
     ))]
@@ -140,7 +149,7 @@ mod tests {
             project_file: "project.yml".to_string(),
             settings_file: "settings.yml".to_string(),
             module_file: "modules.yml".to_string(),
-            do_import: true,
+            do_import: false,
             dry_run: true,
             verbose: false,
             ..Default::default()

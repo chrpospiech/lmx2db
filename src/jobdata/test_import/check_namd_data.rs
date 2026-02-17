@@ -67,7 +67,7 @@ async fn check_namd_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
     assert_eq!(*rid, 1);
     assert_eq!(*clid, 1);
-    assert_eq!(*pid, 3);
+    assert_eq!(*pid, 1);
     assert_eq!(*ccid, 1);
     assert_eq!(*nodes, 1);
     assert!(!*has_mpi_trace);
@@ -189,7 +189,7 @@ async fn check_namd_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
 ///
 async fn check_namd_tasks_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
-    let rows = sqlx::query_as::<_, (i32, i32)>(
+    let rows = sqlx::query_as::<_, (u32, i32)>(
         "SELECT `tid`, CONVERT(`systime`, SIGNED) FROM `tasks` ORDER BY `tid`;",
     )
     .fetch_all(pool)

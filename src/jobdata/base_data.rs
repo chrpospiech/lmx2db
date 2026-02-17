@@ -28,15 +28,6 @@ pub fn extract_base_data_key(lmx_summary: &LmxSummary, key: &str) -> Result<u64>
             // First, try to interpret the value as an unsigned integer directly.
             if let Some(mpi_rank) = mpi_rank_value.as_u64() {
                 Ok(mpi_rank)
-            } else if let Some(mpi_rank_i) = mpi_rank_value.as_i64() {
-                if mpi_rank_i < 0 {
-                    bail!(
-                        "{} value in base_data is negative and cannot be converted to u64",
-                        key
-                    );
-                } else {
-                    Ok(mpi_rank_i as u64)
-                }
             } else {
                 bail!(
                     "{} value in base_data is not a number that can be converted to u64",

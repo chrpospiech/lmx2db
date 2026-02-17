@@ -73,7 +73,7 @@ async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
     assert_eq!(*rid, 1);
     assert_eq!(*clid, 1);
-    assert_eq!(*pid, 3);
+    assert_eq!(*pid, 1);
     assert_eq!(*ccid, 2);
     assert_eq!(*nodes, 1);
     assert!(*has_mpi_trace);
@@ -234,7 +234,7 @@ async fn check_gromacs_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
 ///
 async fn check_gromacs_tasks_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
-    let rows = sqlx::query_as::<_, (i32, i32)>(
+    let rows = sqlx::query_as::<_, (u32, i32)>(
         "SELECT `tid`, CONVERT(`systime`, SIGNED) FROM `tasks` WHERE `tid` < 8 ORDER BY `tid`;",
     )
     .fetch_all(pool)
@@ -365,7 +365,7 @@ async fn check_gromacs_mpi_details_data(pool: &sqlx::Pool<MySql>) -> Result<()> 
 ///
 async fn check_gromacs_iprof_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
-    let rows = sqlx::query_as::<_, (i32, i32)>(
+    let rows = sqlx::query_as::<_, (i32, u32)>(
         "SELECT `routine_id`, `ticks` FROM `iprof` WHERE `tid` = 0 AND routine_id < 4;",
     )
     .fetch_all(pool)

@@ -104,8 +104,11 @@ mod tests {
             "Expected error when my_MPI_rank is negative"
         );
         assert!(
-            result.unwrap_err().to_string().contains("negative"),
-            "Error message should mention negative value"
+            result
+                .unwrap_err()
+                .to_string()
+                .contains("can be converted to u64"),
+            "Error message should mention conversion to u64"
         );
     }
 }
