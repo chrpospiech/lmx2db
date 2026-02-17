@@ -234,7 +234,7 @@ async fn check_gromacs_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
 ///
 async fn check_gromacs_tasks_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
-    let rows = sqlx::query_as::<_, (i32, i32)>(
+    let rows = sqlx::query_as::<_, (u32, i32)>(
         "SELECT `tid`, CONVERT(`systime`, SIGNED) FROM `tasks` WHERE `tid` < 8 ORDER BY `tid`;",
     )
     .fetch_all(pool)
@@ -365,7 +365,7 @@ async fn check_gromacs_mpi_details_data(pool: &sqlx::Pool<MySql>) -> Result<()> 
 ///
 async fn check_gromacs_iprof_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
-    let rows = sqlx::query_as::<_, (i32, i32)>(
+    let rows = sqlx::query_as::<_, (i32, u32)>(
         "SELECT `routine_id`, `ticks` FROM `iprof` WHERE `tid` = 0 AND routine_id < 4;",
     )
     .fetch_all(pool)

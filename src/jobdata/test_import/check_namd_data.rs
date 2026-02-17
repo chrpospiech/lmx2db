@@ -189,7 +189,7 @@ async fn check_namd_mmm_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
 ///
 async fn check_namd_tasks_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     // Query the database
-    let rows = sqlx::query_as::<_, (i32, i32)>(
+    let rows = sqlx::query_as::<_, (u32, i32)>(
         "SELECT `tid`, CONVERT(`systime`, SIGNED) FROM `tasks` ORDER BY `tid`;",
     )
     .fetch_all(pool)
