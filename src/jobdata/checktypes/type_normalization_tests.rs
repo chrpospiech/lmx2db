@@ -26,7 +26,10 @@ mod tests {
             u64::MAX,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept max u64 value for unsigned bigint");
+        assert!(
+            result.is_ok(),
+            "Should accept max u64 value for unsigned bigint"
+        );
         Ok(())
     }
 
@@ -39,7 +42,10 @@ mod tests {
             i64::MAX,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept max i64 value for signed bigint");
+        assert!(
+            result.is_ok(),
+            "Should accept max i64 value for signed bigint"
+        );
         Ok(())
     }
 
@@ -52,7 +58,10 @@ mod tests {
             i64::MIN,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept min i64 value for signed bigint");
+        assert!(
+            result.is_ok(),
+            "Should accept min i64 value for signed bigint"
+        );
         Ok(())
     }
 
@@ -65,7 +74,10 @@ mod tests {
             u32::MAX,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept max u32 value for unsigned int");
+        assert!(
+            result.is_ok(),
+            "Should accept max u32 value for unsigned int"
+        );
         Ok(())
     }
 
@@ -79,7 +91,10 @@ mod tests {
             too_large,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_err(), "Should reject value > u32::MAX for unsigned int");
+        assert!(
+            result.is_err(),
+            "Should reject value > u32::MAX for unsigned int"
+        );
         assert!(
             result.unwrap_err().to_string().contains("u32 range"),
             "Error should mention u32 range"
@@ -110,7 +125,10 @@ mod tests {
             too_large,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_err(), "Should reject value > i32::MAX for signed int");
+        assert!(
+            result.is_err(),
+            "Should reject value > i32::MAX for signed int"
+        );
         assert!(
             result.unwrap_err().to_string().contains("i32 range"),
             "Error should mention i32 range"
@@ -127,7 +145,10 @@ mod tests {
             u8::MAX,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept max u8 value for unsigned tinyint");
+        assert!(
+            result.is_ok(),
+            "Should accept max u8 value for unsigned tinyint"
+        );
         Ok(())
     }
 
@@ -141,7 +162,10 @@ mod tests {
             too_large,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_err(), "Should reject value > u8::MAX for unsigned tinyint");
+        assert!(
+            result.is_err(),
+            "Should reject value > u8::MAX for unsigned tinyint"
+        );
         assert!(
             result.unwrap_err().to_string().contains("tinyint range"),
             "Error should mention tinyint range"
@@ -158,7 +182,10 @@ mod tests {
             u16::MAX,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept max u16 value for unsigned smallint");
+        assert!(
+            result.is_ok(),
+            "Should accept max u16 value for unsigned smallint"
+        );
         Ok(())
     }
 
@@ -172,7 +199,10 @@ mod tests {
             too_large,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_err(), "Should reject value > u16::MAX for unsigned smallint");
+        assert!(
+            result.is_err(),
+            "Should reject value > u16::MAX for unsigned smallint"
+        );
         assert!(
             result.unwrap_err().to_string().contains("smallint range"),
             "Error should mention smallint range"
@@ -189,7 +219,10 @@ mod tests {
             u64::MAX,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept max u64 value for BIGINT UNSIGNED (uppercase)");
+        assert!(
+            result.is_ok(),
+            "Should accept max u64 value for BIGINT UNSIGNED (uppercase)"
+        );
         Ok(())
     }
 
@@ -202,7 +235,10 @@ mod tests {
             u32::MAX,
         ))]];
         let result = check_types("test_table", &keys, &types, &values);
-        assert!(result.is_ok(), "Should accept max u32 value for Int Unsigned (mixed case)");
+        assert!(
+            result.is_ok(),
+            "Should accept max u32 value for Int Unsigned (mixed case)"
+        );
         Ok(())
     }
 }

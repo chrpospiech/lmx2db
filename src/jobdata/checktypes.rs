@@ -19,9 +19,9 @@ use regex::Regex;
 #[cfg(test)]
 pub(crate) mod elementary;
 #[cfg(test)]
-pub(crate) mod wrong_values;
-#[cfg(test)]
 mod type_normalization_tests;
+#[cfg(test)]
+pub(crate) mod wrong_values;
 
 /// Retrieves the expected SQL types for the specified keys in a given table.
 ///
@@ -99,7 +99,7 @@ pub fn check_types(
         }
         for (i, expected_type) in types.iter().enumerate() {
             let value = &value_row[i];
-            
+
             // Normalize type string to lowercase for case-insensitive matching
             let expected_type_lower = expected_type.to_lowercase();
             let is_unsigned = expected_type_lower.contains("unsigned");
