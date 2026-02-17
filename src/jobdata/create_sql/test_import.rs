@@ -20,7 +20,10 @@ mod tests {
     use anyhow::Result;
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_create_import_statement(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
@@ -52,7 +55,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_create_import_statement_multi_row(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,

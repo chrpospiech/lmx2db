@@ -56,7 +56,10 @@ mod tests {
     }
 
     /// Test successful import when settings file exists with valid data
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_settings_with_valid_file(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -126,7 +129,10 @@ mod tests {
     }
 
     /// Test handling when settings file doesn't exist
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_settings_no_file(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -159,7 +165,10 @@ mod tests {
     }
 
     /// Test handling when all settings keys match runs table columns (empty value_list case)
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_settings_all_keys_filtered(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -210,7 +219,10 @@ perf_value: 319.366
     }
 
     /// Test proper filtering of runs table columns with mixed settings
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_settings_filtering(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -280,7 +292,10 @@ compiler: "Clang"
     }
 
     /// Test that non-string YAML values (numbers, booleans, etc.) are handled correctly
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_settings_with_non_string_values(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {
@@ -374,7 +389,10 @@ feature_flag: false
     }
 
     /// Test verbose mode outputs message when reading settings
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_settings_verbose(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),

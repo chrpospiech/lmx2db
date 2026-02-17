@@ -23,7 +23,10 @@ mod tests {
     use std::collections::HashMap;
 
     /// Test error handling for invalid value types
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_environ_invalid_value_type(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -61,7 +64,10 @@ mod tests {
     }
 
     /// Test error handling for non-string values in sequence
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_environ_invalid_sequence_element(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {

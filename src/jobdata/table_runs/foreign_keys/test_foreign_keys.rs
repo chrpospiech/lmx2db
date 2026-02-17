@@ -19,7 +19,10 @@ mod tests {
     use anyhow::Result;
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../../tests/fixtures/tables.sql",
+        "../../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_execute_query_if_pool(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "not_there.yml".to_string(),
@@ -34,7 +37,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../../tests/fixtures/tables.sql",
+        "../../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_execute_query_if_pool_dry_run(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "not_there.yml".to_string(),
@@ -64,7 +70,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../../tests/fixtures/tables.sql",
+        "../../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_execute_query_no_cluster_id(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "not_there.yml".to_string(),
@@ -82,7 +91,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../../tests/fixtures/tables.sql",
+        "../../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_execute_query_cluster_id(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "not_there.yml".to_string(),

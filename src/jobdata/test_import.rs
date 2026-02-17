@@ -32,7 +32,8 @@ mod tests {
     use sqlx::MySql;
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql",
         "../../tests/fixtures/minimal_data.sql"
     ))]
     pub async fn test_import_namd_jobdata(pool: sqlx::Pool<MySql>) -> Result<()> {
@@ -58,7 +59,8 @@ mod tests {
     }
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql",
         "../../tests/fixtures/minimal_data.sql",
         "../../tests/fixtures/mpi_names.sql"
     ))]
@@ -94,7 +96,8 @@ mod tests {
     }
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql",
         "../../tests/fixtures/minimal_data.sql",
         "../../tests/fixtures/mpi_names.sql"
     ))]
@@ -130,7 +133,8 @@ mod tests {
     }
 
     #[sqlx::test(fixtures(
-        "../../tests/fixtures/lmxtest.sql",
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql",
         "../../tests/fixtures/minimal_data.sql",
         "../../tests/fixtures/mpi_names.sql"
     ))]

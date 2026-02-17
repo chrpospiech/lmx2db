@@ -20,7 +20,10 @@ mod tests {
     use anyhow::Result;
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_wrong_string_length(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
@@ -47,7 +50,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_int_value(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
@@ -67,7 +73,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_varbinary_length(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,
@@ -95,7 +104,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_null_value(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,

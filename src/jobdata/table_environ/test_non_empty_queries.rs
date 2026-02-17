@@ -23,7 +23,10 @@ mod tests {
     use std::collections::HashMap;
 
     /// Test successful import when environ section exists with valid data
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_environ_with_valid_data(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -78,7 +81,10 @@ mod tests {
     }
 
     /// Test with mixed string and sequence values
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_environ_mixed_values(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -149,7 +155,10 @@ mod tests {
     }
 
     /// Test that verbose mode doesn't prevent importing of data
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_environ_verbose_mode(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),

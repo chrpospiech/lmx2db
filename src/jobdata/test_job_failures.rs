@@ -20,7 +20,10 @@ mod tests {
     use anyhow::Result;
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_missing_project_file_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
         // Create CliArgs with the specified project file that does not exist
         let args = setup_cliargs_with_project_file_name("not_there.yml")?;
@@ -42,7 +45,10 @@ mod tests {
         Ok(())
     }
 
-    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_cluster_id_with_simple_namd_data(pool: Pool<MySql>) -> Result<()> {
         // Create CliArgs with the specified project file that exists for the provided data
         let args = setup_cliargs_with_project_file_name("project.yml")?;

@@ -59,7 +59,10 @@ mod tests {
     }
 
     /// Test that the function skips files with total_ticks == 0
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_iprof_zero_total_ticks(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -107,7 +110,10 @@ library_histogram:
     }
 
     /// Test that the function handles missing library_histogram section gracefully
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_iprof_missing_library_histogram(
         pool: sqlx::Pool<MySql>,
     ) -> Result<()> {
@@ -164,7 +170,10 @@ library_names:
     }
 
     /// Test that the function handles missing flat_profile section gracefully
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_iprof_missing_flat_profile(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -226,7 +235,10 @@ library_histogram:
     }
 
     /// Test with empty library_histogram section
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_iprof_empty_library_histogram(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),
@@ -272,7 +284,10 @@ library_histogram: {}
     }
 
     /// Test with empty flat_profile section
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     pub async fn test_import_iprof_empty_flat_profile(pool: sqlx::Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             project_file: "project.yml".to_string(),

@@ -20,7 +20,10 @@ mod tests {
     use anyhow::Result;
     use sqlx::{MySql, Pool};
 
-    #[sqlx::test(fixtures("../../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../../tests/fixtures/tables.sql",
+        "../../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_create_update_statement(pool: Pool<MySql>) -> Result<()> {
         let args = CliArgs {
             verbose: false,

@@ -20,7 +20,10 @@ mod tests {
     use sqlx::{MySql, Pool};
     use tempfile::NamedTempFile;
 
-    #[sqlx::test(fixtures("../../tests/fixtures/lmxtest.sql"))]
+    #[sqlx::test(fixtures(
+        "../../tests/fixtures/tables.sql",
+        "../../tests/fixtures/functs4test.sql"
+    ))]
     async fn test_create_sqltype_file_with_pool(pool: Pool<MySql>) {
         // Create temporary file for output
         let temp_file = NamedTempFile::new().unwrap();
