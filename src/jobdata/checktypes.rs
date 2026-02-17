@@ -236,7 +236,10 @@ pub fn check_types(
                     let intval = value.as_u64().unwrap();
                     if intval > u32::MAX as u64 {
                         bail!(
-                            "Interval timer profiler ticks value {} is out of u32 range ({}..={})",
+                            "Column {} in table {} expects {}, but value {} is out of u32 range ({}..={})",
+                            keys[i],
+                            table_name,
+                            expected_type,
                             intval,
                             0,
                             u32::MAX
@@ -257,7 +260,10 @@ pub fn check_types(
                         let intval = value.as_i64().unwrap();
                         if intval < i32::MIN as i64 || intval > i32::MAX as i64 {
                             bail!(
-                                "Interval timer profiler ticks value {} is out of i32 range ({}..={})",
+                                "Column {} in table {} expects {}, but value {} is out of i32 range ({}..={})",
+                                keys[i],
+                                table_name,
+                                expected_type,
                                 intval,
                                 i32::MIN,
                                 i32::MAX
