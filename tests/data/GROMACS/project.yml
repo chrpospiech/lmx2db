@@ -3,5 +3,3 @@ project: 4paper_2025
 code: GROMACS
 code_version: 2025.3
 test_case: benchMEM
-cluster: Lenox
-person: Christoph Pospiech

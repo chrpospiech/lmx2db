@@ -23,7 +23,7 @@ mod tests {
     use anyhow::Result;
     use std::fs::remove_dir_all;
 
-    // Test generating foreign key queries when the project file is missing
+    // Test generating foreign key queries when userID is given and do_import is false.
     // We test with pool = None to avoid actual DB operations
     #[tokio::test]
     pub async fn test_generate_foreign_key_queries_with_simple_namd_data() -> Result<()> {
@@ -51,7 +51,7 @@ mod tests {
         assert_eq!(sql_queries[0], "SET @clid = cluster_id('Lenox', 0);");
         assert_eq!(
             sql_queries[1],
-            "SET @pid = person_id_for_uid('xcpospiech', cluster_id('Lenox', 0));"
+            "SET @pid = person_id('Christoph Pospiech', 0);"
         );
         assert_eq!(
             sql_queries[2],
@@ -71,7 +71,7 @@ mod tests {
         Ok(())
     }
 
-    // Test generating foreign key queries when the project file is present
+    // Test generating foreign key queries when userID is given and do_import is true.
     // We test with pool = None to allow actual DB operations
     #[tokio::test]
     pub async fn test_do_import_with_simple_namd_data() -> Result<()> {
@@ -106,7 +106,7 @@ mod tests {
         assert_eq!(sql_queries[0], "SET @clid = cluster_id('Lenox', 1);");
         assert_eq!(
             sql_queries[1],
-            "SET @pid = person_id_for_uid('xcpospiech', cluster_id('Lenox', 1));"
+            "SET @pid = person_id('Christoph Pospiech', 1);"
         );
         assert_eq!(
             sql_queries[2],

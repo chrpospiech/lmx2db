@@ -73,7 +73,7 @@ async fn check_gromacs_runs_data(pool: &sqlx::Pool<MySql>) -> Result<()> {
     let (rid, clid, pid, ccid, nodes, has_mpi_trace, has_iprof, mpi_ranks) = &rows[0];
     assert_eq!(*rid, 1);
     assert_eq!(*clid, 1);
-    assert_eq!(*pid, 3);
+    assert_eq!(*pid, 1);
     assert_eq!(*ccid, 2);
     assert_eq!(*nodes, 1);
     assert!(*has_mpi_trace);

@@ -3,3 +3,5 @@ project: 4paper_2025
 code: NAMD
 code_version: 3.0.2
 test_case: STMV
+cluster: Lenox
+person: Christoph Pospiech
