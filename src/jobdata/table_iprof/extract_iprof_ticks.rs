@@ -72,13 +72,14 @@ mod tests {
     }
 
     #[test]
-    fn accepts_negative_tick_value() -> Result<()> {
+    fn rejects_negative_tick_value() -> Result<()> {
         let input = serde_yaml::from_str(
             r#"- -100
 "#,
         )?;
-        let ticks = extract_iprof_ticks(&input)?;
-        assert_eq!(ticks, -100);
+        let err = extract_iprof_ticks(&input).unwrap_err();
+        let msg = format!("{err}");
+        assert!(msg.contains("Expected a sequence with an integer"));
         Ok(())
     }
 
@@ -91,7 +92,7 @@ mod tests {
         let err = extract_iprof_ticks(&input).unwrap_err();
         let msg = format!("{err}");
         assert!(msg.contains("Interval timer profiler ticks value"));
-        assert!(msg.contains("is out of i32 range"));
+        assert!(msg.contains("is out of u64 range"));
         assert!(msg.contains("3000000000"));
         Ok(())
     }
