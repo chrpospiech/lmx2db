@@ -19,6 +19,8 @@ use regex::Regex;
 #[cfg(test)]
 pub(crate) mod elementary;
 #[cfg(test)]
+mod type_normalization_tests;
+#[cfg(test)]
 pub(crate) mod wrong_values;
 
 /// Retrieves the expected SQL types for the specified keys in a given table.
@@ -98,56 +100,169 @@ pub fn check_types(
         for (i, expected_type) in types.iter().enumerate() {
             let value = &value_row[i];
 
-            // Check for unsigned types i.e. int(*) unsigned
-            if expected_type.contains("unsigned") {
-                if value.as_u64().is_none() {
-                    bail!(
-                        "Column {} in table {} expects unsigned type {}, but value cannot be cast to unsigned integer",
-                        keys[i],
-                        table_name,
-                        expected_type
-                    );
-                }
-                let intval = value.as_u64().unwrap();
-                if !expected_type.contains("BIGINT") && intval > u32::MAX as u64 {
-                    bail!(
-                        "Column {} in table {} expects {}, but value {} is out of u32 range ({}..={})",
-                        keys[i],
-                        table_name,
-                        expected_type,
-                        intval,
-                        0,
-                        u32::MAX
-                    );
-                }
-            // Check for int(11) type
-            } else if expected_type.contains("int(") {
-                // Check if value matches @\w+id or ^[A-Za-z_]\w*_id\([^;]*\)$ pattern
-                let value_str = try_cast_into_string(value).unwrap_or_default();
+            // Normalize type string to lowercase for case-insensitive matching
+            let expected_type_lower = expected_type.to_lowercase();
+            let is_unsigned = expected_type_lower.contains("unsigned");
 
-                if !id_pattern.is_match(&value_str) {
-                    // Try to cast to i32 and check if it is valid
-                    if value.as_i64().is_none() {
+            // Check for integer types: bigint, tinyint, smallint, int (order matters!)
+            // Check most specific types first (tinyint, smallint) before generic int
+            if expected_type_lower.contains("bigint") {
+                // BIGINT types: bigint(20) or bigint(20) unsigned
+                if is_unsigned {
+                    // unsigned bigint: 0 to u64::MAX
+                    if value.as_u64().is_none() {
                         bail!(
-                            "Column {} in table {} expects int(11), but value '{}' is neither a reference (@\\w+id) nor a valid integer",
+                            "Column {} in table {} expects unsigned type {}, but value cannot be cast to unsigned integer",
                             keys[i],
                             table_name,
-                            value_str
+                            expected_type
                         );
                     }
-                    let intval = value.as_i64().unwrap();
-                    if !expected_type.contains("BIGINT")
-                        && (intval < i32::MIN as i64 || intval > i32::MAX as i64)
-                    {
+                    // No range check needed - u64 is the max range
+                } else {
+                    // signed bigint: i64::MIN to i64::MAX
+                    let value_str = try_cast_into_string(value).unwrap_or_default();
+                    if !id_pattern.is_match(&value_str)
+                        && value.as_i64().is_none() {
+                            bail!(
+                                "Column {} in table {} expects bigint, but value '{}' is neither a reference (@\\w+id) nor a valid integer",
+                                keys[i],
+                                table_name,
+                                value_str
+                            );
+                        }
+                        // No range check needed - i64 is the max range for signed bigint
+                }
+            } else if expected_type_lower.contains("tinyint") {
+                // TINYINT types: tinyint(4) or tinyint(4) unsigned
+                if is_unsigned {
+                    // unsigned tinyint: 0 to u8::MAX
+                    if value.as_u64().is_none() {
                         bail!(
-                            "Column {} in table {} expects {}, but value {} is out of i32 range ({}..={})",
+                            "Column {} in table {} expects unsigned type {}, but value cannot be cast to unsigned integer",
                             keys[i],
                             table_name,
-                            expected_type,
-                            intval,
-                            i32::MIN,
-                            i32::MAX
+                            expected_type
                         );
+                    }
+                    let intval = value.as_u64().unwrap();
+                    if intval > u8::MAX as u64 {
+                        bail!(
+                            "Value {} is out of unsigned tinyint range ({}..={})",
+                            intval,
+                            0,
+                            u8::MAX
+                        );
+                    }
+                } else {
+                    // signed tinyint: i8::MIN to i8::MAX
+                    let value_str = try_cast_into_string(value).unwrap_or_default();
+                    if !id_pattern.is_match(&value_str) {
+                        if value.as_i64().is_none() {
+                            bail!(
+                                "Column {} in table {} expects tinyint, but value '{}' is neither a reference (@\\w+id) nor a valid integer",
+                                keys[i],
+                                table_name,
+                                value_str
+                            );
+                        }
+                        let intval = value.as_i64().unwrap();
+                        if intval < i8::MIN as i64 || intval > i8::MAX as i64 {
+                            bail!(
+                                "Value {} is out of signed tinyint range ({}..={})",
+                                intval,
+                                i8::MIN,
+                                i8::MAX
+                            );
+                        }
+                    }
+                }
+            } else if expected_type_lower.contains("smallint") {
+                // SMALLINT types: smallint(6) or smallint(6) unsigned
+                if is_unsigned {
+                    // unsigned smallint: 0 to u16::MAX
+                    if value.as_u64().is_none() {
+                        bail!(
+                            "Column {} in table {} expects unsigned type {}, but value cannot be cast to unsigned integer",
+                            keys[i],
+                            table_name,
+                            expected_type
+                        );
+                    }
+                    let intval = value.as_u64().unwrap();
+                    if intval > u16::MAX as u64 {
+                        bail!(
+                            "Value {} is out of unsigned smallint range ({}..={})",
+                            intval,
+                            0,
+                            u16::MAX
+                        );
+                    }
+                } else {
+                    // signed smallint: i16::MIN to i16::MAX
+                    let value_str = try_cast_into_string(value).unwrap_or_default();
+                    if !id_pattern.is_match(&value_str) {
+                        if value.as_i64().is_none() {
+                            bail!(
+                                "Column {} in table {} expects smallint, but value '{}' is neither a reference (@\\w+id) nor a valid integer",
+                                keys[i],
+                                table_name,
+                                value_str
+                            );
+                        }
+                        let intval = value.as_i64().unwrap();
+                        if intval < i16::MIN as i64 || intval > i16::MAX as i64 {
+                            bail!(
+                                "Value {} is out of signed smallint range ({}..={})",
+                                intval,
+                                i16::MIN,
+                                i16::MAX
+                            );
+                        }
+                    }
+                }
+            } else if expected_type_lower.contains("int(") {
+                // INT types: int(11) or int(11) unsigned
+                if is_unsigned {
+                    // unsigned int: 0 to u32::MAX
+                    if value.as_u64().is_none() {
+                        bail!(
+                            "Column {} in table {} expects unsigned type {}, but value cannot be cast to unsigned integer",
+                            keys[i],
+                            table_name,
+                            expected_type
+                        );
+                    }
+                    let intval = value.as_u64().unwrap();
+                    if intval > u32::MAX as u64 {
+                        bail!(
+                            "Interval timer profiler ticks value {} is out of u32 range ({}..={})",
+                            intval,
+                            0,
+                            u32::MAX
+                        );
+                    }
+                } else {
+                    // signed int: i32::MIN to i32::MAX
+                    let value_str = try_cast_into_string(value).unwrap_or_default();
+                    if !id_pattern.is_match(&value_str) {
+                        if value.as_i64().is_none() {
+                            bail!(
+                                "Column {} in table {} expects int(11), but value '{}' is neither a reference (@\\w+id) nor a valid integer",
+                                keys[i],
+                                table_name,
+                                value_str
+                            );
+                        }
+                        let intval = value.as_i64().unwrap();
+                        if intval < i32::MIN as i64 || intval > i32::MAX as i64 {
+                            bail!(
+                                "Interval timer profiler ticks value {} is out of i32 range ({}..={})",
+                                intval,
+                                i32::MIN,
+                                i32::MAX
+                            );
+                        }
                     }
                 }
             } else if expected_type.contains("float") {
