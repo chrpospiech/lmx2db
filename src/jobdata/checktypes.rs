@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::sqltypes::SqlTypeHashMap;
-use anyhow::Result;
+use anyhow::{bail, Result};
 use regex::Regex;
 
 #[cfg(test)]
@@ -88,7 +88,7 @@ pub fn check_types(
 
     for value_row in values {
         if value_row.len() != types.len() {
-            anyhow::bail!(
+            bail!(
                 "Row length mismatch in table {}: expected {} columns, got {}",
                 table_name,
                 types.len(),
@@ -98,25 +98,55 @@ pub fn check_types(
         for (i, expected_type) in types.iter().enumerate() {
             let value = &value_row[i];
 
+            // Check for unsigned types i.e. int(*) unsigned
+            if expected_type.contains("unsigned") {
+                if value.as_u64().is_none() {
+                    bail!(
+                        "Column {} in table {} expects unsigned type {}, but value cannot be cast to unsigned integer",
+                        keys[i],
+                        table_name,
+                        expected_type
+                    );
+                }
+                let intval = value.as_u64().unwrap();
+                if !expected_type.contains("BIGINT") && intval > u32::MAX as u64 {
+                    bail!(
+                        "Interval timer profiler ticks value {} is out of u32 range ({}..={})",
+                        intval,
+                        0,
+                        u32::MAX
+                    );
+                }
             // Check for int(11) type
-            if expected_type.contains("int(") {
-                // Check if value matches @\w+id pattern
+            } else if expected_type.contains("int(") {
+                // Check if value matches @\w+id or ^[A-Za-z_]\w*_id\([^;]*\)$ pattern
                 let value_str = try_cast_into_string(value).unwrap_or_default();
 
                 if !id_pattern.is_match(&value_str) {
-                    // Try to cast to i64
+                    // Try to cast to i32 and check if it is valid
                     if value.as_i64().is_none() {
-                        anyhow::bail!(
+                        bail!(
                             "Column {} in table {} expects int(11), but value '{}' is neither a reference (@\\w+id) nor a valid integer",
                             keys[i],
                             table_name,
                             value_str
                         );
                     }
+                    let intval = value.as_i64().unwrap();
+                    if !expected_type.contains("BIGINT")
+                        && (intval < i32::MIN as i64 || intval > i32::MAX as i64)
+                    {
+                        bail!(
+                            "Interval timer profiler ticks value {} is out of i32 range ({}..={})",
+                            intval,
+                            i32::MIN,
+                            i32::MAX
+                        );
+                    }
                 }
             } else if expected_type.contains("float") {
                 if value.as_f64().is_none() {
-                    anyhow::bail!(
+                    bail!(
                         "Column {} in table {} expects {}, but value cannot be cast to float",
                         keys[i],
                         table_name,
@@ -128,7 +158,7 @@ pub fn check_types(
 
                 if let Ok(value_str) = try_cast_into_string(value) {
                     if !value_str.chars().all(|c| "0123456789abcdef".contains(c)) {
-                        anyhow::bail!(
+                        bail!(
                             "Column {} in table {} expects {}, but string value '{}' contains invalid hex characters",
                             keys[i],
                             table_name,
@@ -137,7 +167,7 @@ pub fn check_types(
                         );
                     }
                     if value_str.len() * 4 >= max_length {
-                        anyhow::bail!(
+                        bail!(
                             "Column {} in table {} expects {}, but string value '{}' has length {} * 4 = {} >= {}",
                             keys[i],
                             table_name,
@@ -149,7 +179,7 @@ pub fn check_types(
                         );
                     }
                 } else {
-                    anyhow::bail!(
+                    bail!(
                         "Column {} in table {} expects {}, but value cannot be cast to str",
                         keys[i],
                         table_name,
@@ -161,7 +191,7 @@ pub fn check_types(
 
                 if let Ok(value_str) = try_cast_into_string(value) {
                     if value_str.len() >= max_length {
-                        anyhow::bail!(
+                        bail!(
                             "Column {} in table {} expects {}, but string value '{}' has length {} >= {}",
                             keys[i],
                             table_name,
@@ -172,7 +202,7 @@ pub fn check_types(
                         );
                     }
                 } else {
-                    anyhow::bail!(
+                    bail!(
                         "Column {} in table {} expects {}, but value cannot be cast to str",
                         keys[i],
                         table_name,
@@ -202,7 +232,7 @@ pub fn try_cast_into_string(value: &serde_yaml::Value) -> Result<String> {
         serde_yaml::Value::String(s) => Ok(s.clone()),
         serde_yaml::Value::Number(n) => Ok(n.to_string()),
         serde_yaml::Value::Bool(b) => Ok(if *b { "1".to_string() } else { "0".to_string() }),
-        serde_yaml::Value::Null => anyhow::bail!("Cannot cast null value to string"),
-        _ => anyhow::bail!("Cannot cast value to string: unsupported type"),
+        serde_yaml::Value::Null => bail!("Cannot cast null value to string"),
+        _ => bail!("Cannot cast value to string: unsupported type"),
     }
 }
