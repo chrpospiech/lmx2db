@@ -114,10 +114,10 @@ intel2025.2.1:
 gompi-2024a:
   compiler: "GNU"
   compiler_version: "13.3.0"
-  mpilib: "OpenMpi"
+  mpilib: "OpenMPI"
   mpilib_version: "5.0.3"
 openmpi/5.0.8:
-  mpilib: "OpenMpi"
+  mpilib: "OpenMPI"
   mpilib_version: "5.0.8"
 aocc/5.0.0:
   compiler: "aocc"
