@@ -83,28 +83,22 @@ The database moduledefs.db has been discontinued in favor of a YAML file
 with the following proposed structure.
 
 ```yaml
-EasyBuild:
-    gompi/2023a:
-        compiler: GNU
-        compiler_version: 12.3.0
-        mpilib: OpenMPI
-        mpilib_version: 4.1.5
-    gompi/2024a:
-        compiler: GNU
-        compiler_version: 13.3.0
-        mpilib: OpenMPI
-        mpilib_version: 5.0.3
-Lenox:
-    aocc/5.0.0:
-        compiler: AOCC
-        compiler_version: 5.0.0
-    openmpi/4.1.6:
-        mpilib: OpenMPI
-        mpilib_version: 4.1.6
-Other_cluster:
-    GCC/14.1.0:
-        compiler: GNU
-        compiler_version: 14.1.0
+intel2025.2.1:
+  compiler: "Intel"
+  compiler_version: "2025.2.1"
+  mpilib: "Intel"
+  mpilib_version: "2021.16.0"
+gompi-2024a:
+  compiler: "GNU"
+  compiler_version: "13.3.0"
+  mpilib: "OpenMpi"
+  mpilib_version: "5.0.3"
+openmpi/5.0.8:
+  mpilib: "OpenMpi"
+  mpilib_version: "5.0.8"
+aocc/5.0.0:
+  compiler: "aocc"
+  compiler_version: "5.0.0"
 ```
 
 The file does not need to exist. If provided, the tool attempts to update
