@@ -25,7 +25,7 @@ SQL queries for importing the data are written to a file.
 - Optionally determine compiler and MPI versions from the environment
   modules loaded during run time of the job, provided a translation
   table `modules.yml` is provided as detailed below. This file is also
-  searched for in any super directory of the   `LMX_summary.*.yml` file
+  searched for in any super directory of the `LMX_summary.*.yml` file
   and can therefore be shared among several runs.
 
 ## Installation
