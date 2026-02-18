@@ -35,7 +35,7 @@ which is also required for installing the tool. The recommended
 way to install `Rust` is by using
 [rustup](https://rust-lang.org/tools/install/).
 
-Once `Rust` is installed, `fix_local_mail` can be installed
+Once `Rust` is installed, `lmx2db` can be installed
 with the following command into `<install_prefix>/bin`.
 
 ```bash
