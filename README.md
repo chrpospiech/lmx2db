@@ -1,27 +1,50 @@
 # lmx2db
 
-Convert LMX summary files (produced by the LMX_trace profiling/tracing tool)
-into SQL statements and database entries.
+Postprocesses the output of the tool `LMX_trace`. `LMX_trace` is an acronym
+for *Lightweight MPI traces with eXtensions*. The output consists of files in
+YAML format with names like `LMX_summary.76372.0.yml`. Depending on configuration
+settings, there might be additional files following the naming schema
+`LMX_<xxx>_profile.76372.<yy>.yml`, where `<xxx>` is one of `MPI` or `itimer` and
+`<yy>` is an MPI rank. These files are parsed and the extracted data are imported
+into a `mariadb` database. If the database cannot be directly accessed, the necessary
+SQL queries for importing the data are written to a file.
 
 ## Features
 
-- Parse LMX summary YAML files.
+- Parse `LMX_trace` YAML output files.
 - Import data into MySQL or write SQL files for later ingestion.
-- Optional enrichment using project, settings, and modules YAML files.
+- Attribute runs to a project as specified by a file `project.yml`.
+  This file is searched for in any super directory of the
+  `LMX_summary.*.yml` file and can therefore be shared among several
+  runs.
+- Check all data types against the database schema before creating
+  the SQL queries.
+- Optional provide additional settings for each run through a file
+  `settings.yml` in the same directory as the `LMX_summary.*.yml`
+  file.
+- Optional determine compiler and MPI versions from the environment
+  modules loaded during run time of the job, provided a translation
+  table `modules.yml` is provided as detailed below. This file is also
+  searched for in any super directory of the   `LMX_summary.*.yml` file
+  and can therefore be shared among several runs.
 
 ## Installation
 
-Install Rust via [rustup](https://rust-lang.org/tools/install/).
+The tool is written in [Rust](https://rust-lang.org/),
+which is also required for installing the tool. The recommended
+way to install `Rust` is by using
+[rustup](https://rust-lang.org/tools/install/).
 
-Build and install from the repo:
+Once `Rust` is installed, `fix_local_mail` can be installed
+with the following command into `<install_prefix>/bin`.
 
 ```bash
-cargo install --path .
+cargo install --path [<project_dir>|.] [--root <install_prefix>]
 ```
 
 ## Usage
 
-Run against one or more directories that contain LMX summary files:
+Run against one or more directories that contain `LMX_trace` output files:
 
 ```bash
 lmx2db -u mysql://user:pass@localhost/lmxdb /path/to/runs /path/to/other/runs
