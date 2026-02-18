@@ -1,27 +1,50 @@
 # lmx2db
 
-Convert LMX summary files (produced by the LMX_trace profiling/tracing tool)
-into SQL statements and database entries.
+Postprocesses the output of the tool `LMX_trace`. `LMX_trace` is an acronym
+for *Lightweight MPI traces with eXtensions*. The output consists of files in
+YAML format with names like `LMX_summary.76372.0.yml`. Depending on configuration
+settings, there might be additional files following the naming schema
+`LMX_<xxx>_profile.76372.<yy>.yml`, where `<xxx>` is one of `MPI` or `itimer` and
+`<yy>` is an MPI rank. These files are parsed and the extracted data are imported
+into a `mariadb` database. If the database cannot be directly accessed, the necessary
+SQL queries for importing the data are written to a file.
 
 ## Features
 
-- Parse LMX summary YAML files.
+- Parse `LMX_trace` YAML output files.
 - Import data into MySQL or write SQL files for later ingestion.
-- Optional enrichment using project, settings, and modules YAML files.
+- Attribute runs to a project as specified by a file `project.yml`.
+  This file is searched for in any super directory of the
+  `LMX_summary.*.yml` file and can therefore be shared among several
+  runs.
+- Check all data types against the database schema before creating
+  the SQL queries.
+- Optionally provide additional settings for each run through a file
+  `settings.yml` in the same directory as the `LMX_summary.*.yml`
+  file.
+- Optionally determine compiler and MPI versions from the environment
+  modules loaded during run time of the job, provided a translation
+  table `modules.yml` is provided as detailed below. This file is also
+  searched for in any super directory of the `LMX_summary.*.yml` file
+  and can therefore be shared among several runs.
 
 ## Installation
 
-Install Rust via [rustup](https://rust-lang.org/tools/install/).
+The tool is written in [Rust](https://rust-lang.org/),
+which is also required for installing the tool. The recommended
+way to install `Rust` is by using
+[rustup](https://rust-lang.org/tools/install/).
 
-Build and install from the repo:
+Once `Rust` is installed, `lmx2db` can be installed
+with the following command into `<install_prefix>/bin`.
 
 ```bash
-cargo install --path .
+cargo install --path [<project_dir>|.] [--root <install_prefix>]
 ```
 
 ## Usage
 
-Run against one or more directories that contain LMX summary files:
+Run against one or more directories that contain `LMX_trace` output files:
 
 ```bash
 lmx2db -u mysql://user:pass@localhost/lmxdb /path/to/runs /path/to/other/runs
@@ -83,28 +106,22 @@ The database moduledefs.db has been discontinued in favor of a YAML file
 with the following proposed structure.
 
 ```yaml
-EasyBuild:
-    gompi/2023a:
-        compiler: GNU
-        compiler_version: 12.3.0
-        mpilib: OpenMPI
-        mpilib_version: 4.1.5
-    gompi/2024a:
-        compiler: GNU
-        compiler_version: 13.3.0
-        mpilib: OpenMPI
-        mpilib_version: 5.0.3
-Lenox:
-    aocc/5.0.0:
-        compiler: AOCC
-        compiler_version: 5.0.0
-    openmpi/4.1.6:
-        mpilib: OpenMPI
-        mpilib_version: 4.1.6
-Other_cluster:
-    GCC/14.1.0:
-        compiler: GNU
-        compiler_version: 14.1.0
+intel2025.2.1:
+  compiler: "Intel"
+  compiler_version: "2025.2.1"
+  mpilib: "Intel"
+  mpilib_version: "2021.16.0"
+gompi-2024a:
+  compiler: "GNU"
+  compiler_version: "13.3.0"
+  mpilib: "OpenMPI"
+  mpilib_version: "5.0.3"
+openmpi/5.0.8:
+  mpilib: "OpenMPI"
+  mpilib_version: "5.0.8"
+aocc/5.0.0:
+  compiler: "AOCC"
+  compiler_version: "5.0.0"
 ```
 
 The file does not need to exist. If provided, the tool attempts to update
