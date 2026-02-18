@@ -120,7 +120,7 @@ openmpi/5.0.8:
   mpilib: "OpenMPI"
   mpilib_version: "5.0.8"
 aocc/5.0.0:
-  compiler: "aocc"
+  compiler: "AOCC"
   compiler_version: "5.0.0"
 ```
 
