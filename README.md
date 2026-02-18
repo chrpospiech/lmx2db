@@ -19,10 +19,10 @@ SQL queries for importing the data are written to a file.
   runs.
 - Check all data types against the database schema before creating
   the SQL queries.
-- Optional provide additional settings for each run through a file
+- Optionally provide additional settings for each run through a file
   `settings.yml` in the same directory as the `LMX_summary.*.yml`
   file.
-- Optional determine compiler and MPI versions from the environment
+- Optionally determine compiler and MPI versions from the environment
   modules loaded during run time of the job, provided a translation
   table `modules.yml` is provided as detailed below. This file is also
   searched for in any super directory of the   `LMX_summary.*.yml` file
