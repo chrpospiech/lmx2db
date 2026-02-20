@@ -1,0 +1,234 @@
+---
+hpm_events:
+  comment: varchar(1024)
+  name: varchar(512)
+  id: int(11)
+  type: varchar(64)
+  description: varchar(2048)
+mpi_details:
+  calls: int(11)
+  time: float
+  rid: int(11)
+  avgbytes: float
+  mid: smallint(8)
+  tid: int(11) unsigned
+  avgworldsize: float
+power_timeline:
+  timestamp: int(11) unsigned
+  lid: int(11)
+  type: int(11) unsigned
+  value: float
+  timestamp_n: int(11) unsigned
+iprof:
+  tid: int(11) unsigned
+  thread_id: int(11) unsigned
+  rid: int(11)
+  routine_id: int(11)
+  ticks: int(11) unsigned
+tasks:
+  affinity: varbinary(4096)
+  elapsed: float
+  systime: float
+  tid: int(11) unsigned
+  lid: int(11)
+  comm: float
+  mpiio: float
+  usertime: float
+  memory: float
+  vmemory: float
+  rid: int(11)
+  io: float
+  loadimb: float
+appl_builtin_prof:
+  rid: int(11)
+  timestep: varchar(64)
+  tid: int(11) unsigned
+  routine: varchar(256)
+  maxtime: float
+  avgtime: float
+  bytes: int(11)
+  time: float
+  mintime: float
+  procs: int(8)
+  calls: int(8)
+  bandwidth: float
+prof_names:
+  id: int(11)
+  name: varchar(1024)
+  lib_id: int(11)
+power_aggregated:
+  value: float
+  rid: int(11)
+  id: int(11) unsigned
+  type: int(11) unsigned
+  lid: int(11)
+prof_libs:
+  id: int(11)
+  name: varchar(1024)
+power_types:
+  aggregation: enum('current','average','maximum','integral')
+  unit: enum('W','KW','MW','J','KJ','MJ','KWh','C','MHz','GHz')
+  id: int(11) unsigned
+  AC_DC: enum('AC','DC')
+  tool: enum('IBMlib','ipmitool','RAPL','turbostat','ptumon','numactl','freeIPMI','other')
+  comment: varchar(128)
+runs:
+  clock: int(11) unsigned
+  elapsed: float
+  MPI_ranks: int(8) unsigned
+  mpilib_version: varchar(32)
+  rid: int(11)
+  md5sum_exe: binary(16)
+  start_date_n: int(11)
+  stop_date: int(11)
+  threads: int(6) unsigned
+  gpus: tinyint(6) unsigned
+  collect_scope: varchar(64)
+  nodes: int(8)
+  clid: int(11)
+  stop_date_n: int(11)
+  collect_time: float
+  jobid: int(11)
+  compiler_version: varchar(32)
+  comment: varchar(192)
+  perf_unit: varchar(32)
+  mpilib: varchar(32)
+  compiler: varchar(32)
+  has_iprof: tinyint(1)
+  git_commit: varchar(256)
+  fsid: int(11)
+  ht: tinyint(4) unsigned
+  start_date: int(11)
+  perf_value: float
+  validrun: tinyint(2)
+  pid: int(11)
+  library_version: varchar(64)
+  ccid: int(11)
+  has_MPItrace: tinyint(1)
+  CUDA_version: varchar(16)
+  dirname: varchar(256)
+fileops:
+  tid: int(11) unsigned
+  callname: varchar(32)
+  avgbytes: float
+  time: float
+  calls: int(11)
+  rid: int(11)
+  fid: int(11)
+io_details:
+  rid: int(11)
+  time: float
+  avgworldsize: float
+  callname: varchar(32)
+  avgbytes: float
+  calls: int(11)
+  tid: int(11) unsigned
+environ:
+  k: varchar(64)
+  rid: int(11)
+  value: varchar(8192)
+mpi_names:
+  name: varchar(64)
+  type: enum('p2p','collective','MPI-IO','other','not_set','MPI_types','Communicators')
+  chapter: tinyint(6)
+  id: smallint(8)
+codes:
+  name: varchar(32)
+  www: varchar(256)
+  version: varchar(32)
+  id: int(11)
+mpi:
+  rid: int(11)
+  calls: int(11)
+  mid: smallint(8)
+  avgbytes: float
+  time: float
+  tid: int(11) unsigned
+files:
+  name: varchar(512)
+  id: int(11)
+hpm:
+  count: bigint(16)
+  tid: int(11) unsigned
+  evid: int(11)
+  rid: int(11)
+  regid: int(6) unsigned
+userids:
+  id: int(11)
+  name: varchar(32)
+  clid: int(11)
+  pid: int(11)
+projects:
+  id: int(11)
+  comment: varchar(256)
+  name: varchar(32)
+filesystems:
+  mount_point: varchar(256)
+  blocksize: int(11)
+  id: int(11)
+  fstype: varchar(32)
+clusters:
+  owner: varchar(32)
+  name: varchar(32)
+  accessinfo: varchar(32)
+  id: int(11)
+mmm:
+  maxloadimbtask: int(6)
+  medloadimbtask: int(6)
+  medcomm: float
+  miniotask: int(6)
+  minmpiiotask: int(6)
+  rid: int(11)
+  minmpiio: float
+  minloadimb: float
+  minloadimbtask: int(6)
+  maxio: float
+  medio: float
+  maxloadimb: float
+  maxmpiiotask: int(6)
+  mincomm: float
+  maxiotask: int(6)
+  medtask: int(6)
+  maxmpiio: float
+  minio: float
+  mediotask: int(6)
+  maxtask: int(6)
+  maxcomm: float
+  medmpiio: float
+  mintask: int(6)
+  medmpiiotask: int(6)
+  medloadimb: float
+people:
+  title: varchar(12)
+  first_name: varchar(32)
+  surname: varchar(32)
+  email: varchar(32)
+  id: int(11)
+  affiliation: enum('Lenovo','IBM','retiree','Intel','BSC','NVIDIA','unknown')
+  phone: varchar(32)
+  middle: varchar(32)
+  mobile: varchar(32)
+settings:
+  k: varchar(64)
+  value: varchar(8192)
+  rid: int(11)
+io:
+  time: float
+  tid: int(11) unsigned
+  rid: int(11)
+  calls: int(11)
+  callname: varchar(32)
+  avgbytes: float
+customer_cases:
+  id: int(11)
+  tcid: int(11)
+  prid: int(11)
+locations:
+  id: int(11)
+  type: enum('nodes','nets','fs','chassis')
+  name: varchar(32)
+  clid: int(11)
+testcases:
+  cid: int(11)
+  id: int(11)
+  name: varchar(32)

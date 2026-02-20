@@ -14,7 +14,7 @@ SQL queries for importing the data are written to a file.
 - Parse `LMX_trace` YAML output files.
 - Import data into MySQL or write SQL files for later ingestion.
 - Attribute runs to a project as specified by a file `project.yml`.
-  This file is searched for in any super directory of the
+  This file is normally searched for in any super directory of the
   `LMX_summary.*.yml` file and can therefore be shared among several
   runs.
 - Attributes runs to the user that created these results. This can be
@@ -36,7 +36,7 @@ SQL queries for importing the data are written to a file.
   file.
 - Optionally determine compiler and MPI versions from the environment
   modules loaded during run time of the job, provided a translation
-  table `modules.yml` is provided as detailed below. This file is also
+  table `modules.yml` is provided as detailed below. This file is normally
   searched for in any super directory of the `LMX_summary.*.yml` file
   and can therefore be shared among several runs.
 
@@ -126,8 +126,7 @@ Common options:
 
 `lmx2db` inserts the data directly into the database, if the following conditions are met:
 
-- Project YAML files of the following form are provided either pointed to by option
-  `-p, --project-file` or in a super directory of each run directory in `/path/to/runs`.
+- Project YAML files of the following form.
 
   ```YAML
   ---
@@ -139,25 +138,36 @@ Common options:
   person: Christoph Pospiech
   ```
 
-  The last two items are optional.
+  The last two items are optional. The file location
+  [follows the rules below](#handling-of-options--m-and--p).
 - A `mariadb` database server is listening on `database_ip:3306`
 - The database `lmxdb` must exist on this `mariadb` server.
 - The database must conform to the schema as discussed below.
 - The database user `lmx_user` with password `lmx_pass`
-  - must exist and must be allowed access `lmxdb`
-  - must be able to execute SQL INSERT, UPDATE, SELECT and
-    execution of stored functions for database `lmxdb`.
+   - must exist and must be allowed access `lmxdb`
+   - must be able to execute SQL INSERT, UPDATE, SELECT and
+     execution of stored functions for database `lmxdb`.
 
 If the database URL is invalid (which **may** take a TCP/IP timeout
-to find out), `lmx2db` will write the SQL queries to a file.
+to find out), `lmx2db` will write the SQL queries to a file
+(see option `-f, --sql-file`).
+
 However, `lmx2db` checks all data types against the database schema
 before creating the SQL queries. If the database cannot be queried
 for the correct schema and data types for each table column, this
 information has to be provided in a file (see option `-t, --sqltypes-file`).
-This file can be created on a different computer with access to the
-correct database by a separate call to `lmx2db` with option `-c`.
+
+There is a sample file `sample_sqltypes.yml` provided, based on the
+database schema in subdirectory `schema`. This file can be used
+if the database schema of the database pointed to by the URL fits
+the one given in subdirectory `schema`.
+
+A correct sqltypes file can be created on a different computer with
+access to the correct database by a separate call to `lmx2db` with
+option `-c` (and -u pointing to the desired database).
 Then this file needs to be transferred to the computer where `lmx2db`
 is called to process `/path/to/runs /path/to/other/runs`.
+
 With these extra type checks, the SQL queries are not created if
 the input data cannot be cast to the correct types or the database
 schema was changed in a way that is not backward compatible.
@@ -166,7 +176,8 @@ Any such database schema and type mismatches would also create
 SQL import errors, but these are sometimes very cryptic and
 do not list the table or column that are in error. This strategy
 also minimizes the chance of creating a file with invalid SQL
-queries, which would not create any error until the file is
+queries, which would not create any error until an attempt is
+made to import the file into the database after being
 transferred to a system with database access.
 
 ## Database Schema
@@ -181,7 +192,55 @@ query, the following files should be imported in the stated order.
 - `mpi_names.sql`: (Optional) imports the names of the MPI calls.
 - `minimal_data.sql`: (Optional) imports person, cluster and userid sample data.
 
-These database operations can be executed with `phpMyAdmin`.
+These database operations can be conveniently executed with `phpMyAdmin`.
+
+## Modules File
+
+The database moduledefs.db (in a predecessor of this tool) has been discontinued
+in favor of a YAML file with the following proposed structure.
+
+```yaml
+intel2025.2.1:
+  compiler: "Intel"
+  compiler_version: "2025.2.1"
+  mpilib: "Intel"
+  mpilib_version: "2021.16.0"
+gompi-2024a:
+  compiler: "GNU"
+  compiler_version: "13.3.0"
+  mpilib: "OpenMPI"
+  mpilib_version: "5.0.3"
+openmpi/5.0.8:
+  mpilib: "OpenMPI"
+  mpilib_version: "5.0.8"
+aocc/5.0.0:
+  compiler: "AOCC"
+  compiler_version: "5.0.0"
+```
+
+The file does not need to exist. If provided, the tool attempts to update
+the columns `compiler`, `compiler_version`, `mpilib`, and `mpilib_version`
+of table `runs` by inspecting the list of loaded modules in the `environ`
+section of the LMX summary file.
+
+The file location [follows the rules below](#handling-of-options--m-and--p).
+
+The file has to be provided (and maintained) by the user. The user has to take
+care of unique spelling (including use of capital letters) of compiler and MPI
+library names.
+
+## Handling of options -m and -p
+
+Both options search for the requested file in any super directory of the
+`LMX_summary.*.yml` file and can therefore be shared among several
+`LMX_summary.*.yml` files. Three cases are distinguished.
+
+- The option is not set: The file is searched for as described above.
+- The option is set to a string not containing a path separator:
+  The string is treated as a file name and is searched for as described above.
+- The option is set to a string containing a path separator: The
+  string is treated as an absolute or relative path and the file is expected
+  at this location.
 
 ## Testing
 
@@ -202,8 +261,8 @@ The `DATABASE_URL` needs to meet the following conditions.
 - The database `lmxtest` must exist on this `mariadb` server.
 - It is sufficient and even desired that this database is empty.
 - The database user `test_user` with password `test_pass`
-  - must exist and must be allowed access `lmxtest`
-  - must be allowed to create and drop databases and tables on the server ad libitum.
+   - must exist and must be allowed access `lmxtest`
+   - must be allowed to create and drop databases and tables on the server ad libitum.
 - It may be considered to run the database in a (docker)
   [container](https://hub.docker.com/_/mariadb) with the database `root` as `test_user`.
 - Many of the unit tests set up their private database for testing which may lead to
@@ -229,8 +288,9 @@ See LICENSE for details.
 ## Hints for Developers
 
 The repo contains linter configuration files `rustfmt.toml`,
-`.codespell.dictionary`, and `.pre-commit-config.yaml`. Use `pre-commit`
-to maintain code quality.
+`.codespell.dictionary`, and `.pre-commit-config.yaml`.
+The developer is strongly encouraged to use `pre-commit`
+with these configuration files to maintain code quality.
 
 To enable `pre-commit` using `uv`:
 
@@ -240,36 +300,3 @@ To enable `pre-commit` using `uv`:
 - `source .venv/bin/activate`
 - `pre-commit run --all`
 - `pre-commit install`
-
-## Modules File
-
-The database moduledefs.db has been discontinued in favor of a YAML file
-with the following proposed structure.
-
-```yaml
-intel2025.2.1:
-  compiler: "Intel"
-  compiler_version: "2025.2.1"
-  mpilib: "Intel"
-  mpilib_version: "2021.16.0"
-gompi-2024a:
-  compiler: "GNU"
-  compiler_version: "13.3.0"
-  mpilib: "OpenMPI"
-  mpilib_version: "5.0.3"
-openmpi/5.0.8:
-  mpilib: "OpenMPI"
-  mpilib_version: "5.0.8"
-aocc/5.0.0:
-  compiler: "AOCC"
-  compiler_version: "5.0.0"
-```
-
-The file does not need to exist. If provided, the tool attempts to update
-the `compiler`, `compiler_version`, `mpilib`, and `mpilib_version` columns
-of table `runs` by inspecting the list of loaded modules in the `environ`
-section of the LMX summary file.
-
-The file has to be provided (and maintained) by the user. The user has to take
-care of unique spelling (including use of capital letters) of compiler and MPI
-library names.
