@@ -160,7 +160,7 @@ information has to be provided in a file (see option `-t, --sqltypes-file`).
 There is a sample file `sample_sqltypes.yml` provided, based on the
 database schema in subdirectory `schema`. This file can be used
 if the database schema of the database pointed to by the URL fits
-the one given in directory schema.
+the one given in subdirectory `schema`.
 
 A correct sqltypes file can be created on a different computer with
 access to the correct database by a separate call to `lmx2db` with
