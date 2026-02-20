@@ -124,7 +124,7 @@ Common options:
 - `-D, --dry-run`: Do not execute DB writes.
 - `-v, --verbose`: Verbose output.
 
-`lmxdb` inserts the data directly into the database, if the following conditions are met:
+`lmx2db` inserts the data directly into the database, if the following conditions are met:
 
 - Project YAML files of the following form are provided either pointed to by option
   `-p, --project-file` or in a super directory of each run directory in `/path/to/runs`.
