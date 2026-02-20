@@ -144,9 +144,9 @@ Common options:
 - The database `lmxdb` must exist on this `mariadb` server.
 - The database must conform to the schema as discussed below.
 - The database user `lmx_user` with password `lmx_pass`
-   - must exist and must be allowed access `lmxdb`
-   - must be able to execute SQL INSERT, UPDATE, SELECT and
-     execution of stored functions for database `lmxdb`.
+  - must exist and must be allowed access `lmxdb`
+  - must be able to execute SQL INSERT, UPDATE, SELECT and
+    execution of stored functions for database `lmxdb`.
 
 If the database URL is invalid (which **may** take a TCP/IP timeout
 to find out), `lmx2db` will write the SQL queries to a file.
