@@ -181,7 +181,7 @@ query, the following files should be imported in the stated order.
 - `mpi_names.sql`: (Optional) imports the names of the MPI calls.
 - `minimal_data.sql`: (Optional) imports person, cluster and userid sample data.
 
-These database operations can be executed with `phpmyadmin`.
+These database operations can be executed with `phpMyAdmin`.
 
 ## Testing
 
