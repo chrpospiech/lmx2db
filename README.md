@@ -98,7 +98,7 @@ cargo install --path [<project_dir>|.] [--root <install_prefix>]
 - If not already there (e.g. created by `rustup`), the above installation command
   creates and populates a directory `$HOME/.cargo`.
 - If the parameter `--root` is not specified, the installation goes to `$HOME/.cargo/bin`
-- A single file `lmx2db` is installed in `[<install_prefix|$HOME/.cargo]/bin`.
+- A single file `lmx2db` is installed in `[<install_prefix>|$HOME/.cargo]/bin`.
 
 ## Usage
 
