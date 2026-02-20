@@ -197,7 +197,7 @@ DATABASE_URL=mysql://test_user:test_pass@database_ip:3306/lmxtest
 
 The `DATABASE_URL` needs to meet the following conditions.
 
-- A `mariadb` server need to be up and running and listening to requests
+- A `mariadb` server needs to be up and running and listening to requests
   sent to `database_ip:3306`.
 - The database `lmxtest` must exist on this `mariadb` server.
 - It is sufficient and even desired that this database is empty.
