@@ -171,7 +171,7 @@ transferred to a system with database access.
 
 ## Database Schema
 
-The sub directory `schema` contains the required database schema.
+The subdirectory `schema` contains the required database schema.
 After creating an empty database `lmxdb` and issuing a `USE lmxdb;`
 query, the following files should be imported in the stated order.
 
