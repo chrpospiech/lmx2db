@@ -202,8 +202,8 @@ The `DATABASE_URL` needs to meet the following conditions.
 - The database `lmxtest` must exist on this `mariadb` server.
 - It is sufficient and even desired that this database is empty.
 - The database user `test_user` with password `test_pass`
-   - must exist and must be allowed access `lmxtest`
-   - must be allowed to create and drop databases and tables on the server ad libitum.
+  - must exist and must be allowed access `lmxtest`
+  - must be allowed to create and drop databases and tables on the server ad libitum.
 - It may be considered to run the database in a (docker)
   [container](https://hub.docker.com/_/mariadb) with the database `root` as `test_user`.
 - Many of the unit tests set up their private database for testing which may lead to
