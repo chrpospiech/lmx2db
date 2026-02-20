@@ -157,7 +157,7 @@ before creating the SQL queries. If the database cannot be queried
 for the correct schema and data types for each table column, this
 information has to be provided in a file (see option `-t, --sqltypes-file`).
 
-There is a sample file `sample_sqltypes.sql` provided, based on the
+There is a sample file `sample_sqltypes.yml` provided, based on the
 database schema in subdirectory `schema`. This file can be used
 if the database schema of the database pointed to by the URL fits
 the one given in directory schema.
