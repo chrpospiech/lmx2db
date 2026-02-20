@@ -176,8 +176,8 @@ Any such database schema and type mismatches would also create
 SQL import errors, but these are sometimes very cryptic and
 do not list the table or column that are in error. This strategy
 also minimizes the chance of creating a file with invalid SQL
-queries, which would not create any error until the file is
-attempted to import into the database after being
+queries, which would not create any error until an attempt is
+made to import the file into the database after being
 transferred to a system with database access.
 
 ## Database Schema
