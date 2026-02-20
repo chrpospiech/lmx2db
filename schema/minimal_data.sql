@@ -1,0 +1,1 @@
+../tests/fixtures/minimal_data.sql

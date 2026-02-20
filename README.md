@@ -17,6 +17,18 @@ SQL queries for importing the data are written to a file.
   This file is searched for in any super directory of the
   `LMX_summary.*.yml` file and can therefore be shared among several
   runs.
+- Attributes runs to the user that created these results. This can be
+  achieved by adding the following information to the `project.yml` file.
+
+  ```yaml
+  cluster: name_of_cluster
+  person: Christoph Pospiech
+  ```
+
+  If cluster `name_of_cluster` is already in table `clusters` of the
+  receiving database and the tables `people` and `userids` contain the
+  necessary information, the person can be also determined from the value
+  of the environment variable `$USER` during the run.
 - Check all data types against the database schema before creating
   the SQL queries.
 - Optionally provide additional settings for each run through a file
@@ -31,9 +43,46 @@ SQL queries for importing the data are written to a file.
 ## Installation
 
 The tool is written in [Rust](https://rust-lang.org/),
-which is also required for installing the tool. The recommended
-way to install `Rust` is by using
-[rustup](https://rust-lang.org/tools/install/).
+which is also required for installing the tool itself.
+As of now, there are no binaries provided.
+
+Two out of several choices to install `Rust` are outlined
+below.
+
+### Installation of Rust via rustup
+
+The recommended way to install `Rust` is by using
+[rustup](https://rust-lang.org/tools/install/). The referred web page
+provides the following command, that can be copied and pasted into a
+bash prompt.
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+No root needed, this installs into `$HOME/.cargo` by default.
+The installation also adds `$HOME/.cargo/bin` to the `$PATH`
+variable --- unless opted out by choosing a custom installation.
+The change of `$PATH` is done by appending the line `. $HOME/.cargo/env`
+to the following files.
+
+- `$HOME/.bashrc`
+- `$HOME/.bash_profile`
+- `$HOME/.profile`
+- `$HOME/.zshrc`
+
+The extra lines can be easily removed from there if not desired.
+
+### Installation of Rust via EasyBuild
+
+A fairly recent version of `Rust` is required and can be installed by
+the following command.
+
+```bash
+eb --skip --robot Rust-1.91.1-GCCcore-14.2.0.eb
+```
+
+### Installation of lmx2db
 
 Once `Rust` is installed, `lmx2db` can be installed
 with the following command into `<install_prefix>/bin`.
@@ -42,13 +91,25 @@ with the following command into `<install_prefix>/bin`.
 cargo install --path [<project_dir>|.] [--root <install_prefix>]
 ```
 
+- `cargo` needs to be in the `$PATH`, which is either arranged by `rustup`
+  or by loading the `EasyBuild` module `Rust/1.91.1`.
+- The `<project_dir>` means the directory where **this** `README.md` resides.
+  If this already is the current directory, the `.` can be used in this command.
+- If not already there (e.g. created by `rustup`), the above installation command
+  creates and populates a directory `$HOME/.cargo`.
+- If the parameter `--root` is not specified, the installation goes to `$HOME/.cargo/bin`
+- A single file `lmx2db` is installed in `[<install_prefix>|$HOME/.cargo]/bin`.
+
 ## Usage
 
 Run against one or more directories that contain `LMX_trace` output files:
 
 ```bash
-lmx2db -u mysql://user:pass@localhost/lmxdb /path/to/runs /path/to/other/runs
+lmx2db -u mysql://lmx_user:lmx_pass@database_ip/lmxdb /path/to/runs /path/to/other/runs
 ```
+
+The specified directories `/path/to/runs /path/to/other/runs` are searched recursively
+for `LMX_trace` output files.
 
 Common options:
 
@@ -63,6 +124,65 @@ Common options:
 - `-D, --dry-run`: Do not execute DB writes.
 - `-v, --verbose`: Verbose output.
 
+`lmx2db` inserts the data directly into the database, if the following conditions are met:
+
+- Project YAML files of the following form are provided either pointed to by option
+  `-p, --project-file` or in a super directory of each run directory in `/path/to/runs`.
+
+  ```YAML
+  ---
+  project: 4paper_2025
+  code: GROMACS
+  code_version: 2025.3
+  test_case: benchMEM
+  cluster: name_of_cluster
+  person: Christoph Pospiech
+  ```
+
+  The last two items are optional.
+- A `mariadb` database server is listening on `database_ip:3306`
+- The database `lmxdb` must exist on this `mariadb` server.
+- The database must conform to the schema as discussed below.
+- The database user `lmx_user` with password `lmx_pass`
+  - must exist and must be allowed access `lmxdb`
+  - must be able to execute SQL INSERT, UPDATE, SELECT and
+    execution of stored functions for database `lmxdb`.
+
+If the database URL is invalid (which **may** take a TCP/IP timeout
+to find out), `lmx2db` will write the SQL queries to a file.
+However, `lmx2db` checks all data types against the database schema
+before creating the SQL queries. If the database cannot be queried
+for the correct schema and data types for each table column, this
+information has to be provided in a file (see option `-t, --sqltypes-file`).
+This file can be created on a different computer with access to the
+correct database by a separate call to `lmx2db` with option `-c`.
+Then this file needs to be transferred to the computer where `lmx2db`
+is called to process `/path/to/runs /path/to/other/runs`.
+With these extra type checks, the SQL queries are not created if
+the input data cannot be cast to the correct types or the database
+schema was changed in a way that is not backward compatible.
+
+Any such database schema and type mismatches would also create
+SQL import errors, but these are sometimes very cryptic and
+do not list the table or column that are in error. This strategy
+also minimizes the chance of creating a file with invalid SQL
+queries, which would not create any error until the file is
+transferred to a system with database access.
+
+## Database Schema
+
+The subdirectory `schema` contains the required database schema.
+After creating an empty database `lmxdb` and issuing a `USE lmxdb;`
+query, the following files should be imported in the stated order.
+
+- `tables.sql`: Creates the database tables.
+- `functions.sql`: Creates (Defines) the stored functions.
+- `view.sql`: (Optional) creates a single view as an example.
+- `mpi_names.sql`: (Optional) imports the names of the MPI calls.
+- `minimal_data.sql`: (Optional) imports person, cluster and userid sample data.
+
+These database operations can be executed with `phpMyAdmin`.
+
 ## Testing
 
 Tests use `#[sqlx::test]` and require `DATABASE_URL` to be set. The test
@@ -72,10 +192,31 @@ runner loads `.env` from the repository root if it exists. Use
 Example `.env`:
 
 ```text
-DATABASE_URL=mysql://user:pass@127.0.0.1:3306/lmxdb
+DATABASE_URL=mysql://test_user:test_pass@database_ip:3306/lmxtest
 ```
 
-Then run:
+The `DATABASE_URL` needs to meet the following conditions.
+
+- A `mariadb` server needs to be up and running and listening to requests
+  sent to `database_ip:3306`.
+- The database `lmxtest` must exist on this `mariadb` server.
+- It is sufficient and even desired that this database is empty.
+- The database user `test_user` with password `test_pass`
+  - must exist and must be allowed access `lmxtest`
+  - must be allowed to create and drop databases and tables on the server ad libitum.
+- It may be considered to run the database in a (docker)
+  [container](https://hub.docker.com/_/mariadb) with the database `root` as `test_user`.
+- Many of the unit tests set up their private database for testing which may lead to
+  transient unit test failures caused by SQL
+  [error 1615](https://mariadb.com/docs/server/reference/error-codes/mariadb-error-codes-1600-to-1699/e1615).
+  The test databases have quite a few stored functions. These are compiled (SQL slang: prepared)
+  and the result stored in a stored-program-cache. With lots of concurrently running unit tests,
+  this cache overflows (sometimes) which causes the SQL error 1615.
+  The cure is to increase the value of the system variable stored-program-cache
+  in the correct /etc/mysql/*.cnf file to the double of the default value and
+  then restart mariadb with systemctl.
+
+When all these conditions are met, the unit tests can be started with the following command:
 
 ```bash
 cargo test
