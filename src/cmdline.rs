@@ -15,7 +15,7 @@
 use clap::Parser;
 
 #[derive(Parser, Debug, Default)]
-#[command(name = "lmx2db", author = "C. Pospiech", version = "0.1", about = "Convert LMX files to database entries", long_about = None)]
+#[command(name = "lmx2db", author = "C. Pospiech", version = "1.0.1", about = "Convert LMX files to database entries", long_about = None)]
 pub struct CliArgs {
     /// Verbose output
     #[arg(short = 'v', long, default_value_t = false)]
