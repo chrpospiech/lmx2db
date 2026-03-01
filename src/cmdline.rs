@@ -35,6 +35,7 @@ pub struct CliArgs {
     #[arg(
         short = 'u',
         long,
+        env = "LMX2DB_DATABASE_URL",
         default_value = "mysql://lmxdb:lmxdb@localhost/lmxdb"
     )]
     pub db_url: String,
