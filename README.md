@@ -235,9 +235,9 @@ library names.
 
 ## Handling of options -m and -p
 
-Both options (for projects and modules files) search for the requested
-file in any super directory of the `LMX_summary.*.yml` file and the requested
-file can therefore be shared among several `LMX_summary.*.yml` files.
+Both options (for project and modules files) search for their respective file
+in any super directory of the `LMX_summary.*.yml` file. This allows a single
+project or modules file to be shared among several `LMX_summary.*.yml` files.
 Three cases are distinguished.
 
 - The option is not set: The file is searched for as described above.
