@@ -43,7 +43,7 @@ SQL queries for importing the data are written to a file.
 ## Installation
 
 The tool is written in [Rust](https://rust-lang.org/) and is a single
-binary to install. One binary compiled on Ubuntu 04/2024 LTS for x86_64
+binary to install. One binary compiled on Ubuntu 24.04 LTS for x86_64
 is provided with the release. The binary is likely to work on any
 Linux x86_64 environment, albeit this was not tested.
 
