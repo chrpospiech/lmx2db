@@ -42,11 +42,15 @@ SQL queries for importing the data are written to a file.
 
 ## Installation
 
-The tool is written in [Rust](https://rust-lang.org/),
-which is also required for installing the tool itself.
-As of now, there are no binaries provided.
+The tool is written in [Rust](https://rust-lang.org/) and is a single
+binary to install. One binary compiled on Ubuntu 04/2024 LTS for x86_64
+is provided with the release. The binary is likely to work on any
+Linux x86_64 environment, albeit this was not tested.
 
-Two out of several choices to install `Rust` are outlined
+The tool may be also compiled from sources which requires the
+`Rust/Cargo` environment to be installed first.
+
+Two out of several choices to install `Rust/Cargo` are outlined
 below.
 
 ### Installation of Rust via rustup
@@ -231,9 +235,10 @@ library names.
 
 ## Handling of options -m and -p
 
-Both options search for the requested file in any super directory of the
-`LMX_summary.*.yml` file and can therefore be shared among several
-`LMX_summary.*.yml` files. Three cases are distinguished.
+Both options (for projects and modules files) search for the requested
+file in any super directory of the `LMX_summary.*.yml` file and the requested
+file can therefore be shared among several `LMX_summary.*.yml` files.
+Three cases are distinguished.
 
 - The option is not set: The file is searched for as described above.
 - The option is set to a string not containing a path separator:
