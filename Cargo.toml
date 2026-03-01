@@ -1,6 +1,9 @@
 [package]
 name = "lmx2db"
-version = "1.0.1"
+version = "1.1.0"
+authors = ["Dr. Christoph Pospiech <pospiech-HD@t-online.de>"]
+description = "A tool to import data from LMX files into a database."
+license = "Apache-2.0"
 edition = "2021"
 
 [dependencies]
