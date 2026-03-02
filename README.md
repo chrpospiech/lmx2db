@@ -114,7 +114,7 @@ lmx2db [options] /path/to/runs /path/to/other/runs
 
 The specified directories `/path/to/runs /path/to/other/runs` are
 searched recursively for `LMX_trace` output files. Each of them
-is processed and imported into MySQL or written to an SQL files
+is processed and imported into MySQL or written to an SQL file
 for later ingestion. `lmx2db` checks all data types against the
 database schema before creating the SQL queries.
 
