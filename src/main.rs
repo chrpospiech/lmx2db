@@ -55,6 +55,7 @@ async fn main() -> Result<()> {
     // from the database and exit
     if args.create_sqltypes {
         sqltypes::create_sqltype_file(pool.clone(), &args).await?;
+        disconnect_from_database(pool).await;
         return Ok(());
     }
     // Normal operation: read sqltypes and proceed
