@@ -50,7 +50,13 @@ async fn main() -> Result<()> {
     }
 
     // Main loop: process all LMX_SUMMARY files
-    for file_name in find_lmx_summary_files(&args.directories)? {
+    let list_of_files = find_lmx_summary_files(&args.directories)?;
+    if list_of_files.is_empty() {
+        println!("No LMX_summary files found in the specified directories.");
+        disconnect_from_database(pool).await;
+        return Ok(());
+    }
+    for file_name in list_of_files {
         println!("Processing file: {}", file_name);
         let return_code = jobdata::process_lmx_file(&file_name, &pool, &sqltypes, &args).await;
         match return_code {
