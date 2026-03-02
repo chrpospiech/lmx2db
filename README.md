@@ -168,7 +168,7 @@ Common options:
 ### Output to SQL file
 
 - The default value of `[-u|--db-url]` is an empty string.
-  An informational message is printed and `lmx2db` progresses with
+  An informational message is printed and `lmx2db` proceeds with
   file output without attempting to access the database.
 - If the database URL is invalid, `lmx2db` will also write
   the SQL queries to a file (see option `-f, --sql-file`).
