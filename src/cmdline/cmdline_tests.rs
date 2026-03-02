@@ -28,7 +28,7 @@ mod tests {
             assert!(!args.dry_run);
             assert!(!args.create_sqltypes);
             assert!(!args.do_import);
-            assert_eq!(args.db_url, "output_to_files_only");
+            assert_eq!(args.db_url, "");
             assert_eq!(args.sqltypes_file, "sqltypes.yml");
             assert_eq!(args.sql_file, "import.sql");
             assert_eq!(args.module_file, "modules.yml");

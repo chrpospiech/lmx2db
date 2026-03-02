@@ -34,12 +34,7 @@ pub struct CliArgs {
     pub dry_run: bool,
 
     /// Database URL
-    #[arg(
-        short = 'u',
-        long,
-        env = "LMX2DB_DATABASE_URL",
-        default_value = "output_to_files_only"
-    )]
+    #[arg(short = 'u', long, env = "LMX2DB_DATABASE_URL", default_value = "")]
     pub db_url: String,
 
     /// name of sqltypes file
