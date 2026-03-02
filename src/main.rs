@@ -43,7 +43,9 @@ async fn main() -> Result<()> {
     // Connect to the database
     let database_url: String = args.db_url.clone();
     let pool: Option<Pool<MySql>> = if database_url.is_empty() {
-        println!("No database URL provided. Will output to file instead.");
+        if !args.create_sqltypes {
+            println!("No database URL provided. Will output to file instead.");
+        }
         None
     } else {
         connect_to_database(&database_url).await
