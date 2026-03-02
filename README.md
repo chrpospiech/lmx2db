@@ -167,17 +167,18 @@ Common options:
 
 ### Output to SQL file
 
-- The default value of `[-u|--db-url]` is "output_to_files_only".
-  This is a special case of an invalid database URL.
-- If the database URL is invalid (which includes the default value),
-  `lmx2db` will write the SQL queries to a file (see option `-f, --sql-file`).
-- Worst case it takes a TCP/IP timeout to find out that the
+- The default value of `[-u|--db-url]` is an empty string.
+  An informational message is printed and `lmx2db` progresses with
+  file output without attempting to access the database.
+- If the database URL is invalid, `lmx2db` will also write
+  the SQL queries to a file (see option `-f, --sql-file`).
+- In the worst case it takes a TCP/IP timeout to find out that the
   database URL is invalid.
 - If the database cannot be queried for the correct schema and data types
   for each table column, this information has to be provided in a file.
-- The shipped sample file `sqltypes.yml` is automatically picked up as
-  the default sqltypes file. It is under version control and is based on
-  the database schema in subdirectory `schema`. This file can be used if
+- The shipped sample file `sqltypes.yml` is automatically taken as
+  default. It is under version control and is based on the database
+  schema in subdirectory `schema`. This file can be used if
   the database schema of the intended database fits the one given in
   subdirectory `schema`.
 - Alternatively, a correct sqltypes file can be created on a different
