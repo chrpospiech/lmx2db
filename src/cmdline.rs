@@ -13,6 +13,8 @@
 // limitations under the License.
 
 use clap::Parser;
+#[cfg(test)]
+mod cmdline_tests;
 
 #[derive(Parser, Debug, Default)]
 #[command(
@@ -35,7 +37,8 @@ pub struct CliArgs {
     #[arg(
         short = 'u',
         long,
-        default_value = "mysql://lmxdb:lmxdb@localhost/lmxdb"
+        env = "LMX2DB_DATABASE_URL",
+        default_value = "output_to_files_only"
     )]
     pub db_url: String,
 
