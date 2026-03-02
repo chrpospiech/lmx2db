@@ -75,8 +75,6 @@ async fn main() -> Result<()> {
     }
 
     // Explicit disconnect from the database
-    if let Some(pool) = pool {
-        disconnect_from_database(Some(pool)).await;
-    }
+    disconnect_from_database(pool).await;
     Ok(())
 }
