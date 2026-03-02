@@ -5,7 +5,6 @@ __pycache__/
 .env
 *.log
 lmx2db.code-workspace
-sqltypes.yml
 pyproject.toml
 .mdl*
 uv.lock
