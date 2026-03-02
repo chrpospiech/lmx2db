@@ -153,7 +153,7 @@ Common options:
   `LMX2DB_DATABASE_URL` must be set to a value like the following.
 
   ```bash
-  mysql://lmx_user:lmx_pass@database_ip/lmxdb]
+  mysql://lmx_user:lmx_pass@database_ip/lmxdb
   ```
 
   The option takes precedence, if both are set.
