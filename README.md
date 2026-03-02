@@ -175,10 +175,11 @@ Common options:
   database URL is invalid.
 - If the database cannot be queried for the correct schema and data types
   for each table column, this information has to be provided in a file.
-- The sample file `sqltypes.yml` is automatically picked up as
-  default. It is based on the database schema in subdirectory `schema`.
-  This file can be used if the database schema of the intended database
-  fits the one given in subdirectory `schema`.
+- The shipped sample file `sqltypes.yml` is automatically picked up as
+  the default sqltypes file. It is under version control and is based on
+  the database schema in subdirectory `schema`. This file can be used if
+  the database schema of the intended database fits the one given in
+  subdirectory `schema`.
 - Alternatively, a correct sqltypes file can be created on a different
   computer with access to the correct database by a separate call to
   `lmx2db` with options `-c`, `-u` and `-t`.
