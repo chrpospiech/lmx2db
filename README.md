@@ -106,14 +106,17 @@ cargo install --path [<project_dir>|.] [--root <install_prefix>]
 
 ## Usage
 
-Run against one or more directories that contain `LMX_trace` output files:
+### Basic Usage
 
 ```bash
-lmx2db -u mysql://lmx_user:lmx_pass@database_ip/lmxdb /path/to/runs /path/to/other/runs
+lmx2db [options] /path/to/runs /path/to/other/runs
 ```
 
-The specified directories `/path/to/runs /path/to/other/runs` are searched recursively
-for `LMX_trace` output files.
+The specified directories `/path/to/runs /path/to/other/runs` are
+searched recursively for `LMX_trace` output files. Each of them
+is processed and imported into MySQL or written to an SQL files
+for later ingestion. `lmx2db` checks all data types against the
+database schema before creating the SQL queries.
 
 Common options:
 
@@ -127,6 +130,8 @@ Common options:
 - `-p, --project-file`: Project YAML file (default: `project.yml`).
 - `-D, --dry-run`: Do not execute DB writes.
 - `-v, --verbose`: Verbose output.
+
+### Direct Import into the Database
 
 `lmx2db` inserts the data directly into the database, if the following conditions are met:
 
@@ -144,6 +149,14 @@ Common options:
 
   The last two items are optional. The file location
   [follows the rules below](#handling-of-options--m-and--p).
+- At least one of option `[-u|--db-url]` or environment variable
+  `LMX2DB_DATABASE_URL` must be set to a value like the following.
+
+  ```bash
+  mysql://lmx_user:lmx_pass@database_ip/lmxdb]
+  ```
+
+  The option takes precedence, if both are set.
 - A `mariadb` database server is listening on `database_ip:3306`
 - The database `lmxdb` must exist on this `mariadb` server.
 - The database must conform to the schema as discussed below.
@@ -152,29 +165,34 @@ Common options:
    - must be able to execute SQL INSERT, UPDATE, SELECT and
      execution of stored functions for database `lmxdb`.
 
-If the database URL is invalid (which **may** take a TCP/IP timeout
-to find out), `lmx2db` will write the SQL queries to a file
-(see option `-f, --sql-file`).
+### Output to SQL file
 
-However, `lmx2db` checks all data types against the database schema
-before creating the SQL queries. If the database cannot be queried
-for the correct schema and data types for each table column, this
-information has to be provided in a file (see option `-t, --sqltypes-file`).
+- The default value of `[-u|--db-url]` is "output_to_files_only".
+  This is a special case of an invalid database URL.
+- If the database URL is invalid (which includes the default value),
+  `lmx2db` will write the SQL queries to a file (see option `-f, --sql-file`).
+- Worst case it takes a TCP/IP timeout to find out that the
+  database URL is invalid.
+- If the database cannot be queried for the correct schema and data types
+  for each table column, this information has to be provided in a file
+  (see option `-t, --sqltypes-file`).
+- There is a sample file `sample_sqltypes.yml` provided, based on the
+  database schema in subdirectory `schema`. This file can be used
+  if the database schema of the database pointed to by the URL fits
+  the one given in subdirectory `schema`.
+- Alternatively, a correct sqltypes file can be created on a different
+  computer with access to the correct database by a separate call to
+  `lmx2db` with option `-c` (and -u pointing to the desired database).
+  Then this file needs to be transferred to the computer where `lmx2db`
+  is called to process `/path/to/runs /path/to/other/runs`.
 
-There is a sample file `sample_sqltypes.yml` provided, based on the
-database schema in subdirectory `schema`. This file can be used
-if the database schema of the database pointed to by the URL fits
-the one given in subdirectory `schema`.
+### Database Schema and Type Checks
 
-A correct sqltypes file can be created on a different computer with
-access to the correct database by a separate call to `lmx2db` with
-option `-c` (and -u pointing to the desired database).
-Then this file needs to be transferred to the computer where `lmx2db`
-is called to process `/path/to/runs /path/to/other/runs`.
-
-With these extra type checks, the SQL queries are not created if
-the input data cannot be cast to the correct types or the database
-schema was changed in a way that is not backward compatible.
+`lmx2db` checks all data types against the database schema before
+creating the SQL queries. With these extra type checks,
+the SQL queries are not created if the input data cannot be cast
+to the correct types or the database schema was changed in a way
+that is not backward compatible.
 
 Any such database schema and type mismatches would also create
 SQL import errors, but these are sometimes very cryptic and
