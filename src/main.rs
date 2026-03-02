@@ -42,13 +42,21 @@ async fn main() -> Result<()> {
 
     // Connect to the database
     let database_url: String = args.db_url.clone();
-    let pool: Option<Pool<MySql>> = connect_to_database(&database_url).await;
+    let pool: Option<Pool<MySql>> = if database_url.is_empty() {
+        if !args.create_sqltypes {
+            println!("No database URL provided. Will output to file instead.");
+        }
+        None
+    } else {
+        connect_to_database(&database_url).await
+    };
 
     // If create_sqltypes flag is set, create the sqltype file
     // from the database and exit
     if args.create_sqltypes {
         sqltypes::create_sqltype_file(pool.clone(), &args).await?;
-        std::process::exit(0);
+        disconnect_from_database(pool).await;
+        return Ok(());
     }
     // Normal operation: read sqltypes and proceed
     let sqltypes: SqlTypeHashMap = sqltypes::read_sqltypes(pool.clone(), &args).await?;
