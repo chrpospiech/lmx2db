@@ -176,8 +176,8 @@ Common options:
   database URL is invalid.
 - If the database cannot be queried for the correct schema and data types
   for each table column, this information has to be provided in a file.
-- The shipped sample file `sqltypes.yml` is automatically taken as
-  default. It is under version control and is based on the database
+- The shipped sample file `sqltypes.yml` is automatically used as the
+  default sqltypes file. It is under version control and is based on the database
   schema in subdirectory `schema`. This file can be used if
   the database schema of the intended database fits the one given in
   subdirectory `schema`.
