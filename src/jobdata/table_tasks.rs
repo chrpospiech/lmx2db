@@ -82,7 +82,8 @@ fn parse_optional_float_array(
 
 /// Helper function to check whether a parameter of type Option<serde_yaml_ng::Value>
 /// is a sequence (array) of strings.
-/// If the parameter is None, return None.
+/// If the parameter is None, bail out with message
+/// "Missing section {section} for rank {rank}".
 /// If the parameter is not a sequence or any element is not a string,
 /// return an error.
 /// Otherwise, return a Vec<serde_yaml_ng::Value> with two elements:
