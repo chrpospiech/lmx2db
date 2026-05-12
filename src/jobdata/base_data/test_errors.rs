@@ -39,7 +39,7 @@ mod tests {
     #[test]
     fn test_extract_base_data_key_missing_mpi_rank_key() {
         let mut lmx_summary: LmxSummary = HashMap::new();
-        let base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+        let base_data: HashMap<String, serde_yaml_ng::Value> = HashMap::new();
         lmx_summary.insert("base_data".to_string(), base_data);
 
         let result = extract_base_data_key(&lmx_summary, "my_MPI_rank");
@@ -61,12 +61,12 @@ mod tests {
     #[test]
     fn test_extract_base_data_key_non_numeric_type() {
         let mut lmx_summary: LmxSummary = HashMap::new();
-        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml_ng::Value> = HashMap::new();
 
         // Insert a string (non-numeric type)
         base_data.insert(
             "my_MPI_rank".to_string(),
-            serde_yaml::Value::String("not_a_number".to_string()),
+            serde_yaml_ng::Value::String("not_a_number".to_string()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
@@ -88,12 +88,12 @@ mod tests {
     #[test]
     fn test_extract_base_data_key_negative_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
-        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml_ng::Value> = HashMap::new();
 
         // Insert a negative number (as i64)
         base_data.insert(
             "my_MPI_rank".to_string(),
-            serde_yaml::Value::Number((-1).into()),
+            serde_yaml_ng::Value::Number((-1).into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 

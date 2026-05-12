@@ -45,12 +45,12 @@ mod tests {
         let mut rank_summary = HashMap::new();
         rank_summary.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::Number(100.0.into()),
-                serde_yaml::Value::Number(80.0.into()),
-                serde_yaml::Value::Number(10.0.into()),
-                serde_yaml::Value::Number(200.0.into()),
-                serde_yaml::Value::Number(300.0.into()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::Number(100.0.into()),
+                serde_yaml_ng::Value::Number(80.0.into()),
+                serde_yaml_ng::Value::Number(10.0.into()),
+                serde_yaml_ng::Value::Number(200.0.into()),
+                serde_yaml_ng::Value::Number(300.0.into()),
             ]),
         );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
@@ -99,9 +99,9 @@ mod tests {
         let mut cpu_affinity = HashMap::new();
         cpu_affinity.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0001".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
+                serde_yaml_ng::Value::String("0001".to_string()),
             ]),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
@@ -148,23 +148,23 @@ mod tests {
         let mut cpu_affinity = HashMap::new();
         cpu_affinity.insert(
             "0".to_string(),
-            serde_yaml::Value::String("invalid".to_string()),
+            serde_yaml_ng::Value::String("invalid".to_string()),
         );
         cpu_affinity.insert(
             "1".to_string(),
-            serde_yaml::Value::String("invalid".to_string()),
+            serde_yaml_ng::Value::String("invalid".to_string()),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
 
         let mut rank_summary = HashMap::new();
         rank_summary.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::Number(100.0.into()),
-                serde_yaml::Value::Number(80.0.into()),
-                serde_yaml::Value::Number(10.0.into()),
-                serde_yaml::Value::Number(200.0.into()),
-                serde_yaml::Value::Number(300.0.into()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::Number(100.0.into()),
+                serde_yaml_ng::Value::Number(80.0.into()),
+                serde_yaml_ng::Value::Number(10.0.into()),
+                serde_yaml_ng::Value::Number(200.0.into()),
+                serde_yaml_ng::Value::Number(300.0.into()),
             ]),
         );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
@@ -213,16 +213,16 @@ mod tests {
         let mut cpu_affinity = HashMap::new();
         cpu_affinity.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0001".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
+                serde_yaml_ng::Value::String("0001".to_string()),
             ]),
         );
         cpu_affinity.insert(
             "1".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0001".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
+                serde_yaml_ng::Value::String("0001".to_string()),
             ]),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
@@ -230,7 +230,7 @@ mod tests {
         let mut rank_summary = HashMap::new();
         rank_summary.insert(
             "0".to_string(),
-            serde_yaml::Value::String("invalid".to_string()),
+            serde_yaml_ng::Value::String("invalid".to_string()),
         );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
 
@@ -278,16 +278,16 @@ mod tests {
         let mut cpu_affinity = HashMap::new();
         cpu_affinity.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0001".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
+                serde_yaml_ng::Value::String("0001".to_string()),
             ]),
         );
         cpu_affinity.insert(
             "1".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0001".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
+                serde_yaml_ng::Value::String("0001".to_string()),
             ]),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
@@ -295,12 +295,12 @@ mod tests {
         let mut rank_summary = HashMap::new();
         rank_summary.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::Number(100.0.into()),
-                serde_yaml::Value::String("not_a_float".to_string()),
-                serde_yaml::Value::Number(10.0.into()),
-                serde_yaml::Value::Number(200.0.into()),
-                serde_yaml::Value::Number(300.0.into()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::Number(100.0.into()),
+                serde_yaml_ng::Value::String("not_a_float".to_string()),
+                serde_yaml_ng::Value::Number(10.0.into()),
+                serde_yaml_ng::Value::Number(200.0.into()),
+                serde_yaml_ng::Value::Number(300.0.into()),
             ]),
         );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
@@ -346,16 +346,16 @@ mod tests {
         let mut cpu_affinity = HashMap::new();
         cpu_affinity.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0001".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
+                serde_yaml_ng::Value::String("0001".to_string()),
             ]),
         );
         cpu_affinity.insert(
             "1".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
-                serde_yaml::Value::String("0001".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
+                serde_yaml_ng::Value::String("0001".to_string()),
             ]),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
@@ -363,12 +363,12 @@ mod tests {
         let mut rank_summary = HashMap::new();
         rank_summary.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::Number(100.0.into()),
-                serde_yaml::Value::Number(80.0.into()),
-                serde_yaml::Value::Number(10.0.into()),
-                serde_yaml::Value::Number(200.0.into()),
-                serde_yaml::Value::Number(300.0.into()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::Number(100.0.into()),
+                serde_yaml_ng::Value::Number(80.0.into()),
+                serde_yaml_ng::Value::Number(10.0.into()),
+                serde_yaml_ng::Value::Number(200.0.into()),
+                serde_yaml_ng::Value::Number(300.0.into()),
             ]),
         );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);
@@ -377,9 +377,9 @@ mod tests {
         // Only 2 elements instead of 3
         comm_times.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::Number(50.0.into()),
-                serde_yaml::Value::Number(5.0.into()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::Number(50.0.into()),
+                serde_yaml_ng::Value::Number(5.0.into()),
             ]),
         );
         lmx_summary.insert("communication_times".to_string(), comm_times);
@@ -428,10 +428,10 @@ mod tests {
         let mut cpu_affinity = HashMap::new();
         cpu_affinity.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("node0.example.com".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("node0.example.com".to_string()),
                 // Invalid: contains 'k' which is not a hexadecimal digit
-                serde_yaml::Value::String("00010k".to_string()),
+                serde_yaml_ng::Value::String("00010k".to_string()),
             ]),
         );
         lmx_summary.insert("CPU_affinity".to_string(), cpu_affinity);
@@ -439,12 +439,12 @@ mod tests {
         let mut rank_summary = HashMap::new();
         rank_summary.insert(
             "0".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::Number(100.0.into()),
-                serde_yaml::Value::Number(80.0.into()),
-                serde_yaml::Value::Number(10.0.into()),
-                serde_yaml::Value::Number(200.0.into()),
-                serde_yaml::Value::Number(300.0.into()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::Number(100.0.into()),
+                serde_yaml_ng::Value::Number(80.0.into()),
+                serde_yaml_ng::Value::Number(10.0.into()),
+                serde_yaml_ng::Value::Number(200.0.into()),
+                serde_yaml_ng::Value::Number(300.0.into()),
             ]),
         );
         lmx_summary.insert("rank_summary".to_string(), rank_summary);

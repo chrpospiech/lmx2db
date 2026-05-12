@@ -39,7 +39,7 @@ mod tests {
         let lmx_file = std::path::Path::new(manifest_dir)
             .join("tests/data/GROMACS/run_64/LMX_summary.376231.0.yml");
         let lmx_summary: crate::jobdata::LmxSummary =
-            serde_yaml::from_str(&std::fs::read_to_string(&lmx_file)?)?;
+            serde_yaml_ng::from_str(&std::fs::read_to_string(&lmx_file)?)?;
 
         // Call import_into_tasks_table with no 'tasks' table in sqltypes
         let queries = import_into_tasks_table(&lmx_summary, &sqltypes, &args)?;

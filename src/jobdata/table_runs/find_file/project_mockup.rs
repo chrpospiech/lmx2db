@@ -43,7 +43,7 @@ pub fn setup_tmp_project_file(args: &CliArgs, contents: &RunsForeignKeys) -> Res
     std::fs::create_dir_all(&temp_dir)?;
     let file_name = temp_dir.join(args.project_file.as_str());
     // temporarily create a project file with contents from RunsForeignKeys written in yml format
-    let yml_contents = serde_yaml::to_string(contents)?;
+    let yml_contents = serde_yaml_ng::to_string(contents)?;
     std::fs::write(&file_name, yml_contents)?;
 
     let file_name_str = file_name.into_os_string().into_string().map_err(|os_str| {
@@ -99,7 +99,7 @@ pub fn setup_cliargs_with_project_file(
     let project_cliargs = setup_cliargs_with_project_file_name(project_file)?;
     // temporarily create a project file with contents from RunsForeignKeys written in yml format
     let yml_contents =
-        serde_yaml::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
+        serde_yaml_ng::to_string(contents).expect("Failed to serialize RunsForeignKeys to YAML");
     std::fs::write(project_file, yml_contents)?;
     // Return CliArgs
     Ok(project_cliargs)

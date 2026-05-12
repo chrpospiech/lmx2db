@@ -34,7 +34,7 @@ pub(crate) mod import_into_iprof;
 /// Helper function to extract the number of interval timer profiler ticks.
 ///
 /// # Arguments
-/// * `value` - A reference to a serde_yaml::Value that should be a sequence
+/// * `value` - A reference to a serde_yaml_ng::Value that should be a sequence
 ///
 /// # Returns
 /// * `Result<u64>` - The number of interval timer profiler ticks as a u64.
@@ -43,7 +43,7 @@ pub(crate) mod import_into_iprof;
 /// * Returns an error if the input value is not a sequence.
 /// * Returns an error if the first value is not an integer.
 /// * Returns an error if the integer value is out of u64 range.
-pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<u64> {
+pub fn extract_iprof_ticks(value: &serde_yaml_ng::Value) -> Result<u64> {
     let seq = value.as_sequence().ok_or_else(|| {
         anyhow!(
             "Expected a sequence with an integer for interval timer profiler ticks, but got: {:?}",
@@ -68,7 +68,7 @@ pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<u64> {
 /// Helper function to extract a full library or function name.
 ///
 /// # Arguments
-/// * `value` - A reference to a serde_yaml::Value that should be a sequence
+/// * `value` - A reference to a serde_yaml_ng::Value that should be a sequence
 ///
 /// # Returns
 /// * `Result<String>` - The full library or function name as a joined string.
@@ -77,7 +77,7 @@ pub fn extract_iprof_ticks(value: &serde_yaml::Value) -> Result<u64> {
 /// * Returns an error if the input value is not a sequence.
 /// * Returns an error if any member is not a string.
 /// * Returns an error if the sequence is empty.
-pub fn extract_full_name(value: &serde_yaml::Value) -> Result<String> {
+pub fn extract_full_name(value: &serde_yaml_ng::Value) -> Result<String> {
     let seq = value.as_sequence().ok_or_else(|| {
         anyhow!(
             "Expected a sequence for full name extraction, but got: {:?}",
@@ -164,7 +164,7 @@ pub fn extract_full_function_name(
             lib_value
         )
     })?;
-    let func_value = func_table.get(serde_yaml::Value::String(short_name.to_string()))
+    let func_value = func_table.get(serde_yaml_ng::Value::String(short_name.to_string()))
         .ok_or_else(|| anyhow!("Short name '{}' not found in 'subroutine_names' section for library '{}' in LmxSummary data", short_name, lib_name))?;
     let full_name = extract_full_name(func_value)?;
     Ok(full_name)
@@ -233,15 +233,15 @@ pub fn import_into_iprof_table(
             "ticks".to_string(),
         ];
         let values = &[vec![
-            serde_yaml::Value::String("@rid".to_string()),
-            serde_yaml::Value::Number(my_mpi_rank.into()),
-            serde_yaml::Value::String(format!("routine_id('{}','{}')", total, total)),
-            serde_yaml::Value::Number(total_ticks.into()),
+            serde_yaml_ng::Value::String("@rid".to_string()),
+            serde_yaml_ng::Value::Number(my_mpi_rank.into()),
+            serde_yaml_ng::Value::String(format!("routine_id('{}','{}')", total, total)),
+            serde_yaml_ng::Value::Number(total_ticks.into()),
         ]];
         let sql_query = create_import_statement(table_name, keys, values, sqltypes)?;
         query_list.push(sql_query);
         // We check whether iprof_data contains a section "library_histogram" with the expected
-        // structure of a non-empty HashMap<String, serde_yaml::Value>, and if so, we
+        // structure of a non-empty HashMap<String, serde_yaml_ng::Value>, and if so, we
         // loop through its keys and values to create a second SQL import statement
         // for the iprof table with the ticks value for each library.
         let histogram = iprof_data.get("library_histogram");
@@ -265,7 +265,7 @@ pub fn import_into_iprof_table(
             continue;
         }
         // Process library_histogram data
-        let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
+        let mut value_list: Vec<Vec<serde_yaml_ng::Value>> = Vec::new();
         for (lib_short_name, lib_data) in histogram {
             let lib_full_name = extract_full_library_name(&iprof_data, lib_short_name)?;
             // Escape single quotes in names before embedding into SQL string literals
@@ -273,19 +273,19 @@ pub fn import_into_iprof_table(
             let total_escaped = total.replace('\'', "''");
             let lib_ticks = extract_iprof_ticks(lib_data)?;
             value_list.push(vec![
-                serde_yaml::Value::String("@rid".to_string()),
-                serde_yaml::Value::Number(my_mpi_rank.into()),
-                serde_yaml::Value::String(format!(
+                serde_yaml_ng::Value::String("@rid".to_string()),
+                serde_yaml_ng::Value::Number(my_mpi_rank.into()),
+                serde_yaml_ng::Value::String(format!(
                     "routine_id('{}','{}')",
                     lib_full_name_escaped, total_escaped
                 )),
-                serde_yaml::Value::Number(lib_ticks.into()),
+                serde_yaml_ng::Value::Number(lib_ticks.into()),
             ]);
         }
         let sql_query = create_import_statement(table_name, keys, &value_list, sqltypes)?;
         query_list.push(sql_query);
         // We check whether iprof_data contains a section "flat_profile" with the expected
-        // structure of a non-empty HashMap<String, HashMap<String, serde_yaml::Value>>, and if so, we
+        // structure of a non-empty HashMap<String, HashMap<String, serde_yaml_ng::Value>>, and if so, we
         // loop through its keys and values to create further SQL import statements for the iprof table
         // with the ticks value for each function.
         let flat_profile = iprof_data.get("flat_profile");
@@ -309,7 +309,7 @@ pub fn import_into_iprof_table(
             continue;
         }
         // Process flat_profile data
-        let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
+        let mut value_list: Vec<Vec<serde_yaml_ng::Value>> = Vec::new();
         for (lib_short_name, func_table) in flat_profile {
             let lib_full_name = extract_full_library_name(&iprof_data, lib_short_name)?;
             let func_table_map = match func_table.as_mapping() {
@@ -338,14 +338,14 @@ pub fn import_into_iprof_table(
                 )?;
                 let func_ticks = extract_iprof_ticks(func_data)?;
                 value_list.push(vec![
-                    serde_yaml::Value::String("@rid".to_string()),
-                    serde_yaml::Value::Number(my_mpi_rank.into()),
-                    serde_yaml::Value::String(format!(
+                    serde_yaml_ng::Value::String("@rid".to_string()),
+                    serde_yaml_ng::Value::Number(my_mpi_rank.into()),
+                    serde_yaml_ng::Value::String(format!(
                         "routine_id('{}','{}')",
                         lib_full_name.replace('\'', "''"),
                         func_full_name.replace('\'', "''"),
                     )),
-                    serde_yaml::Value::Number(func_ticks.into()),
+                    serde_yaml_ng::Value::Number(func_ticks.into()),
                 ]);
             }
         }

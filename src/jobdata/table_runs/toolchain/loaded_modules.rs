@@ -28,7 +28,7 @@ base_data:
   start_date_n: 500000000
   stop_date_n: 800000000
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let result = get_loaded_modules(&lmx_summary);
         assert!(result.is_err());
         assert_eq!(
@@ -45,7 +45,7 @@ base_data:
 environ:
   SOME_VAR: some_value
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let result = get_loaded_modules(&lmx_summary);
         assert!(result.is_err());
         assert_eq!(
@@ -62,7 +62,7 @@ environ:
 environ:
   LOADEDMODULES: "gcc/9.3.0, openmpi/4.0.3, python/3.8.5"
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let result = get_loaded_modules(&lmx_summary);
         assert!(result.is_err());
         assert_eq!(
@@ -81,7 +81,7 @@ environ:
     - "gcc/9.3.0:openmpi/4.0."
     - "3:python/3.8.5"
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let result = get_loaded_modules(&lmx_summary)?;
         let expected_modules = vec![
             "gcc/9.3.0".to_string(),

@@ -71,22 +71,22 @@ pub async fn import_into_runs_table(
 
     // Prepare the data for insertion into the 'runs' table
     // Start with mandatory foreign key columns
-    let mut column_data: Vec<(String, serde_yaml::Value)> = vec![
+    let mut column_data: Vec<(String, serde_yaml_ng::Value)> = vec![
         (
             "ccid".to_string(),
-            serde_yaml::Value::String("@ccid".to_string()),
+            serde_yaml_ng::Value::String("@ccid".to_string()),
         ),
         (
             "pid".to_string(),
-            serde_yaml::Value::String("@pid".to_string()),
+            serde_yaml_ng::Value::String("@pid".to_string()),
         ),
         (
             "clid".to_string(),
-            serde_yaml::Value::String("@clid".to_string()),
+            serde_yaml_ng::Value::String("@clid".to_string()),
         ),
         (
             "fsid".to_string(),
-            serde_yaml::Value::String("@fsid".to_string()),
+            serde_yaml_ng::Value::String("@fsid".to_string()),
         ),
     ];
     // Add the required dirname column as the absolute path
@@ -96,7 +96,7 @@ pub async fn import_into_runs_table(
     }
     column_data.push((
         "dirname".to_string(),
-        serde_yaml::Value::String(
+        serde_yaml_ng::Value::String(
             extract_directory_path(file_name)?
                 .to_str()
                 .unwrap()
@@ -119,7 +119,7 @@ pub async fn import_into_runs_table(
     column_data.extend(current_toolchain);
     // Convert to new API format
     let keys: Vec<String> = column_data.iter().map(|(k, _)| k.clone()).collect();
-    let values: Vec<Vec<serde_yaml::Value>> =
+    let values: Vec<Vec<serde_yaml_ng::Value>> =
         vec![column_data.iter().map(|(_, v)| v.clone()).collect()];
     let import_sql = create_import_statement("runs", &keys, &values, sqltypes)?;
     query_list.push(import_sql);
@@ -142,7 +142,7 @@ pub async fn import_into_runs_table(
     if args.verbose || args.dry_run {
         println!("Generating timing information for current run ");
     }
-    let timing_data: Vec<(String, serde_yaml::Value)> = import_timing_data(lmx_summary)?;
+    let timing_data: Vec<(String, serde_yaml_ng::Value)> = import_timing_data(lmx_summary)?;
     // Call create_update_statement for timing table
     let timing_sql = create_update_statement("runs", &timing_data, "rid = @rid", sqltypes)?;
     query_list.push(timing_sql);

@@ -18,30 +18,30 @@ use crate::jobdata::LmxSummary;
 use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
 
-/// Helper function to check whether a parameter of type Option<serde_yaml::Value>
+/// Helper function to check whether a parameter of type Option<serde_yaml_ng::Value>
 /// is a sequence (array) and checks whether the second element in that sequence is
 /// a non-zero float.
 /// If the parameter is None, return None.
 /// If the parameter is not a sequence or the second element is not a float,
 /// return an error.
 /// If the second element is a float with value zero, return None.
-/// Otherwise, return a Vec<serde_yaml::Value> containing the first two
+/// Otherwise, return a Vec<serde_yaml_ng::Value> containing the first two
 /// elements of the sequence.
 ///
 /// # Arguments
-/// * `param` - An optional serde_yaml::Value to check
+/// * `param` - An optional serde_yaml_ng::Value to check
 ///
 /// # Returns
-/// * Ok(Some(Vec<serde_yaml::Value>)) if the second element is a non-zero float
+/// * Ok(Some(Vec<serde_yaml_ng::Value>)) if the second element is a non-zero float
 /// * Ok(None) if the parameter is None or the second element is zero
 /// * Err(anyhow::Error) if the parameter is not a sequence or the second element is not a float
 fn parse_optional_float_sequence(
-    param: &Option<serde_yaml::Value>,
-) -> Result<Option<Vec<serde_yaml::Value>>> {
+    param: &Option<serde_yaml_ng::Value>,
+) -> Result<Option<Vec<serde_yaml_ng::Value>>> {
     if let Some(value) = param {
-        if let serde_yaml::Value::Sequence(seq) = value {
+        if let serde_yaml_ng::Value::Sequence(seq) = value {
             if seq.len() >= 2 {
-                if let serde_yaml::Value::Number(num) = &seq[1] {
+                if let serde_yaml_ng::Value::Number(num) = &seq[1] {
                     if let Some(f) = num.as_f64() {
                         if f != 0.0 {
                             return Ok(Some(seq[..2].to_vec()));
@@ -130,7 +130,7 @@ pub fn import_into_mmm_table(
     }
     let mmm_section = mmm_section.unwrap();
     let mut columns = vec!["rid".to_string()];
-    let mut values = vec![serde_yaml::Value::String("@rid".to_string())];
+    let mut values = vec![serde_yaml_ng::Value::String("@rid".to_string())];
 
     let mappings = vec![
         ("min_comm", ("mintask", "mincomm")),

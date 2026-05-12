@@ -22,11 +22,11 @@ mod tests {
     #[test]
     fn test_extract_base_data_key_zero_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
-        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml_ng::Value> = HashMap::new();
 
         base_data.insert(
             "my_MPI_rank".to_string(),
-            serde_yaml::Value::Number(0.into()),
+            serde_yaml_ng::Value::Number(0.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
@@ -40,11 +40,11 @@ mod tests {
     #[test]
     fn test_extract_base_data_key_small_number_u64() {
         let mut lmx_summary: LmxSummary = HashMap::new();
-        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml_ng::Value> = HashMap::new();
 
         base_data.insert(
             "my_MPI_rank".to_string(),
-            serde_yaml::Value::Number(42.into()),
+            serde_yaml_ng::Value::Number(42.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 
@@ -58,20 +58,20 @@ mod tests {
     #[test]
     fn test_extract_base_data_key_with_other_keys_number() {
         let mut lmx_summary: LmxSummary = HashMap::new();
-        let mut base_data: HashMap<String, serde_yaml::Value> = HashMap::new();
+        let mut base_data: HashMap<String, serde_yaml_ng::Value> = HashMap::new();
 
         // Add other keys to base_data
         base_data.insert(
             "other_key".to_string(),
-            serde_yaml::Value::String("other_value".to_string()),
+            serde_yaml_ng::Value::String("other_value".to_string()),
         );
         base_data.insert(
             "my_MPI_rank".to_string(),
-            serde_yaml::Value::Number(5.into()),
+            serde_yaml_ng::Value::Number(5.into()),
         );
         base_data.insert(
             "another_key".to_string(),
-            serde_yaml::Value::Number(123.into()),
+            serde_yaml_ng::Value::Number(123.into()),
         );
         lmx_summary.insert("base_data".to_string(), base_data);
 

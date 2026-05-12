@@ -44,7 +44,7 @@ mod tests {
 
         // Read the LMX summary file
         let lmx_summary: crate::jobdata::LmxSummary =
-            serde_yaml::from_str(&std::fs::read_to_string(&lmx_file)?)?;
+            serde_yaml_ng::from_str(&std::fs::read_to_string(&lmx_file)?)?;
 
         // Call import_into_environ_table with no 'environ' table in sqltypes
         let queries = import_into_environ_table(&lmx_summary, &sqltypes, &args)?;

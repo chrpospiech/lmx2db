@@ -19,7 +19,7 @@ mod tests {
 
     #[test]
     fn parses_correct_tick_record() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- 100
 "#,
         )?;
@@ -30,7 +30,7 @@ mod tests {
 
     #[test]
     fn rejects_non_sequence() -> Result<()> {
-        let input = serde_yaml::from_str(r#"100"#)?;
+        let input = serde_yaml_ng::from_str(r#"100"#)?;
         let err = extract_iprof_ticks(&input).unwrap_err();
         let msg = format!("{err}");
         assert!(msg.contains("Expected a sequence"));
@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn rejects_non_integer_first_value() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- "not an integer"
 "#,
         )?;
@@ -51,7 +51,7 @@ mod tests {
 
     #[test]
     fn empty_sequence_returns_error() -> Result<()> {
-        let input = serde_yaml::from_str(r#"[]"#)?;
+        let input = serde_yaml_ng::from_str(r#"[]"#)?;
         let err = extract_iprof_ticks(&input).unwrap_err();
         let msg = format!("{err}");
         assert!(msg.contains("Expected a sequence with an integer"));
@@ -60,7 +60,7 @@ mod tests {
 
     #[test]
     fn uses_only_first_element_from_multiple() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- 100
 - 200
 - 300
@@ -73,7 +73,7 @@ mod tests {
 
     #[test]
     fn rejects_negative_tick_value() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- -100
 "#,
         )?;

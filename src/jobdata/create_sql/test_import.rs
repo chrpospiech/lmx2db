@@ -42,9 +42,9 @@ mod tests {
             "nodes".to_string(),
         ];
         let values = vec![vec![
-            serde_yaml::Value::String("@rid".to_string()),
-            serde_yaml::Value::String("gcc".to_string()),
-            serde_yaml::Value::Number(serde_yaml::Number::from(16)),
+            serde_yaml_ng::Value::String("@rid".to_string()),
+            serde_yaml_ng::Value::String("gcc".to_string()),
+            serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(16)),
         ]];
 
         let sql = create_import_statement("runs", &keys, &values, &sqltypes)?;
@@ -78,19 +78,19 @@ mod tests {
         ];
         let values = vec![
             vec![
-                serde_yaml::Value::String("@testaid".to_string()),
-                serde_yaml::Value::String("gcc".to_string()),
-                serde_yaml::Value::Number(serde_yaml::Number::from(16)),
+                serde_yaml_ng::Value::String("@testaid".to_string()),
+                serde_yaml_ng::Value::String("gcc".to_string()),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(16)),
             ],
             vec![
-                serde_yaml::Value::String("@testbid".to_string()),
-                serde_yaml::Value::String("icc".to_string()),
-                serde_yaml::Value::Number(serde_yaml::Number::from(32)),
+                serde_yaml_ng::Value::String("@testbid".to_string()),
+                serde_yaml_ng::Value::String("icc".to_string()),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(32)),
             ],
             vec![
-                serde_yaml::Value::String("@testcid".to_string()),
-                serde_yaml::Value::String("clang".to_string()),
-                serde_yaml::Value::Number(serde_yaml::Number::from(64)),
+                serde_yaml_ng::Value::String("@testcid".to_string()),
+                serde_yaml_ng::Value::String("clang".to_string()),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(64)),
             ],
         ];
 

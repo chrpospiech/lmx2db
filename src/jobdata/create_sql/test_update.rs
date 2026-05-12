@@ -39,15 +39,15 @@ mod tests {
         let tuple = [
             (
                 "rid".to_string(),
-                serde_yaml::Value::String("@rid".to_string()),
+                serde_yaml_ng::Value::String("@rid".to_string()),
             ),
             (
                 "compiler".to_string(),
-                serde_yaml::Value::String("gcc-10".to_string()),
+                serde_yaml_ng::Value::String("gcc-10".to_string()),
             ),
             (
                 "nodes".to_string(),
-                serde_yaml::Value::Number(serde_yaml::Number::from(32)),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(32)),
             ),
         ];
 

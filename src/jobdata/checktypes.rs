@@ -81,7 +81,7 @@ pub fn check_types(
     table_name: &str,
     keys: &[String],
     types: &[String],
-    values: &[Vec<serde_yaml::Value>],
+    values: &[Vec<serde_yaml_ng::Value>],
 ) -> Result<()> {
     // The following regexes will be used multiple times
     let id_pattern = Regex::new(r"^@\w+id$|^[A-Za-z_]\w*_id\([^;]*\)$").unwrap();
@@ -353,12 +353,12 @@ pub fn check_types(
 /// # Errors
 /// Returns an error if the value is `Null` or of an unsupported type that
 /// cannot be safely converted into a string.
-pub fn try_cast_into_string(value: &serde_yaml::Value) -> Result<String> {
+pub fn try_cast_into_string(value: &serde_yaml_ng::Value) -> Result<String> {
     match value {
-        serde_yaml::Value::String(s) => Ok(s.clone()),
-        serde_yaml::Value::Number(n) => Ok(n.to_string()),
-        serde_yaml::Value::Bool(b) => Ok(if *b { "1".to_string() } else { "0".to_string() }),
-        serde_yaml::Value::Null => bail!("Cannot cast null value to string"),
+        serde_yaml_ng::Value::String(s) => Ok(s.clone()),
+        serde_yaml_ng::Value::Number(n) => Ok(n.to_string()),
+        serde_yaml_ng::Value::Bool(b) => Ok(if *b { "1".to_string() } else { "0".to_string() }),
+        serde_yaml_ng::Value::Null => bail!("Cannot cast null value to string"),
         _ => bail!("Cannot cast value to string: unsupported type"),
     }
 }

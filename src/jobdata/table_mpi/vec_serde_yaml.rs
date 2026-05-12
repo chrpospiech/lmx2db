@@ -16,7 +16,7 @@
 mod tests {
     use crate::jobdata::table_mpi::extract_vector_from_serde_yaml;
     use anyhow::Result;
-    use serde_yaml::Value;
+    use serde_yaml_ng::Value;
 
     #[test]
     fn test_extract_vector_from_serde_yaml() -> Result<()> {
@@ -25,7 +25,7 @@ mod tests {
         - item2
         - item3
         "#;
-        let value: Value = serde_yaml::from_str(yaml_str)?;
+        let value: Value = serde_yaml_ng::from_str(yaml_str)?;
         let vec = extract_vector_from_serde_yaml(&value)?;
         assert_eq!(vec.len(), 3);
         assert_eq!(vec[0], Value::String("item1".to_string()));
@@ -39,7 +39,7 @@ mod tests {
         let yaml_str = r#"
         key: value
         "#;
-        let value: Value = serde_yaml::from_str(yaml_str).unwrap();
+        let value: Value = serde_yaml_ng::from_str(yaml_str).unwrap();
         let result = extract_vector_from_serde_yaml(&value);
         assert!(result.is_err());
     }

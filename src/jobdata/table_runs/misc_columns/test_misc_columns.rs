@@ -29,11 +29,11 @@ mod tests {
         let expected = vec![
             (
                 "has_MPItrace".to_string(),
-                serde_yaml::Value::Number(serde_yaml::Number::from(0)),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(0)),
             ),
             (
                 "has_iprof".to_string(),
-                serde_yaml::Value::Number(serde_yaml::Number::from(0)),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(0)),
             ),
         ];
         assert_eq!(result, expected);
@@ -61,11 +61,11 @@ mod tests {
         let expected = vec![
             (
                 "has_MPItrace".to_string(),
-                serde_yaml::Value::Number(serde_yaml::Number::from(1)),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(1)),
             ),
             (
                 "has_iprof".to_string(),
-                serde_yaml::Value::Number(serde_yaml::Number::from(1)),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(1)),
             ),
         ];
         assert_eq!(result, expected);

@@ -44,7 +44,7 @@ pub type ToolChainMap = HashMap<String, ToolChain>;
 /// * `args` - Command line arguments
 ///
 /// Returns:
-/// * `Vec<(String, serde_yaml::Value)>` - The extracted toolchain data as column-value pairs
+/// * `Vec<(String, serde_yaml_ng::Value)>` - The extracted toolchain data as column-value pairs
 ///
 /// Errors:
 /// This function will never return an error - any errors encountered during
@@ -54,7 +54,7 @@ pub fn import_toolchain_data(
     file_name: &str,
     lmx_summary: &LmxSummary,
     args: &CliArgs,
-) -> Vec<(String, serde_yaml::Value)> {
+) -> Vec<(String, serde_yaml_ng::Value)> {
     // Initialize default or returned data
     let empty_toolchain = ToolChain {
         compiler: None,
@@ -62,7 +62,7 @@ pub fn import_toolchain_data(
         mpilib: None,
         mpilib_version: None,
     };
-    let mut column_data: Vec<(String, serde_yaml::Value)> = Vec::new();
+    let mut column_data: Vec<(String, serde_yaml_ng::Value)> = Vec::new();
     let toolchain = match get_toolchain_data(file_name, lmx_summary, args) {
         Ok(toolchain) => toolchain,
         Err(e) => {
@@ -87,15 +87,18 @@ pub fn import_toolchain_data(
         println!("  MPI Library: {}", mpilib);
         println!("  MPI Library Version: {}", mpilib_version);
     }
-    column_data.push(("compiler".to_string(), serde_yaml::Value::String(compiler)));
+    column_data.push((
+        "compiler".to_string(),
+        serde_yaml_ng::Value::String(compiler),
+    ));
     column_data.push((
         "compiler_version".to_string(),
-        serde_yaml::Value::String(compiler_version),
+        serde_yaml_ng::Value::String(compiler_version),
     ));
-    column_data.push(("mpilib".to_string(), serde_yaml::Value::String(mpilib)));
+    column_data.push(("mpilib".to_string(), serde_yaml_ng::Value::String(mpilib)));
     column_data.push((
         "mpilib_version".to_string(),
-        serde_yaml::Value::String(mpilib_version),
+        serde_yaml_ng::Value::String(mpilib_version),
     ));
     column_data
 }
@@ -159,7 +162,7 @@ pub fn read_module_file(file_name: &str, args: &CliArgs) -> Result<ToolChainMap>
     if args.verbose || args.dry_run {
         println!("Contents of module file:\n{}", file_contents);
     }
-    let toolchain_map: ToolChainMap = serde_yaml::from_str(&file_contents)?;
+    let toolchain_map: ToolChainMap = serde_yaml_ng::from_str(&file_contents)?;
     Ok(toolchain_map)
 }
 

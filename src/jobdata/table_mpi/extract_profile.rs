@@ -43,7 +43,7 @@ MPI_rank_details:
         - [1, 108.0, 2.622604e-06]
         "#;
         let yaml_str = template.replace("{}", &mpi_key);
-        let summary: LmxSummary = serde_yaml::from_str(&yaml_str)?;
+        let summary: LmxSummary = serde_yaml_ng::from_str(&yaml_str)?;
         Ok(summary)
     }
 

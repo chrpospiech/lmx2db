@@ -47,7 +47,7 @@ mod tests {
 
         environ_section.insert(
             "INVALID_VAR".to_string(),
-            serde_yaml::Value::Number(42.into()),
+            serde_yaml_ng::Value::Number(42.into()),
         );
 
         lmx_summary.insert("environ".to_string(), environ_section);
@@ -90,9 +90,9 @@ mod tests {
 
         environ_section.insert(
             "BAD_SEQUENCE".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("valid".to_string()),
-                serde_yaml::Value::Number(123.into()), // Invalid: number in sequence
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("valid".to_string()),
+                serde_yaml_ng::Value::Number(123.into()), // Invalid: number in sequence
             ]),
         );
 

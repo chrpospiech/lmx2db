@@ -35,7 +35,7 @@ mod tests {
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let long_string = "a".repeat(40); // Assuming max length is less than 32
         let keys = vec!["compiler".to_string()];
-        let values = vec![vec![serde_yaml::Value::String(long_string)]];
+        let values = vec![vec![serde_yaml_ng::Value::String(long_string)]];
         let types = get_types("runs", &keys, &sqltypes)?;
         let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_err());
@@ -64,9 +64,9 @@ mod tests {
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let keys = vec!["nodes".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            10000000,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(10000000),
+        )]];
         let types = get_types("runs", &keys, &sqltypes)?;
         let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_ok());
@@ -88,7 +88,7 @@ mod tests {
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let long_binary = "a".repeat(1030); // Assuming max length is less than 4096
         let keys = vec!["affinity".to_string()];
-        let values = vec![vec![serde_yaml::Value::String(long_binary)]];
+        let values = vec![vec![serde_yaml_ng::Value::String(long_binary)]];
         let types = get_types("tasks", &keys, &sqltypes)?;
         let result = check_types("tasks", &keys, &types, &values);
         assert!(result.is_err());
@@ -118,9 +118,9 @@ mod tests {
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let keys = vec!["tid".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            -1,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(-1),
+        )]];
         let types = get_types("tasks", &keys, &sqltypes)?;
         let result = check_types("tasks", &keys, &types, &values);
         assert!(result.is_err());
@@ -146,9 +146,9 @@ mod tests {
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let keys = vec!["tid".to_string()];
         let too_large: u64 = u32::MAX as u64 + 1;
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            too_large,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(too_large),
+        )]];
         let types = get_types("tasks", &keys, &sqltypes)?;
         let result = check_types("tasks", &keys, &types, &values);
         assert!(result.is_err());
@@ -179,9 +179,9 @@ mod tests {
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let keys = vec!["calls".to_string()];
         let too_large: i64 = i32::MAX as i64 + 1;
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            too_large,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(too_large),
+        )]];
         let types = get_types("mpi", &keys, &sqltypes)?;
         let result = check_types("mpi", &keys, &types, &values);
         assert!(result.is_err());
@@ -211,7 +211,7 @@ mod tests {
         };
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
         let keys = vec!["elapsed".to_string()];
-        let values = vec![vec![serde_yaml::Value::Null]];
+        let values = vec![vec![serde_yaml_ng::Value::Null]];
         let types = get_types("runs", &keys, &sqltypes)?;
         let result = check_types("runs", &keys, &types, &values);
         assert!(result.is_err());
