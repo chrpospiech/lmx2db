@@ -82,7 +82,8 @@ fn parse_optional_float_array(
 
 /// Helper function to check whether a parameter of type Option<serde_yaml_ng::Value>
 /// is a sequence (array) of strings.
-/// If the parameter is None, return None.
+/// If the parameter is None, bail out with message
+/// "Missing section {section} for rank {rank}".
 /// If the parameter is not a sequence or any element is not a string,
 /// return an error.
 /// Otherwise, return a Vec<serde_yaml_ng::Value> with two elements:
@@ -188,10 +189,9 @@ fn parse_optional_string_array(
 /// * `args` - Reference to the command line arguments controlling processing behavior
 ///
 /// # Returns
-/// * `Result<Vec<serde_yaml_ng::Value>>`
-/// - Ok containing an Option<Vec<serde_yaml_ng::Value>> if all checks pass
-/// - Ok(None) if the parameter is None or a section is not present
-/// - Err otherwise
+/// * `Result<Vec<String>>`
+/// - Ok containing SQL statements for importing data into the tasks table
+/// - Err if mandatory sections are missing or task values have invalid structure/types
 ///
 pub fn import_into_tasks_table(
     lmx_summary: &LmxSummary,
@@ -267,7 +267,7 @@ pub fn import_into_tasks_table(
         let rank_str = i.to_string();
         // Extract affinity values
         let aff_values =
-            parse_optional_string_array(&aff_section.get(&rank_str), &rank_str, "affinity")?;
+            parse_optional_string_array(&aff_section.get(&rank_str), &rank_str, "CPU_affinity")?;
         // Start building the values for this task
         let mut values: Vec<serde_yaml_ng::Value> = vec![
             serde_yaml_ng::Value::String("@rid".to_string()),
