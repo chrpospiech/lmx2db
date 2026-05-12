@@ -289,6 +289,6 @@ pub fn read_project_file(file_name: &str, args: &CliArgs) -> Result<RunsForeignK
     if args.verbose || args.dry_run {
         println!("Contents of project file:\n{}", file_contents);
     }
-    let runs_foreign_keys: RunsForeignKeys = serde_yaml::from_str(&file_contents)?;
+    let runs_foreign_keys: RunsForeignKeys = serde_yaml_ng::from_str(&file_contents)?;
     Ok(runs_foreign_keys)
 }

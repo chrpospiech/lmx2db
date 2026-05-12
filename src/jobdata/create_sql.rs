@@ -24,7 +24,7 @@ pub(crate) mod test_update;
 pub fn create_import_statement(
     table_name: &str,
     keys: &[String],
-    values: &[Vec<serde_yaml::Value>],
+    values: &[Vec<serde_yaml_ng::Value>],
     sqltypes: &SqlTypeHashMap,
 ) -> Result<String> {
     // First, check types
@@ -65,13 +65,14 @@ pub fn create_import_statement(
 
 pub fn create_update_statement(
     table_name: &str,
-    column: &[(String, serde_yaml::Value)],
+    column: &[(String, serde_yaml_ng::Value)],
     where_clause: &str,
     sqltypes: &SqlTypeHashMap,
 ) -> Result<String> {
     // First, check types - convert to new API format
     let keys: Vec<String> = column.iter().map(|(k, _)| k.clone()).collect();
-    let values: Vec<Vec<serde_yaml::Value>> = vec![column.iter().map(|(_, v)| v.clone()).collect()];
+    let values: Vec<Vec<serde_yaml_ng::Value>> =
+        vec![column.iter().map(|(_, v)| v.clone()).collect()];
     let types: Vec<String> = get_types(table_name, &keys, sqltypes)?;
     check_types(table_name, &keys, &types, &values)?;
 

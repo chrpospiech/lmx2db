@@ -32,7 +32,7 @@ mod tests {
             &HashMap::new(),
             &Default::default(),
         );
-        let expected: Vec<(String, serde_yaml::Value)> = vec![];
+        let expected: Vec<(String, serde_yaml_ng::Value)> = vec![];
         assert_eq!(result, expected);
 
         // Clean up
@@ -73,15 +73,15 @@ memory_per_node: 64
         assert_eq!(result.len(), 3);
         assert!(result.contains(&(
             "compiler".to_string(),
-            serde_yaml::Value::String("GNU".to_string()),
+            serde_yaml_ng::Value::String("GNU".to_string()),
         )));
         assert!(result.contains(&(
             "comment".to_string(),
-            serde_yaml::Value::String("Test run".to_string()),
+            serde_yaml_ng::Value::String("Test run".to_string()),
         )));
         assert!(result.contains(&(
             "gpus".to_string(),
-            serde_yaml::Value::Number(serde_yaml::Number::from(2)),
+            serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(2)),
         )));
 
         // Clean up

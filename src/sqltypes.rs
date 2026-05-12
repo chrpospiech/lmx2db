@@ -39,7 +39,8 @@ pub async fn create_sqltype_file(pool: Option<Pool<MySql>>, args: &CliArgs) -> R
         std::process::exit(0);
     }
     // Write hashmap to YAML file
-    let yaml_string = serde_yaml::to_string(&hashmap).expect("Failed to serialize hashmap to YAML");
+    let yaml_string =
+        serde_yaml_ng::to_string(&hashmap).expect("Failed to serialize hashmap to YAML");
 
     std::fs::write(&args.sqltypes_file, "---\n".to_string() + &yaml_string)
         .expect("Failed to write YAML to file");
@@ -108,7 +109,7 @@ pub async fn read_sqltypes_from_file(args: &CliArgs) -> Result<SqlTypeHashMap> {
     }
     let yaml_string = std::fs::read_to_string(&args.sqltypes_file)?;
 
-    let hashmap: HashMap<String, HashMap<String, String>> = serde_yaml::from_str(&yaml_string)?;
+    let hashmap: HashMap<String, HashMap<String, String>> = serde_yaml_ng::from_str(&yaml_string)?;
 
     Ok(hashmap)
 }

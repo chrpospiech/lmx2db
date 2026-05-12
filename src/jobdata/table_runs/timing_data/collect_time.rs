@@ -17,7 +17,7 @@ mod tests {
     use crate::jobdata::table_runs::timing_data::compute_collect_time;
     use crate::jobdata::LmxSummary;
     use anyhow::Result;
-    use serde_yaml::Value;
+    use serde_yaml_ng::Value;
 
     #[test]
     fn test_compute_collect_time() -> Result<()> {
@@ -29,7 +29,7 @@ base_data:
   start_date_n: 500000000
   stop_date_n: 800000000
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let collect_time = compute_collect_time(&lmx_summary)?;
         if let Value::Number(num) = collect_time {
             let ct = num.as_f64().unwrap();
@@ -55,7 +55,7 @@ basic_data:
   start_date_n: 500000000
   stop_date_n: 800000000
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let result = compute_collect_time(&lmx_summary);
         assert!(result.is_err());
         assert_eq!(
@@ -74,7 +74,7 @@ base_data:
   start_date_n: 500000000
   stop_date_n: 800000000
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let result = compute_collect_time(&lmx_summary);
         assert!(result.is_err());
         assert_eq!(

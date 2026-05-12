@@ -28,15 +28,17 @@ pub(crate) mod import_into_mpi_table;
 pub(crate) mod vec_serde_yaml;
 
 /// Helper function to extract a vector of values from LMX summary type data.
-/// This function takes a reference to a single serde_yaml::Value that is
-/// expected to be a sequence (array) and returns a vector of serde_yaml::Value.
+/// This function takes a reference to a single serde_yaml_ng::Value that is
+/// expected to be a sequence (array) and returns a vector of serde_yaml_ng::Value.
 ///
 /// # Arguments
-/// * `value` - A reference to a serde_yaml::Value that should be a sequence
+/// * `value` - A reference to a serde_yaml_ng::Value that should be a sequence
 ///
-/// Returns a vector of serde_yaml::Value extracted from the sequence.
+/// Returns a vector of serde_yaml_ng::Value extracted from the sequence.
 /// If the input value is not a sequence, an error is returned.
-pub fn extract_vector_from_serde_yaml(value: &serde_yaml::Value) -> Result<Vec<serde_yaml::Value>> {
+pub fn extract_vector_from_serde_yaml(
+    value: &serde_yaml_ng::Value,
+) -> Result<Vec<serde_yaml_ng::Value>> {
     if let Some(seq) = value.as_sequence() {
         Ok(seq.clone())
     } else {
@@ -52,21 +54,21 @@ pub fn extract_vector_from_serde_yaml(value: &serde_yaml::Value) -> Result<Vec<s
 /// extracts the MPI rank using the `extract_base_data_key` function, and then
 /// parses the section denoted by the provided `section_key` to extract
 /// the relevant data for that MPI rank. It returns these data as
-/// Vec<Vec<serde_yaml::Value>>.
+/// Vec<Vec<serde_yaml_ng::Value>>.
 ///
 /// # Arguments
 /// * `mpi_profile` - A reference to the LMX summary data structure.
 /// * `section_key` - The key in the LMX summary that contains the MPI data to be extracted.
 ///
-/// Returns a vector of vectors of serde_yaml::Value containing the extracted MPI data.
+/// Returns a vector of vectors of serde_yaml_ng::Value containing the extracted MPI data.
 /// If the section key is not found or if the data cannot be properly extracted, an error
 /// is returned.
 pub fn extract_mpi_data_from_mpi_profile(
     mpi_profile: &LmxSummary,
     section_key: &str,
-) -> Result<Vec<Vec<serde_yaml::Value>>> {
+) -> Result<Vec<Vec<serde_yaml_ng::Value>>> {
     let mpi_rank = extract_base_data_key(mpi_profile, "my_MPI_rank")?;
-    let mut result: Vec<Vec<serde_yaml::Value>> = Vec::new();
+    let mut result: Vec<Vec<serde_yaml_ng::Value>> = Vec::new();
     let is_detail = section_key.contains("detail");
 
     if let Some(mpi_profiles) = mpi_profile.get(section_key) {
@@ -75,10 +77,10 @@ pub fn extract_mpi_data_from_mpi_profile(
         }
 
         for (key, value) in mpi_profiles.iter() {
-            let mut row: Vec<serde_yaml::Value> = vec![
-                serde_yaml::Value::String("@rid".to_string()),
-                serde_yaml::Value::Number(serde_yaml::Number::from(mpi_rank as u64)),
-                serde_yaml::Value::String(format!("mpi_call_id('{}')", key)),
+            let mut row: Vec<serde_yaml_ng::Value> = vec![
+                serde_yaml_ng::Value::String("@rid".to_string()),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(mpi_rank as u64)),
+                serde_yaml_ng::Value::String(format!("mpi_call_id('{}')", key)),
             ];
 
             if !is_detail {

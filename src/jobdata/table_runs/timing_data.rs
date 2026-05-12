@@ -32,7 +32,7 @@ pub(crate) mod elapsed_time;
 ///
 /// # Returns
 ///
-/// * `Result<serde_yaml::Value>` - The computed collection time as a YAML value on success
+/// * `Result<serde_yaml_ng::Value>` - The computed collection time as a YAML value on success
 ///
 /// # Errors
 ///
@@ -57,7 +57,7 @@ pub(crate) mod elapsed_time;
 /// let collect_time = compute_collect_time(&lmx_summary)?;
 /// # Ok::<(), anyhow::Error>(())
 /// ```
-pub fn compute_collect_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Value> {
+pub fn compute_collect_time(lmx_summary: &LmxSummary) -> Result<serde_yaml_ng::Value> {
     if let Some(base_data) = lmx_summary.get("base_data") {
         // Extract the required fields from base_data
         let start_date = base_data
@@ -74,25 +74,25 @@ pub fn compute_collect_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
             .ok_or_else(|| anyhow::anyhow!("'stop_date_n' not found in 'base_data'"))?;
         // Try to convert these numbers to f64
         let start_float = match start_date {
-            serde_yaml::Value::Number(n) => n
+            serde_yaml_ng::Value::Number(n) => n
                 .as_f64()
                 .ok_or_else(|| anyhow::anyhow!("Invalid 'start_date' value"))?,
             _ => return Err(anyhow::anyhow!("'start_date' is not a number")),
         };
         let stop_float = match stop_date {
-            serde_yaml::Value::Number(n) => n
+            serde_yaml_ng::Value::Number(n) => n
                 .as_f64()
                 .ok_or_else(|| anyhow::anyhow!("Invalid 'stop_date' value"))?,
             _ => return Err(anyhow::anyhow!("'stop_date' is not a number")),
         };
         let start_n_float = match start_date_n {
-            serde_yaml::Value::Number(n) => n
+            serde_yaml_ng::Value::Number(n) => n
                 .as_f64()
                 .ok_or_else(|| anyhow::anyhow!("Invalid 'start_date_n' value"))?,
             _ => return Err(anyhow::anyhow!("'start_date_n' is not a number")),
         };
         let stop_n_float = match stop_date_n {
-            serde_yaml::Value::Number(n) => n
+            serde_yaml_ng::Value::Number(n) => n
                 .as_f64()
                 .ok_or_else(|| anyhow::anyhow!("Invalid 'stop_date_n' value"))?,
             _ => return Err(anyhow::anyhow!("'stop_date_n' is not a number")),
@@ -100,7 +100,7 @@ pub fn compute_collect_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
         // Compute collect_time as per the formula
         let collect_time =
             (stop_float - start_float) + (stop_n_float - start_n_float) * 0.000000001;
-        Ok(serde_yaml::to_value(collect_time)?)
+        Ok(serde_yaml_ng::to_value(collect_time)?)
     } else {
         Err(anyhow::anyhow!(
             "'base_data' section not found in LmxSummary"
@@ -122,7 +122,7 @@ pub fn compute_collect_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
 ///
 /// # Returns
 ///
-/// * `Result<serde_yaml::Value>` - The computed elapsed time as a YAML value on success
+/// * `Result<serde_yaml_ng::Value>` - The computed elapsed time as a YAML value on success
 ///
 /// # Errors
 ///
@@ -144,7 +144,7 @@ pub fn compute_collect_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
 /// let elapsed_time = compute_elapsed_time(&lmx_summary)?;
 /// # Ok::<(), anyhow::Error>(())
 ///```
-pub fn compute_elapsed_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Value> {
+pub fn compute_elapsed_time(lmx_summary: &LmxSummary) -> Result<serde_yaml_ng::Value> {
     if let Some(rank_summary) = lmx_summary.get("rank_summary") {
         let mut max_elapsed_time: Option<f64> = None;
         for values in rank_summary.values() {
@@ -153,7 +153,7 @@ pub fn compute_elapsed_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
                 .ok_or_else(|| anyhow::anyhow!("Rank values are not a sequence"))?;
             if let Some(first_value) = value_vec.first() {
                 let elapsed_time = match first_value {
-                    serde_yaml::Value::Number(n) => n
+                    serde_yaml_ng::Value::Number(n) => n
                         .as_f64()
                         .ok_or_else(|| anyhow::anyhow!("Invalid elapsed time value"))?,
                     _ => return Err(anyhow::anyhow!("Elapsed time is not a number")),
@@ -165,7 +165,7 @@ pub fn compute_elapsed_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
             }
         }
         if let Some(max_time) = max_elapsed_time {
-            Ok(serde_yaml::to_value(max_time)?)
+            Ok(serde_yaml_ng::to_value(max_time)?)
         } else {
             Err(anyhow::anyhow!(
                 "No elapsed time values found in 'rank_summary'"
@@ -186,7 +186,7 @@ pub fn compute_elapsed_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
 /// * `lmx_summary` - A reference to the LMX summary data containing timing information
 ///
 /// # Returns
-/// * `Result<Vec<(String, serde_yaml::Value)>>` - A vector of column-value pairs on success
+/// * `Result<Vec<(String, serde_yaml_ng::Value)>>` - A vector of column-value pairs on success
 ///
 /// # Errors
 /// This function will return an error if:
@@ -204,8 +204,8 @@ pub fn compute_elapsed_time(lmx_summary: &LmxSummary) -> Result<serde_yaml::Valu
 /// * `compute_collect_time` - Function to compute the collection time
 /// * `compute_elapsed_time` - Function to compute the elapsed time
 ///
-pub fn import_timing_data(lmx_summary: &LmxSummary) -> Result<Vec<(String, serde_yaml::Value)>> {
-    let mut timing_data: Vec<(String, serde_yaml::Value)> = Vec::new();
+pub fn import_timing_data(lmx_summary: &LmxSummary) -> Result<Vec<(String, serde_yaml_ng::Value)>> {
+    let mut timing_data: Vec<(String, serde_yaml_ng::Value)> = Vec::new();
 
     // Compute collect_time and elapsed_time
     let collect_time = compute_collect_time(lmx_summary)?;

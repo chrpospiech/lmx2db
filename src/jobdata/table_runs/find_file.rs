@@ -120,7 +120,7 @@ pub fn find_module_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
 /// Finds and reads settings file specified in args.settings_file.
 /// The file is expected to reside in the same directory of the given file_name.
 /// If found, the file is attempted to be read and parsed as YAML
-/// returning a HashMap<String, serde_yaml::Value> representing the settings.
+/// returning a HashMap<String, serde_yaml_ng::Value> representing the settings.
 /// If not found or if there are issues reading/parsing the file,
 /// an appropriate io::Error is returned.
 /// The `silent` parameter can be used to suppress verbose output even when `--verbose` or `--dry-run` are enabled.
@@ -131,7 +131,7 @@ pub fn find_module_file(file_name: &str, args: &CliArgs) -> Result<PathBuf> {
 /// * `silent` - If true, suppresses verbose output
 ///
 /// # Returns
-/// A HashMap<String, serde_yaml::Value> representing the settings from the file
+/// A HashMap<String, serde_yaml_ng::Value> representing the settings from the file
 ///
 /// # Errors
 /// - Returns an error if the settings file cannot be found, read, or parsed
@@ -139,7 +139,7 @@ pub fn find_and_read_settings_file(
     file_name: &str,
     args: &CliArgs,
     silent: bool,
-) -> Result<HashMap<String, serde_yaml::Value>> {
+) -> Result<HashMap<String, serde_yaml_ng::Value>> {
     let dir_path = extract_directory_path(file_name)?;
     let settings_file_path = dir_path.join(&args.settings_file);
     if (args.verbose || args.dry_run) && !silent {
@@ -159,6 +159,7 @@ pub fn find_and_read_settings_file(
     if (args.verbose || args.dry_run) && !silent {
         println!("Contents of settings file:\n{}", file_contents);
     }
-    let settings_map: HashMap<String, serde_yaml::Value> = serde_yaml::from_str(&file_contents)?;
+    let settings_map: HashMap<String, serde_yaml_ng::Value> =
+        serde_yaml_ng::from_str(&file_contents)?;
     Ok(settings_map)
 }

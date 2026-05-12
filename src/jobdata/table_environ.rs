@@ -43,7 +43,7 @@ pub fn import_into_environ_table(
     args: &CliArgs,
 ) -> Result<Vec<String>> {
     let key_list: Vec<String> = vec!["rid".to_string(), "k".to_string(), "value".to_string()];
-    let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
+    let mut value_list: Vec<Vec<serde_yaml_ng::Value>> = Vec::new();
     let mut query_list: Vec<String> = Vec::new();
 
     // Check early if 'environ' table exists in sqltypes to fail fast
@@ -61,7 +61,7 @@ pub fn import_into_environ_table(
     let env_section = env_section.unwrap();
     for (key, v) in env_section.iter() {
         match v {
-            serde_yaml::Value::Sequence(seq) => {
+            serde_yaml_ng::Value::Sequence(seq) => {
                 let str_vec: Result<Vec<String>, _> = seq
                     .iter()
                     .map(|val| {
@@ -73,16 +73,16 @@ pub fn import_into_environ_table(
 
                 let str_vec = str_vec?;
                 value_list.push(vec![
-                    serde_yaml::Value::String("@rid".to_string()),
-                    serde_yaml::Value::String(key.to_string()),
-                    serde_yaml::Value::String(str_vec.join("")),
+                    serde_yaml_ng::Value::String("@rid".to_string()),
+                    serde_yaml_ng::Value::String(key.to_string()),
+                    serde_yaml_ng::Value::String(str_vec.join("")),
                 ]);
             }
-            serde_yaml::Value::String(s) => {
+            serde_yaml_ng::Value::String(s) => {
                 value_list.push(vec![
-                    serde_yaml::Value::String("@rid".to_string()),
-                    serde_yaml::Value::String(key.to_string()),
-                    serde_yaml::Value::String(s.clone()),
+                    serde_yaml_ng::Value::String("@rid".to_string()),
+                    serde_yaml_ng::Value::String(key.to_string()),
+                    serde_yaml_ng::Value::String(s.clone()),
                 ]);
             }
             _ => {

@@ -20,7 +20,7 @@ mod tests {
 
     #[test]
     fn parses_single_string_element() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"library_names:
   library_name:
   - "lib.so""#,
@@ -33,7 +33,7 @@ mod tests {
 
     #[test]
     fn joins_multiple_parts_in_order() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"library_names:
   library_name:
   - 'lib'
@@ -48,7 +48,7 @@ mod tests {
 
     #[test]
     fn handles_empty_library_name() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"library_names:
   library_name: []"#,
         )?;
@@ -62,7 +62,7 @@ mod tests {
 
     #[test]
     fn rejects_non_sequence_library_name() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"library_names:
   library_name: "lib.so""#,
         )?;
@@ -76,7 +76,7 @@ mod tests {
 
     #[test]
     fn bails_out_on_missing_short_name() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"library_names:
   other_library:
   - "lib.so""#,

@@ -16,11 +16,11 @@
 mod tests {
     use crate::jobdata::table_iprof::extract_full_name;
     use anyhow::Result;
-    use serde_yaml::Value;
+    use serde_yaml_ng::Value;
 
     #[test]
     fn parses_single_string_element() -> Result<()> {
-        let input = serde_yaml::from_str(r#"- "lib.so""#)?;
+        let input = serde_yaml_ng::from_str(r#"- "lib.so""#)?;
         let full_name = extract_full_name(&input)?;
         assert_eq!(full_name, "lib.so");
         Ok(())
@@ -28,7 +28,7 @@ mod tests {
 
     #[test]
     fn joins_multiple_parts_in_order() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- "lib"
 - "::"
 - "func""#,
@@ -40,7 +40,7 @@ mod tests {
 
     #[test]
     fn empty_sequence_returns_error() -> Result<()> {
-        let input = serde_yaml::from_str(r#"[]"#)?;
+        let input = serde_yaml_ng::from_str(r#"[]"#)?;
         let err = extract_full_name(&input).unwrap_err();
         let msg = format!("{err}");
         assert!(msg.contains("Expected a non-empty sequence"));
@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn rejects_non_sequence() -> Result<()> {
-        let input = serde_yaml::from_str(r#""lib""#)?;
+        let input = serde_yaml_ng::from_str(r#""lib""#)?;
         let err = extract_full_name(&input).unwrap_err();
         let msg = format!("{err}");
         assert!(msg.contains("Expected a sequence"));
@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn rejects_non_string_member() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- "lib"
 - 42"#,
         )?;
@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn preserves_exact_content() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- " a"
 - "b ""#,
         )?;
@@ -81,7 +81,7 @@ mod tests {
 
     #[test]
     fn handles_unicode() -> Result<()> {
-        let input = serde_yaml::from_str(
+        let input = serde_yaml_ng::from_str(
             r#"- "µ"
 - "λ""#,
         )?;

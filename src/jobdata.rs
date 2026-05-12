@@ -19,7 +19,7 @@ use std::collections::HashMap;
 use std::fs::OpenOptions;
 use std::io::Write;
 
-pub type LmxSummary = HashMap<String, HashMap<String, serde_yaml::Value>>;
+pub type LmxSummary = HashMap<String, HashMap<String, serde_yaml_ng::Value>>;
 
 pub(crate) mod base_data;
 pub(crate) mod checktypes;
@@ -241,6 +241,6 @@ pub async fn process_sql_queries(
 
 pub(crate) fn read_lmx_summary(file_name: &str) -> Result<LmxSummary> {
     let file_content = std::fs::read_to_string(file_name)?;
-    let lmx_summary: LmxSummary = serde_yaml::from_str(&file_content)?;
+    let lmx_summary: LmxSummary = serde_yaml_ng::from_str(&file_content)?;
     Ok(lmx_summary)
 }

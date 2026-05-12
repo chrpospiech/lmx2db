@@ -62,14 +62,14 @@ pub fn check_sqltypes_file(sqltypes_file: String) -> bool {
     );
 
     // Check YAML structure (basic check)
-    let yaml: serde_yml::Value =
-        serde_yml::from_str(&contents).expect("Created sqltype file is not valid YAML");
+    let yaml: serde_yaml_ng::Value =
+        serde_yaml_ng::from_str(&contents).expect("Created sqltype file is not valid YAML");
     assert!(yaml.get("hpm_events").is_some());
     assert!(yaml.get("mpi_details").is_some());
     assert!(yaml.get("power_types").is_some());
 
     // Further checks can be added here to validate specific keys/values
-    let sqltypes_map: HashMap<String, HashMap<String, String>> =
-        serde_yml::from_str(&contents).expect("Failed to deserialize sqltype file into hashmap");
+    let sqltypes_map: HashMap<String, HashMap<String, String>> = serde_yaml_ng::from_str(&contents)
+        .expect("Failed to deserialize sqltype file into hashmap");
     check_sqltype_values(&sqltypes_map)
 }

@@ -29,7 +29,7 @@ base_data:
   start_date_n: 500000000
   stop_date_n: 800000000
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -52,7 +52,7 @@ base_data:
 environ:
   SOME_VAR: some_value
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let args = CliArgs {
             verbose: false,
             dry_run: false,
@@ -83,7 +83,7 @@ environ:
   LOADEDMODULES:
     - "good_compiler"
 "#;
-        let lmx_summary: LmxSummary = serde_yaml::from_str(yaml_data)?;
+        let lmx_summary: LmxSummary = serde_yaml_ng::from_str(yaml_data)?;
         let args = CliArgs {
             verbose: false,
             dry_run: false,

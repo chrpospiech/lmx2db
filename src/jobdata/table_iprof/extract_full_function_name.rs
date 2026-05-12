@@ -20,7 +20,7 @@ mod tests {
 
     #[test]
     fn parses_single_string_element() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   mylib:
     myfunc:
@@ -35,7 +35,7 @@ mod tests {
 
     #[test]
     fn joins_multiple_parts_in_order() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   mylib:
     myfunc:
@@ -52,7 +52,7 @@ mod tests {
 
     #[test]
     fn handles_empty_function_name() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   mylib:
     myfunc: []"#,
@@ -68,7 +68,7 @@ mod tests {
 
     #[test]
     fn rejects_non_sequence_function_value() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   mylib:
     myfunc: "do_work""#,
@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn bails_on_missing_subroutine_names_section() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"other_section:
   mylib:
     myfunc:
@@ -101,7 +101,7 @@ mod tests {
 
     #[test]
     fn bails_on_missing_library_in_subroutine_names() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   otherlib:
     myfunc:
@@ -118,7 +118,7 @@ mod tests {
 
     #[test]
     fn bails_on_non_mapping_library_value() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   mylib: "not_a_mapping""#,
         )?;
@@ -133,7 +133,7 @@ mod tests {
 
     #[test]
     fn bails_on_missing_short_name() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   mylib:
     otherfunc:
@@ -150,7 +150,7 @@ mod tests {
 
     #[test]
     fn rejects_non_string_sequence_member() -> Result<()> {
-        let iprof: LmxSummary = serde_yaml::from_str(
+        let iprof: LmxSummary = serde_yaml_ng::from_str(
             r#"subroutine_names:
   mylib:
     myfunc:

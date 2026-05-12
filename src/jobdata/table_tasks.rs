@@ -19,33 +19,33 @@ use crate::sqltypes::SqlTypeHashMap;
 use anyhow::Result;
 
 /// Helper function to check whether a parameter `value` of type
-/// Option<serde_yaml::Value> is a sequence (array) of floats.
+/// Option<serde_yaml_ng::Value> is a sequence (array) of floats.
 /// Two additional &str parameters `rank` and `section`
 /// are only used to create meaningful error messages.
 /// If the parameter is None, bail out with message
 /// "Missing section {section} for rank {rank}".
 /// If the parameter is not a sequence or any element is not a float,
 /// return an error with appropriate message including rank and section.
-/// Otherwise, return a Vec<serde_yaml::Value> containing the elements of the sequence.
+/// Otherwise, return a Vec<serde_yaml_ng::Value> containing the elements of the sequence.
 ///
 /// # Arguments
-/// * `value` - An optional &serde_yaml::Value to check
+/// * `value` - An optional &serde_yaml_ng::Value to check
 /// * `rank` - A &str indicating the rank for error messages
 /// * `section` - A &str indicating the section for error messages
 ///
 /// # Returns
-/// * `Vec<serde_yaml::Value>` if the parameter is a sequence of floats
+/// * `Vec<serde_yaml_ng::Value>` if the parameter is a sequence of floats
 /// * `Err` if the parameter is None or not a sequence or contains non-float elements
 ///
 fn parse_optional_float_array(
-    value: &Option<&serde_yaml::Value>,
+    value: &Option<&serde_yaml_ng::Value>,
     rank: &str,
     section: &str,
-) -> Result<Vec<serde_yaml::Value>> {
+) -> Result<Vec<serde_yaml_ng::Value>> {
     if let Some(value) = value {
-        if let serde_yaml::Value::Sequence(seq) = value {
+        if let serde_yaml_ng::Value::Sequence(seq) = value {
             for elem in seq {
-                if let serde_yaml::Value::Number(num) = elem {
+                if let serde_yaml_ng::Value::Number(num) = elem {
                     if num.as_f64().is_none() {
                         return Err(anyhow::anyhow!(
                             "Expected a float in {} for rank {}, but got non-float number value: {:?}",
@@ -80,34 +80,35 @@ fn parse_optional_float_array(
     ))
 }
 
-/// Helper function to check whether a parameter of type Option<serde_yaml::Value>
+/// Helper function to check whether a parameter of type Option<serde_yaml_ng::Value>
 /// is a sequence (array) of strings.
-/// If the parameter is None, return None.
+/// If the parameter is None, bail out with message
+/// "Missing section {section} for rank {rank}".
 /// If the parameter is not a sequence or any element is not a string,
 /// return an error.
-/// Otherwise, return a Vec<serde_yaml::Value> with two elements:
+/// Otherwise, return a Vec<serde_yaml_ng::Value> with two elements:
 /// - the first element of the sequence
 /// - the remaining elements joined to a single string without separator.
 ///
 /// # Arguments
-/// * `value` - An optional &serde_yaml::Value to check
+/// * `value` - An optional &serde_yaml_ng::Value to check
 /// * `rank` - A &str indicating the rank for error messages
 /// * `section` - A &str indicating the section for error messages
 ///
 /// # Returns
-/// * `Vec<serde_yaml::Value>` if the parameter is a sequence of strings
+/// * `Vec<serde_yaml_ng::Value>` if the parameter is a sequence of strings
 /// * `Err` if the parameter is None or not a sequence or contains non-string elements
 ///
 fn parse_optional_string_array(
-    value: &Option<&serde_yaml::Value>,
+    value: &Option<&serde_yaml_ng::Value>,
     rank: &str,
     section: &str,
-) -> Result<Vec<serde_yaml::Value>> {
+) -> Result<Vec<serde_yaml_ng::Value>> {
     if let Some(value) = value {
-        if let serde_yaml::Value::Sequence(seq) = value {
+        if let serde_yaml_ng::Value::Sequence(seq) = value {
             let mut string_elems = Vec::new();
             for elem in seq {
-                if let serde_yaml::Value::String(s) = elem {
+                if let serde_yaml_ng::Value::String(s) = elem {
                     string_elems.push(s.clone());
                 } else {
                     return Err(anyhow::anyhow!(
@@ -119,8 +120,8 @@ fn parse_optional_string_array(
                 }
             }
             if !string_elems.is_empty() {
-                let first_elem = serde_yaml::Value::String(string_elems[0].clone());
-                let remaining_joined = serde_yaml::Value::String(string_elems[1..].join(""));
+                let first_elem = serde_yaml_ng::Value::String(string_elems[0].clone());
+                let remaining_joined = serde_yaml_ng::Value::String(string_elems[1..].join(""));
                 return Ok(vec![first_elem, remaining_joined]);
             } else {
                 return Err(anyhow::anyhow!(
@@ -156,23 +157,23 @@ fn parse_optional_string_array(
 /// The values in section `CPU_affinity` are to be processed by the helper function
 /// The keys in every section go to the column `tid` in the tasks table.
 /// The values in section `affinity` are to be processed by the helper function
-/// `parse_optional_string_array()`. This function returns a `Vec<serde_yaml::Value>`
+/// `parse_optional_string_array()`. This function returns a `Vec<serde_yaml_ng::Value>`
 /// containing two string elements: the first element of the sequence is processed by a
 /// stored function to provide the value for column `lid`. The second element of the
 /// sequence is used to provide the value for column `affinity`.
 ///
 /// The values in section `rank_summary` are to be processed by the helper function
-/// `parse_optional_float_array()`. This function returns a Vec<serde_yaml::Value> to be inserted into
+/// `parse_optional_float_array()`. This function returns a Vec<serde_yaml_ng::Value> to be inserted into
 /// columns `elapsed`, `usertime`, `systime`, `memory`, `vmemory` in this order.
 ///
 /// The values in section `communication_times` - if present - are to be processed
 /// by the helper function `parse_optional_float_array()`. This function returns
-/// a Vec<serde_yaml::Value>. The first element and third element of this sequence
+/// a Vec<serde_yaml_ng::Value>. The first element and third element of this sequence
 /// is to be inserted into columns `comm` and `mpiio`, respectively.
 ///
 /// The values in section `load_imbalance_times` - if present - are to be processed
 /// by the helper function `parse_optional_float_array()`. This function returns
-/// a Vec<serde_yaml::Value>. Only the first element of this sequence
+/// a Vec<serde_yaml_ng::Value>. Only the first element of this sequence
 /// is to be inserted into column `loadimb`.
 ///
 /// The function returns a Vec<String> containing SQL statements for the tasks table.
@@ -188,10 +189,9 @@ fn parse_optional_string_array(
 /// * `args` - Reference to the command line arguments controlling processing behavior
 ///
 /// # Returns
-/// * `Result<Vec<serde_yaml::Value>>`
-/// - Ok containing an Option<Vec<serde_yaml::Value>> if all checks pass
-/// - Ok(None) if the parameter is None or a section is not present
-/// - Err otherwise
+/// * `Result<Vec<String>>`
+/// - Ok containing SQL statements for importing data into the tasks table
+/// - Err if mandatory sections are missing or task values have invalid structure/types
 ///
 pub fn import_into_tasks_table(
     lmx_summary: &LmxSummary,
@@ -262,20 +262,20 @@ pub fn import_into_tasks_table(
             "CPU_affinity section is empty. At least one MPI rank configuration is required."
         ));
     }
-    let mut value_vector: Vec<Vec<serde_yaml::Value>> = Vec::new();
+    let mut value_vector: Vec<Vec<serde_yaml_ng::Value>> = Vec::new();
     for i in 0..num_tasks {
         let rank_str = i.to_string();
         // Extract affinity values
         let aff_values =
-            parse_optional_string_array(&aff_section.get(&rank_str), &rank_str, "affinity")?;
+            parse_optional_string_array(&aff_section.get(&rank_str), &rank_str, "CPU_affinity")?;
         // Start building the values for this task
-        let mut values: Vec<serde_yaml::Value> = vec![
-            serde_yaml::Value::String("@rid".to_string()),
-            serde_yaml::Value::Number(serde_yaml::Number::from(i as i64)),
+        let mut values: Vec<serde_yaml_ng::Value> = vec![
+            serde_yaml_ng::Value::String("@rid".to_string()),
+            serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(i as i64)),
             // lid is processed by stored function location_id().
             // The node name must be a string literal in SQL.
             // Escape single quotes in the node name to prevent SQL injection.
-            serde_yaml::Value::String({
+            serde_yaml_ng::Value::String({
                 let node_name = aff_values[0].as_str().ok_or_else(|| {
                     anyhow::anyhow!(
                         "Expected string value for affinity[0] in rank {}, but got: {:?}",

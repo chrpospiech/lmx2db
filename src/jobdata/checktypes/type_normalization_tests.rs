@@ -22,9 +22,9 @@ mod tests {
         // Test that lowercase "bigint(20) unsigned" is properly handled
         let keys = vec!["count".to_string()];
         let types = vec!["bigint(20) unsigned".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            u64::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(u64::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),
@@ -38,9 +38,9 @@ mod tests {
         // Test that lowercase "bigint(20)" is properly handled
         let keys = vec!["count".to_string()];
         let types = vec!["bigint(20)".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            i64::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(i64::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),
@@ -54,9 +54,9 @@ mod tests {
         // Test that lowercase "bigint(20)" handles negative values
         let keys = vec!["count".to_string()];
         let types = vec!["bigint(20)".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            i64::MIN,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(i64::MIN),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),
@@ -70,9 +70,9 @@ mod tests {
         // Test that lowercase "int(11) unsigned" is properly handled
         let keys = vec!["tid".to_string()];
         let types = vec!["int(11) unsigned".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            u32::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(u32::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),
@@ -87,9 +87,9 @@ mod tests {
         let keys = vec!["tid".to_string()];
         let types = vec!["int(11) unsigned".to_string()];
         let too_large: u64 = u32::MAX as u64 + 1;
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            too_large,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(too_large),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_err(),
@@ -107,9 +107,9 @@ mod tests {
         // Test that lowercase "int(11)" is properly handled
         let keys = vec!["calls".to_string()];
         let types = vec!["int(11)".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            i32::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(i32::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(result.is_ok(), "Should accept max i32 value for signed int");
         Ok(())
@@ -121,9 +121,9 @@ mod tests {
         let keys = vec!["calls".to_string()];
         let types = vec!["int(11)".to_string()];
         let too_large: i64 = i32::MAX as i64 + 1;
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            too_large,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(too_large),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_err(),
@@ -141,9 +141,9 @@ mod tests {
         // Test that lowercase "tinyint(4) unsigned" is properly handled
         let keys = vec!["ht".to_string()];
         let types = vec!["tinyint(4) unsigned".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            u8::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(u8::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),
@@ -158,9 +158,9 @@ mod tests {
         let keys = vec!["ht".to_string()];
         let types = vec!["tinyint(4) unsigned".to_string()];
         let too_large: u16 = u8::MAX as u16 + 1;
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            too_large,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(too_large),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_err(),
@@ -178,9 +178,9 @@ mod tests {
         // Test that lowercase "smallint(6) unsigned" is properly handled
         let keys = vec!["regid".to_string()];
         let types = vec!["smallint(6) unsigned".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            u16::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(u16::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),
@@ -195,9 +195,9 @@ mod tests {
         let keys = vec!["regid".to_string()];
         let types = vec!["smallint(6) unsigned".to_string()];
         let too_large: u32 = u16::MAX as u32 + 1;
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            too_large,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(too_large),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_err(),
@@ -215,9 +215,9 @@ mod tests {
         // Test that uppercase "BIGINT(20) UNSIGNED" is also handled (case-insensitive)
         let keys = vec!["count".to_string()];
         let types = vec!["BIGINT(20) UNSIGNED".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            u64::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(u64::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),
@@ -231,9 +231,9 @@ mod tests {
         // Test that mixed case "Int(11) Unsigned" is also handled
         let keys = vec!["tid".to_string()];
         let types = vec!["Int(11) Unsigned".to_string()];
-        let values = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            u32::MAX,
-        ))]];
+        let values = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(u32::MAX),
+        )]];
         let result = check_types("test_table", &keys, &types, &values);
         assert!(
             result.is_ok(),

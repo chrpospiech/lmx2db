@@ -46,7 +46,7 @@ pub fn import_into_settings_table(
     args: &CliArgs,
 ) -> Result<Vec<String>> {
     let key_list: Vec<String> = vec!["rid".to_string(), "k".to_string(), "value".to_string()];
-    let mut value_list: Vec<Vec<serde_yaml::Value>> = Vec::new();
+    let mut value_list: Vec<Vec<serde_yaml_ng::Value>> = Vec::new();
     let mut query_list: Vec<String> = Vec::new();
 
     // Check early if 'settings' table exists in sqltypes to fail fast
@@ -70,8 +70,8 @@ pub fn import_into_settings_table(
             continue;
         }
         value_list.push(vec![
-            serde_yaml::Value::String("@rid".to_string()),
-            serde_yaml::Value::String(key.clone()),
+            serde_yaml_ng::Value::String("@rid".to_string()),
+            serde_yaml_ng::Value::String(key.clone()),
             value.clone(),
         ]);
     }

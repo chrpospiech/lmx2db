@@ -100,17 +100,17 @@ key3:
         let settings_map = result.unwrap();
         assert_eq!(
             settings_map.get("key1").unwrap(),
-            &serde_yaml::Value::String("value1".to_string())
+            &serde_yaml_ng::Value::String("value1".to_string())
         );
         assert_eq!(
             settings_map.get("key2").unwrap(),
-            &serde_yaml::Value::Number(42.into())
+            &serde_yaml_ng::Value::Number(42.into())
         );
         assert_eq!(
             settings_map.get("key3").unwrap(),
-            &serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("list_item1".to_string()),
-                serde_yaml::Value::String("list_item2".to_string())
+            &serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("list_item1".to_string()),
+                serde_yaml_ng::Value::String("list_item2".to_string())
             ])
         );
 

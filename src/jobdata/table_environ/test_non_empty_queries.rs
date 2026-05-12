@@ -48,7 +48,7 @@ mod tests {
 
         // Read the LMX summary file
         let lmx_summary: crate::jobdata::LmxSummary =
-            serde_yaml::from_str(&std::fs::read_to_string(&lmx_file)?)?;
+            serde_yaml_ng::from_str(&std::fs::read_to_string(&lmx_file)?)?;
 
         // Call import_into_environ_table
         let queries = import_into_environ_table(&lmx_summary, &sqltypes, &args)?;
@@ -106,15 +106,15 @@ mod tests {
         // Add string value
         environ_section.insert(
             "SIMPLE_VAR".to_string(),
-            serde_yaml::Value::String("simple_value".to_string()),
+            serde_yaml_ng::Value::String("simple_value".to_string()),
         );
 
         // Add sequence value
         environ_section.insert(
             "PATH_VAR".to_string(),
-            serde_yaml::Value::Sequence(vec![
-                serde_yaml::Value::String("/usr/bin:".to_string()),
-                serde_yaml::Value::String("/usr/local/bin".to_string()),
+            serde_yaml_ng::Value::Sequence(vec![
+                serde_yaml_ng::Value::String("/usr/bin:".to_string()),
+                serde_yaml_ng::Value::String("/usr/local/bin".to_string()),
             ]),
         );
 
@@ -180,7 +180,7 @@ mod tests {
 
         // Read the LMX summary file
         let lmx_summary: crate::jobdata::LmxSummary =
-            serde_yaml::from_str(&std::fs::read_to_string(&lmx_file)?)?;
+            serde_yaml_ng::from_str(&std::fs::read_to_string(&lmx_file)?)?;
 
         // Call import_into_environ_table
         let queries = import_into_environ_table(&lmx_summary, &sqltypes, &args)?;

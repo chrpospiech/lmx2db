@@ -69,7 +69,7 @@ mod tests {
         let sqltypes: SqlTypeHashMap = read_sqltypes(Some(pool), &args).await?;
 
         let keys = vec!["clid".to_string()];
-        let values = vec![vec![serde_yaml::Value::String("not_an_id".to_string())]];
+        let values = vec![vec![serde_yaml_ng::Value::String("not_an_id".to_string())]];
 
         // Test for foreign key that is not an @\w+id reference and not an integer
         let types = get_types("runs", &keys, &sqltypes)?;
@@ -98,16 +98,16 @@ mod tests {
 
         // Test for foreign key that is a valid @\w+id reference
         let keys_ref = vec!["clid".to_string()];
-        let values_ref = vec![vec![serde_yaml::Value::String("@clid".to_string())]];
+        let values_ref = vec![vec![serde_yaml_ng::Value::String("@clid".to_string())]];
         let types_ref = get_types("runs", &keys_ref, &sqltypes)?;
         let result_ref = check_types("runs", &keys_ref, &types_ref, &values_ref);
         assert!(result_ref.is_ok());
 
         // Test for foreign key that is a valid integer
         let keys_int = vec!["clid".to_string()];
-        let values_int = vec![vec![serde_yaml::Value::Number(serde_yaml::Number::from(
-            12345,
-        ))]];
+        let values_int = vec![vec![serde_yaml_ng::Value::Number(
+            serde_yaml_ng::Number::from(12345),
+        )]];
         let types_int = get_types("runs", &keys_int, &sqltypes)?;
         let result_int = check_types("runs", &keys_int, &types_int, &values_int);
         assert!(result_int.is_ok());
@@ -132,16 +132,16 @@ mod tests {
         let keys = vec!["clid".to_string(), "compiler".to_string()];
         let values = vec![
             vec![
-                serde_yaml::Value::String("@clid".to_string()),
-                serde_yaml::Value::String("gcc".to_string()),
+                serde_yaml_ng::Value::String("@clid".to_string()),
+                serde_yaml_ng::Value::String("gcc".to_string()),
             ],
             vec![
-                serde_yaml::Value::Number(serde_yaml::Number::from(12345)),
-                serde_yaml::Value::String("icc".to_string()),
+                serde_yaml_ng::Value::Number(serde_yaml_ng::Number::from(12345)),
+                serde_yaml_ng::Value::String("icc".to_string()),
             ],
             vec![
-                serde_yaml::Value::String("@cl2id".to_string()),
-                serde_yaml::Value::String("clang".to_string()),
+                serde_yaml_ng::Value::String("@cl2id".to_string()),
+                serde_yaml_ng::Value::String("clang".to_string()),
             ],
         ];
         let types = get_types("runs", &keys, &sqltypes)?;
